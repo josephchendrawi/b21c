@@ -1,0 +1,4 @@
+ALTER TABLE [USER]
+add RoleId bigint
+
+alter table [USER] add CONSTRAINT USER_ROLE_F02 FOREIGN KEY ([RoleId]) REFERENCES [ROLE](Id)

@@ -1,0 +1,206 @@
+﻿@model B21C.Models.ShipOrderVM
+@{
+    ViewBag.Title = "Order Shipment";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Order Shipment }
+@section ContentHeader
+{
+    <a href="@Url.Action("View", new { Id = Model.Id })" class="btn btn-sm btn-flat btn-primary pull-right">View Details</a>
+}
+
+<div class="row">
+    @using (Html.BeginForm("Shipment", "Order", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.OrderInfo.BookedBy)
+        @Html.HiddenFor(m => m.OrderInfo.AdditionalDiscount)
+        @Html.HiddenFor(m => m.OrderInfo.OrderCode)
+        @Html.HiddenFor(m => m.OrderInfo.Receiver)
+        @Html.HiddenFor(m => m.OrderInfo.Sender)
+        @Html.HiddenFor(m => m.OrderInfo.ShippingFee)
+        @Html.HiddenFor(m => m.OrderInfo.TotalPrice)
+        @Html.HiddenFor(m => m.OrderInfo.GrandTotal)
+        @Html.HiddenFor(m => m.OrderInfo.TotalWeight)
+        @Html.HiddenFor(m => m.OrderInfo.BankAccountName)
+        @Html.HiddenFor(m => m.OrderInfo.UserPaymentAmount)
+
+        <div class="col-md-3">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Order Information</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OrderInfo.OrderCode)
+                        <div>
+                            @Model.OrderInfo.OrderCode
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OrderInfo.BookedBy)
+                        <div>
+                            @Model.OrderInfo.BookedBy
+                        </div>
+                    </div>
+                    <div class="line-light"></div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OrderInfo.PaymentMethod)
+                        <div>
+                            @Model.OrderInfo.PaymentMethod
+                        </div>
+                    </div>
+                    @if (Model.OrderInfo.UserPaymentAmount > 0)
+                    { 
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.OrderInfo.BankAccountName)
+                            <div>
+                                @Model.OrderInfo.BankAccountName
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.OrderInfo.UserPaymentAmount)
+                            <div>
+                                Rp. @Model.OrderInfo.UserPaymentAmount.ToString("N0")
+                            </div>
+                        </div>
+                    }
+                    <div class="line-light"></div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OrderInfo.Shipping)
+                        <div>
+                            @Model.OrderInfo.Shipping
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OrderInfo.TotalWeight)
+                        <div>
+                            @((Model.OrderInfo.TotalWeight).ToString("N0")) gram(s)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OrderInfo.ShippingFee)
+                        <div>
+                            Rp. @((Model.OrderInfo.ShippingFee).ToString("N0"))
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OrderInfo.TotalPrice)
+                        <div>
+                            Rp. @((Model.OrderInfo.TotalPrice).ToString("N0"))
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OrderInfo.AdditionalDiscount)
+                        <div>
+                            Rp. @((Model.OrderInfo.AdditionalDiscount).ToString("N0"))
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OrderInfo.GrandTotal)
+                        <div>
+                            Rp. @((Model.OrderInfo.GrandTotal).ToString("N0"))
+                        </div>
+                    </div>
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div>
+
+        <div class="col-md-9">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Shipment</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Sender)
+                        @Html.TextBoxFor(m => m.Sender, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Receiver)
+                        @Html.TextBoxFor(m => m.Receiver, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Address)
+                        @Html.TextAreaFor(m => m.Address, new { @class = "form-control", @rows = 4 })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OrderInfo.PaymentMethod)
+                        @{
+                            var PaymentMethodList = new List<SelectListItem>();
+                            PaymentMethodList.Add(new SelectListItem() { Text = "BCA", Value = "BCA" });
+                            PaymentMethodList.Add(new SelectListItem() { Text = "BRI", Value = "BRI" });
+                            PaymentMethodList.Add(new SelectListItem() { Text = "BNI", Value = "BNI" });
+                            PaymentMethodList.Add(new SelectListItem() { Text = "Mandiri", Value = "Mandiri" });
+                            PaymentMethodList.Add(new SelectListItem() { Text = "Cash", Value = "Cash" });
+                        }
+                        @Html.DropDownListFor(m => m.OrderInfo.PaymentMethod, PaymentMethodList, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OrderInfo.Shipping)
+                        @{
+                            var ShippingList = new List<SelectListItem>();
+                            ShippingList.Add(new SelectListItem() { Text = "JNE" });
+                            ShippingList.Add(new SelectListItem() { Text = "JNE CTC" });
+                            ShippingList.Add(new SelectListItem() { Text = "JNE CTCOKE" });
+                            ShippingList.Add(new SelectListItem() { Text = "JNE OKE" });
+                            ShippingList.Add(new SelectListItem() { Text = "JNE REG" });
+                            ShippingList.Add(new SelectListItem() { Text = "JNE YES" });
+                            ShippingList.Add(new SelectListItem() { Text = "JNT" });
+                            ShippingList.Add(new SelectListItem() { Text = "JNT EZ" });
+                            ShippingList.Add(new SelectListItem() { Text = "JNT Shopee" });
+                            ShippingList.Add(new SelectListItem() { Text = "Pos" });
+                            ShippingList.Add(new SelectListItem() { Text = "Pos Express Next Day Barang" });
+                            ShippingList.Add(new SelectListItem() { Text = "Pos Paket Kilat Khusus" });
+                            ShippingList.Add(new SelectListItem() { Text = "Pos Surat Kilat Khusus" });
+                            ShippingList.Add(new SelectListItem() { Text = "Tiki" });
+                            ShippingList.Add(new SelectListItem() { Text = "Tiki ECO" });
+                            ShippingList.Add(new SelectListItem() { Text = "Tiki REG" });
+                            ShippingList.Add(new SelectListItem() { Text = "Tiki TDS" });
+                            ShippingList.Add(new SelectListItem() { Text = "Lion Parcel" });
+                            ShippingList.Add(new SelectListItem() { Text = "COD" });
+                            ShippingList.Add(new SelectListItem() { Text = "Others" });
+                        }
+                        @Html.DropDownListFor(m => m.OrderInfo.Shipping, ShippingList, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.ShippingFee) (Rp.)
+                        @Html.TextBoxFor(m => m.ShippingFee, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.ShippingCode)
+                        <div class="input-group">
+                            @Html.DropDownListFor(m => m.PackingCode, new SelectList("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), new { @class = "form-control inline" })
+                            <span class="input-group-addon">@Model.OrderInfo.Shipping.ToUpper()</span>
+                            @Html.TextBoxFor(m => m.ShippingCode, new { @class = "form-control inline", @style = "width: 90%" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.ContactNo)
+                        @Html.TextBoxFor(m => m.ContactNo, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Note)
+                        @Html.TextAreaFor(m => m.Note, new { @class = "form-control", @rows = 6, @style = "resize:vertical ;" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.FlgAdminLogo)
+                        @Html.CheckBoxFor(m => m.FlgAdminLogo, new { @class = "square" })
+                    </div>
+                </div><!-- /.box-body -->
+
+                <div class="box-footer text-right">
+                    <input type="submit" class="btn btn-flat btn-primary" value="Submit" />
+                </div>
+            </div><!-- /.box -->
+        </div>
+    }
+</div>
+
+<!-- CK Editor -->
+<script src="//cdn.ckeditor.com/4.4.3/standard/ckeditor.js"></script>
+<script type="text/javascript">
+    $(function () {
+        CKEDITOR.replace('Note');
+    });
+</script>

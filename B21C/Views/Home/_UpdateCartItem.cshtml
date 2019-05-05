@@ -1,0 +1,87 @@
+﻿@model B21C.Models.CartItem
+@{
+    ViewBag.Title = "Update Cart";
+    Layout = "~/Views/Shared/_Layout_Empty.cshtml";
+}
+
+@if (TempData["Message"] != null && TempData["Message"] == "Successfully done.")
+{
+    <script>
+        $(function () {
+            //parent.$.fancybox.close();
+            parent.location.reload(true);
+        });
+    </script>
+}
+else if (TempData["Message"] != null)
+{
+    <script>
+        $(function () {
+            alert("@TempData["Message"]");
+        });
+    </script>
+}
+
+<!-- single -->
+<div class="single">
+    <div class="container">
+        @using (Html.BeginForm("_UpdateCartItem", "Home", FormMethod.Post, new { enctype = "multipart/form-data", @id = "form-updatecart" }))
+        {
+            @Html.HiddenFor(m => m.CartId)
+            @Html.HiddenFor(m => m.ProductId)
+            @Html.HiddenFor(m => m.Quantity)
+        }
+        <script>
+            function submit_form(){
+                $('form#form-updatecart').submit();
+            }
+        </script>
+
+        <div class="col-sm-5">
+            <img src="@(Constant.UploadPath)thumb_@Model.ProductDetails.ProductImageList.FirstOrDefault().URL" alt=" " class="img-responsive" id="main-image" />
+            <style>                
+                @@media (max-width: 708px) {
+                    #main-image {
+                        display: none !important;
+                    }
+                }
+            </style>
+        </div>
+        <div class="col-sm-7">
+            <h3>@Model.ProductDetails.Name</h3>
+            <div class="simpleCart_shelfItem">
+                <p>@if (Model.ProductDetails.Sales)
+                { <span>Rp. @((Model.ProductDetails.Price ?? 0).ToString("N0"))</span> } <i class="item_price">Rp. @((Model.ProductDetails.TotalPrice).ToString("N0"))</i></p>
+            </div>
+
+            <div class="occasional">
+                <h5>Kuantitas :</h5>
+                <div class="quantity">
+                    <div class="quantity-select">
+                        <div class="entry value-minus1">&nbsp;</div>
+                        <div class="entry value1" id="item_quantity">@if(Model.isStockInsufficient) { @Model.ProductDetails.Stock } else { @Model.Quantity }</div>
+                        <div class="entry value-plus1 active">&nbsp;</div>
+                    </div>
+                </div>
+                <!--quantity-->
+                <script>
+                    $('.value-plus1').on('click', function () {
+                        var divUpd = $(this).parent().find('.value1'), newVal = parseInt(divUpd.text(), 10) + 1;
+                        if (newVal <= @Model.ProductDetails.Stock) { divUpd.text(newVal); $('#Quantity').val(newVal); }
+                    });
+
+                    $('.value-minus1').on('click', function () {
+                        var divUpd = $(this).parent().find('.value1'), newVal = parseInt(divUpd.text(), 10) - 1;
+                        if (newVal >= 1) { divUpd.text(newVal); $('#Quantity').val(newVal); }
+                    });
+                </script>
+                <!--quantity-->
+            </div>
+            <div class="simpleCart_shelfItem">
+                <p><a id="item_add" href="#" onclick="submit_form();"><i class="fa fa-pencil"></i> Ubah</a></p>
+            </div>
+        </div>
+        <div class="clearfix"> </div>
+    </div>
+</div>
+<!-- //single -->

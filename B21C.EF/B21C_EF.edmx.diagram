@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="efc990c42d714c4eaf191ba129a26510" Name="Diagram1">
+        <EntityTypeShape EntityType="b21cModel.ADDRESS_BOOK" Width="1.5" PointX="5.25" PointY="10.625" />
+        <EntityTypeShape EntityType="b21cModel.BANNER" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="b21cModel.CATALOG" Width="1.5" PointX="7.75" PointY="0.75" />
+        <EntityTypeShape EntityType="b21cModel.EMAIL" Width="1.5" PointX="9.75" PointY="0.75" />
+        <EntityTypeShape EntityType="b21cModel.EMAIL_SUBSCRIBER" Width="1.5" PointX="7.75" PointY="9.75" />
+        <EntityTypeShape EntityType="b21cModel.ORDER" Width="1.5" PointX="9" PointY="20.75" />
+        <EntityTypeShape EntityType="b21cModel.ORDER_PRODUCT" Width="1.5" PointX="11.25" PointY="16.25" />
+        <EntityTypeShape EntityType="b21cModel.PRODUCT" Width="1.5" PointX="6" PointY="15.625" />
+        <EntityTypeShape EntityType="b21cModel.PRODUCT_IMAGE" Width="1.5" PointX="8.25" PointY="16.625" />
+        <EntityTypeShape EntityType="b21cModel.PRODUCT_STOCK_LOG" Width="1.5" PointX="9.75" PointY="9.75" />
+        <EntityTypeShape EntityType="b21cModel.SHOPPING_CART" Width="1.5" PointX="8.25" PointY="5.625" />
+        <EntityTypeShape EntityType="b21cModel.USER_BALANCE_TRX" Width="1.5" PointX="5.25" PointY="3.25" />
+        <AssociationConnector Association="b21cModel.ORDER_PRODUCT_F01" />
+        <AssociationConnector Association="b21cModel.ORDER_PRODUCT_F02" />
+        <AssociationConnector Association="b21cModel.PRODUCT_IMAGE_F01" />
+        <AssociationConnector Association="b21cModel.SHOPPING_CART_PRODUCT_F01" />
+        <EntityTypeShape EntityType="b21cModel.PRODUCT_TRENDING" Width="1.5" PointX="8.25" PointY="29" />
+        <AssociationConnector Association="b21cModel.PRODUCT_TRENDING_PRODUCT_F01" />
+        <EntityTypeShape EntityType="b21cModel.PRODUCT_STOCK_ACTIVITY" Width="1.5" PointX="8.25" PointY="32.875" />
+        <AssociationConnector Association="b21cModel.PRODUCT_STOCK_ACTIVITY_PRODUCT_F01" />
+        <EntityTypeShape EntityType="b21cModel.USER_BALANCE_TOPUP" Width="1.5" PointX="5.25" PointY="0.75" />
+        <EntityTypeShape EntityType="b21cModel.PRODUCT_ORDER_STATUS_RESET" Width="1.5" PointX="12.25" PointY="11.5" />
+        <AssociationConnector Association="b21cModel.PRODUCT_ORDER_STATUS_RESET_PRODUCT_F01" />
+        <EntityTypeShape EntityType="b21cModel.LOOKUP" Width="1.5" PointX="10.375" PointY="4.75" />
+        <EntityTypeShape EntityType="b21cModel.SURVEY" Width="1.5" PointX="10" PointY="37.125" />
+        <EntityTypeShape EntityType="b21cModel.USER_SURVEY" Width="1.5" PointX="12.25" PointY="1" />
+        <AssociationConnector Association="b21cModel.USER_SURVEY_F02" />
+        <EntityTypeShape EntityType="b21cModel.ROLE" Width="1.5" PointX="0.75" PointY="9.25" />
+        <EntityTypeShape EntityType="b21cModel.USER" Width="1.5" PointX="3" PointY="4.75" />
+        <AssociationConnector Association="b21cModel.ADDRESS_BOOK_USER_F01" />
+        <AssociationConnector Association="b21cModel.PRODUCT_ORDER_STATUS_RESET_USER_F01" />
+        <AssociationConnector Association="b21cModel.USER_ROLE_F02" />
+        <AssociationConnector Association="b21cModel.SHOPPING_CART_USER_F01" />
+        <AssociationConnector Association="b21cModel.USER_BALANCE_TOPUP_USER_F01" />
+        <AssociationConnector Association="b21cModel.USER_BALANCE_TRX_USER_F01" />
+        <AssociationConnector Association="b21cModel.USER_SURVEY_F01" />
+        <EntityTypeShape EntityType="b21cModel.ROLE_ACCESS" Width="1.5" PointX="3" PointY="12" />
+        <AssociationConnector Association="b21cModel.ROLE_ACCESS_F01" />
+        <EntityTypeShape EntityType="b21cModel.USER_STATUS" Width="1.5" PointX="12.375" PointY="5" />
+        <AssociationConnector Association="b21cModel.USER_USER_STATUS_F01" />
+        <EntityTypeShape EntityType="b21cModel.PRODUCT_CATEGORY" Width="1.5" PointX="3.75" PointY="17.625" />
+        <AssociationConnector Association="b21cModel.PRODUCT_PRODUCT_CATEGORY_F01" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

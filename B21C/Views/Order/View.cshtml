@@ -1,0 +1,276 @@
+﻿@model B21C.Models.OrderVM
+@{
+    ViewBag.Title = "Order Details";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Order Details }
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Order Information</h3>
+            </div><!-- /.box-header -->
+            <div class="box-body">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.OrderCode)
+                    <div>
+                        @Model.OrderCode
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Status)
+                    <div>
+                        @Model.Status
+                    </div>
+                </div>
+                @if (Model.Status == "Pending Payment")
+                {
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.ExpirationDate)
+                        <div>
+                            @if (Model.ExpirationDate != null) { 
+                                @Model.ExpirationDate.Value.ToString("dd MMM yyyy HH:mm")
+                            }
+                        </div>
+                    </div>
+                }
+                <div class="form-group">
+                    @Html.LabelFor(m => m.BookedBy)
+                    <div>
+                        @Model.BookedBy
+                    </div>
+                </div>
+                <div class="line-light"></div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.PaymentMethod)
+                    <div>
+                        @Model.PaymentMethod
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.BankAccountName)
+                    <div>
+                        @(string.IsNullOrWhiteSpace(Model.BankAccountName) ? "-" : Model.BankAccountName)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.UserPaymentAmount)
+                    <div>
+                        Rp. @Model.UserPaymentAmount.ToString("N0")
+                    </div>
+                </div>
+                <div class="line-light"></div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Shipping)
+                    <div>
+                        @Model.Shipping
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.TotalWeight)
+                    <div>
+                        @((Model.TotalWeight ?? 0).ToString("N0")) gram(s)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.ShippingFee)
+                    <div>
+                        Rp. @((Model.ShippingFee ?? 0).ToString("N0"))
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.TotalPrice)
+                    <div>
+                        Rp. @((Model.TotalPrice ?? 0).ToString("N0"))
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Discount)
+                    <div>
+                        Rp. @((Model.Discount ?? 0).ToString("N0"))
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.AdditionalDiscount)
+                    <div>
+                        Rp. @((Model.AdditionalDiscount ?? 0).ToString("N0"))
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.GrandTotal)
+                    <div>
+                        Rp. @((Model.GrandTotal ?? 0).ToString("N0"))
+                    </div>
+                </div>
+            </div><!-- /.box-body -->
+        </div><!-- /.box -->
+    </div>
+
+    <div class="col-md-5">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Product List</h3>
+            </div><!-- /.box-header -->
+            <div class="box-body">
+                <table id="tbl-chosen-product" class="table table-bordered table-striped table-responsive table-hover">
+                    <thead class="text-bold">
+                        <tr>
+                            <td>Name</td>
+                            <td>Price</td>
+                            <td>Weight</td>
+                            <td>Quantity</td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var v in Model.ProductList)
+                        {
+                            <tr>
+                                <td>@v.Name</td>
+                                <td>@v.Price</td>
+                                <td>@v.Weight</td>
+                                <td>@v.Quantity</td>
+                                <td><a href="@Url.Action("Edit", "Product", new { Id = @v.ProductId })">View</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div><!-- /.box-body -->
+        </div><!-- /.box -->
+    </div>
+
+    @if (Model.FlgAdminLogo != null)
+    { 
+        <div class="col-md-4">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Shipment</h3>
+                    <span class="pull-right"><button class="btn btn-sm btn-flat btn-primary" onclick="printShipment();"><i class="fa fa-print"></i> Print</button></span>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Sender)
+                        <div>
+                            @Model.Sender
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Receiver)
+                        <div>
+                            @Model.Receiver
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.ShippingCode)
+                        <div>
+                            @Model.PackingCode-@Model.ShippingCode
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Address)
+                        <div>
+                            @Model.Address
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.ContactNo)
+                        <div>
+                            @Model.ContactNo
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Note)
+                        <div style="border: 1px solid #e2e2e2; padding: 10px;">
+                            @Html.Raw(Model.Note)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.FlgAdminLogo)
+                        <div>
+                            @(Model.FlgAdminLogo == null ? "" : (Model.FlgAdminLogo == true ? "Yes" : "No"))
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.PrepareShipmentDate)
+                        <div>
+                            @if (Model.PrepareShipmentDate != null)
+                            { 
+                                @Model.PrepareShipmentDate.Value.ToString("dd MMM yyyy HH:mm")
+                            }
+                        </div>
+                    </div>
+                    <div class="line-light"></div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.TrackingNo)
+                        <div>
+                            @Model.TrackingNo
+                        </div>
+                    </div>
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div>
+        
+        <script src="~/Content/printThis/printThis.js"></script>
+        <div style="display: none;">
+            <div id="reseller-print" style="border: 1px solid #000;">
+                <div style="padding: 20px; font-size: medium;">
+                    <div class="pull-right"><b>@Model.PackingCode-@Model.ShippingCode</b></div>
+                    <div><b>Order Code </b> : @Model.OrderCode.Split(' ')[0]  </div>
+                    <div><b>From </b> : @Model.Sender </div>
+                    <div><b>To </b> : @Model.Receiver </div>
+                    <div><b>No hp </b> : @Model.ContactNo </div>
+                    <div><b>Alamat </b> : @Model.Address </div>
+                    <div><b>Kode tas </b> : @foreach (var v in Model.ProductList) { if(v.Quantity > 0){ @v.ProductCode if(v.Quantity > 1) { <span style="color: red !important; font-weight: bold;">x @v.Quantity</span> } <span> | </span> } } </div>
+                    <div>
+                        <b>Note </b> :
+                        <div style="border: 1px solid #e2e2e2; padding: 10px;">@Html.Raw(Model.Note) </div>
+                    </div>
+
+                    @*<div class="text-center">
+                        <h2>HAPPY SHOPPING</h2>
+                    </div>*@
+                </div>
+            </div>
+
+            <div id="b21c-print" style="border: 1px solid #000;">
+                <div style="padding: 25px; font-size: medium;">
+                    <div class="pull-right"><b>@Model.PackingCode-@Model.ShippingCode</b></div>
+                    <div class="text-center"><img src="~/Content/Frontend/images/logo.png" /></div>
+                    <div><b>Order Code </b> : @Model.OrderCode </div>
+                    <div><b>Nama </b> : @Model.Receiver </div>
+                    <div><b>No hp </b> : @Model.ContactNo </div>
+                    <div><b>Alamat </b> : @Model.Address </div>
+                    <br />
+                    <div><b>Kode tas </b> : @foreach (var v in Model.ProductList) { if(v.Quantity > 0){ @v.ProductCode if(v.Quantity > 1) { <span style="color: red !important; font-weight: bold;">x @v.Quantity</span> } <span> | </span> } } </div>
+                    <div>
+                        <b>Note </b> :
+                        <div style="border: 1px solid #e2e2e2; padding: 10px;">@Html.Raw(Model.Note) </div>
+                    </div>
+
+                    @*<div class="text-center">
+                        <h2 style="color: red !important;;">HAPPY SHOPPING</h2>
+                    </div>*@
+                    <div class="line"></div>
+                    <div class="text-center">
+                        <div>IG : @Html.Raw("@bags21century")</div>
+                        <div>FB Page : @Html.Raw("bags21century")</div>
+                        <div>SMS/WA : @Html.Raw("+6285264927626")</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function printShipment() {
+                if ("@Model.FlgAdminLogo" == "True") {
+                    $("#b21c-print").printThis();
+                }
+                else {
+                    $("#reseller-print").printThis();
+                }
+            }
+        </script>
+
+    }
+</div>

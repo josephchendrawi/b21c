@@ -1,0 +1,58 @@
+﻿@{
+    ViewBag.Title = "User Balance Top Up List";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { User Balance Top Up List }
+
+@Html.Partial("_Kendo")
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-default">
+            <div class="box-body">
+                @(Html.Kendo().Grid<UserBalanceTopUpVM>()
+                .Name("grid")
+                .HtmlAttributes( new { @class = "tbl-grid"})
+                .DataSource(dataSource => dataSource //Configure the Grid data source.
+                    .Ajax() //Specify that Ajax binding is used.
+                    .Read(read => read.Action("UserBalanceTopUpList_Read", "UserBalanceTopUp"))
+                    .Events(events => events.Error("error_handler"))
+                )
+                .Columns(columns =>
+                {
+                    columns.Bound(v => v.LastUpdAt).Title("Last Updated").Format("{0:dd/MM/yyyy HH:mm}");
+                    columns.Bound(v => v.UserName).Title("Name");
+                    columns.Bound(v => v.Username);
+                    columns.Bound(v => v.AccountName);
+                    columns.Bound(v => v.Amount);
+                    columns.Bound(v => v.Bank);
+                    columns.Bound(v => v.TransferDateTime).Title("Transfer At").Format("{0:dd/MM/yyyy HH:mm}");
+                    columns.Bound(v => v.Status);
+                    columns.Bound("").Filterable(false).Sortable(false).Width(240).ClientTemplate(
+                    " <a class='btn btn-sm btn-default btn-flat' href='" + @Url.Action("View", "User") + "/#= UserId #')\"><i class='fa fa-user'></i></a>"
+                    + "#if(Status == \"Pending\"){#"
+                      + " <a class='btn btn-sm btn-success btn-flat' href='" + @Url.Action("Approve", "UserBalanceTopUp") + "/#= Id #' onclick=\"return confirm('Are you sure to Approve this Top Up?')\"><i class='fa fa-check'></i> Approve</a>"
+                      + " <a class='btn btn-sm btn-danger btn-flat' href='" + @Url.Action("Reject", "UserBalanceTopUp") + "/#= Id #' onclick=\"return confirm('Are you sure to Reject this Top Up?')\"><i class='fa fa-times'></i> Reject</a>"
+                    + "#}#"
+                    ).HtmlAttributes(new { @class = "text-right" });
+                })
+                .Scrollable(scroll => scroll.Enabled(true).Height("auto"))
+                .Resizable(resize => resize.Columns(true))
+                .Pageable() // Enable paging
+                .Sortable() // Enable sorting
+                .Filterable(f => f.Extra(true)
+                    .Operators(o => o.ForString(s => s.Clear()
+                        .Contains("Contains")
+                        .DoesNotContain("Does not contain")
+                        .IsEqualTo("Is equal to")
+                        .IsNotEqualTo("Is not equal to")
+                        .StartsWith("Starts with")
+                        .EndsWith("Ends with ")
+                    ))
+                )
+                )
+
+            </div>
+        </div>
+    </div>
+</div>

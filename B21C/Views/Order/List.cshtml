@@ -1,0 +1,254 @@
+﻿@{
+    ViewBag.Title = "Order List";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Order List }
+
+@Html.Partial("_Kendo")
+
+<div class="row">
+    <div class="col-sm-12">
+        <div id="tabs">
+            <a href="@Url.Action("List","Order", new { TableName = "All" })" class="tablinks @if (ViewBag.TableName == "All") { <text>tab-active</text> }">All</a>
+            <a href="@Url.Action("List","Order", new { TableName = "B21C" })" class="tablinks @if (ViewBag.TableName == "B21C") { <text>tab-active</text> }">B21C</a>
+            <a href="@Url.Action("List","Order", new { TableName = "B21C Store" })" class="tablinks @if (ViewBag.TableName == "B21C Store") { <text>tab-active</text> }">B21C Store</a>
+            <a href="@Url.Action("List","Order", new { TableName = "Bagance" })" class="tablinks @if (ViewBag.TableName == "Bagance") { <text>tab-active</text> }">Bagance</a>
+        </div>
+
+        <div id="B21C" class="tabcontent" style="display:block">
+            <div class="text-right" id="grid-selection-action" style="display:none;">
+                <span class="selection-count">0</span> item(s) selected
+                <button class="btn btn-success btn-flat" onclick='gotoMassiveOrderCancelling(SelectedOrderIds_main);'><i class="fa fa-times"></i> Cancel Pending Payment</button>
+                <button class="btn btn-danger btn-flat" onclick='gotoDecreasePackingCount(SelectedOrderIds_main);'><i class="fa fa-times-circle"></i> Uncheck Packing</button>
+                <button class="btn btn-primary btn-flat" onclick='gotoIncreasePackingCount(SelectedOrderIds_main);'><i class="fa fa-check-circle"></i> Check Packing</button>
+                <button class="btn btn-success btn-flat" onclick='goToMassivePrinting(SelectedOrderIds_main);'><i class="fa fa-print"></i> Print</button>
+            </div>
+
+            @(Html.Kendo().Grid<OrderVM>()
+            .Name("grid-b21c")
+            .HtmlAttributes(new { @class = "tbl-grid" })
+            .DataSource(dataSource => dataSource //Configure the Grid data source.
+                .Ajax() //Specify that Ajax binding is used.
+                .PageSize(50)
+                .Read(read => read.Action("OrderList_Read", "Order", new { TableName = ViewBag.TableName }))
+                .Events(events => events.Error("error_handler"))
+                .Sort(sort => { sort.Add("PaymentExpired").Descending(); sort.Add("Id").Descending(); })
+                .Aggregates(aggregates =>
+                {
+                    aggregates.Add(p => p.PackedCount).Sum();
+                })
+            )
+            .Columns(columns =>
+            {
+                columns.Bound(v => v.OrderCode);
+                columns.Bound(v => v.CreatedAt).Title("Transaction Date").Format("{0:dd/MM/yyyy HH:mm}");
+                columns.Bound(v => v.CreatedBy);
+                columns.Bound(v => v.BookedBy);
+                columns.Bound(v => v.Receiver);
+                columns.Bound(v => v.GrandTotal).Title("Grand Total (Rp.)").ClientTemplate("<div class='text-right'>#=kendo.toString(GrandTotal,'n0')#</div>");
+                //columns.Bound(v => v.TotalWeight).Title("Weight (gram)").ClientTemplate("<div class='text-right'>#=kendo.toString(TotalWeight,'n0')#</div>");
+                //columns.Bound(v => v.PaymentMethod).Title("Payment");
+                columns.Bound(v => v.PrepareShipmentDate).Title("Prepare Shipment").Format("{0:dd/MM/yyyy HH:mm}");
+                columns.Bound(v => v.Shipping).Width(75);
+                columns.Bound(v => v.PaymentMethod).Width(75);
+                columns.Bound(v => v.PackingCode).Width(75);
+                columns.Bound(v => v.PackedCount).Width(75)
+                    .ClientFooterTemplate("<div class='text-right'>#=kendo.toString(sum,'n0')#</div>");
+                columns.Bound(v => v.Status).Width(125).ClientTemplate(
+                    "#if(Status == \"Pending Payment\"){#"
+                    + "<a class='btn btn-sm btn-warning btn-flat no-event' href=''>#= Status#</a> "
+                    + "#if(PaymentExpired == true){#"
+                    + "<a class='btn btn-sm btn-danger btn-flat' href='" + @Url.Action("Extend", "Order") + "/#= Id #' title='Extend (Expired at #= kendo.toString(ExpirationDate,'dd/MM/yyyy HH:mm')#)' onclick=\"return confirm('Are you sure to Extend this order?')\">Expired | <i class='fa fa-calendar-plus-o'></i></a> "
+                    + "#}#"
+                    + "#}else if(Status == \"Prepare Shipment\"){#"
+                    + "<a class='btn btn-sm btn-primary btn-flat no-event' href=''>#= Status#</a> "
+                    + "#}else if(Status == \"Shipped\"){#"
+                    + "<a class='btn btn-sm btn-primary btn-flat no-event' href=''>#= Status#</a> "
+                    + "#}else if(Status == \"Delivered\"){#"
+                    + "<a class='btn btn-sm btn-success btn-flat no-event' href=''>#= Status#</a> "
+                    + "#}else if(Status == \"Returned\"){#"
+                    + "<a class='btn btn-sm btn-danger btn-flat no-event' href=''>#= Status#</a> "
+                    + "#}else if(Status == \"Canceled\"){#"
+                    + "<a class='btn btn-sm btn-default btn-flat no-event' href=''>#= Status#</a> "
+                    + "#}#"
+                );
+                columns.Bound("").Filterable(false).Sortable(false).Width(180).ClientTemplate(
+                    "#if(Status == \"Pending Payment\" || Status == \"Prepare Shipment\"){#"
+                    + " <a class='btn btn-sm btn-danger btn-flat' href='" + @Url.Action("Cancel", "Order") + "/#= Id #' title='Cancel' onclick=\"return confirm('Are you sure to Cancel this order?')\"><i class='fa fa-times'></i></a>"
+                    + "#}#"
+                    + "#if(Status == \"Pending Payment\"){#"
+                    + " <a class='btn btn-sm btn-primary btn-flat' href='" + @Url.Action("Shipment", "Order") + "/#= Id #' title='Payment Received' onclick=\"return confirm('Are you sure this Order Payment is received?')\"><i class='fa fa-dollar'></i></a>"
+                    + " <a class='btn btn-sm btn-warning btn-flat' href='" + @Url.Action("CreateOrUpdate", "Order") + "/#= Id #' title='Edit Booking'><i class='fa fa-pencil'></i></a>"
+                    + "#}else if(Status == \"Prepare Shipment\"){#"
+                    + " <a class='btn btn-sm btn-primary btn-flat' href='" + @Url.Action("Shipped", "Order") + "/#= Id #' title='Shipped' onclick=\"return confirm('Are you sure this Order is shipped?')\"><i class='fa fa-truck'></i></a>"
+                    + " <a class='btn btn-sm btn-warning btn-flat' href='" + @Url.Action("Shipment", "Order") + "/#= Id #' title='Edit Shipment Info'><i class='fa fa-pencil'></i></a>"
+                    + "#}else if(Status == \"Shipped\"){#"
+                    //+ " <a class='btn btn-sm btn-success btn-flat' href='" + @Url.Action("Delivered", "Order") + "/#= Id #' title='Delivered' onclick=\"return confirm('Are you sure this Order is delivered?')\"><i class='fa fa-check-square-o'></i></a>"
+                    + " <a class='btn btn-sm btn-danger btn-flat' href='" + @Url.Action("Returned", "Order") + "/#= Id #' title='Returned' onclick=\"return confirm('Are you sure this Order is returned?')\"><i class='fa fa-undo'></i></a>"
+                    + " <a class='btn btn-sm btn-warning btn-flat' href='" + @Url.Action("Shipped", "Order") + "/#= Id #' title='Edit Shipped Info'><i class='fa fa-pencil'></i></a>"
+                    + "#}#"
+                    + " <a class='btn btn-sm btn-default btn-flat' href='" + @Url.Action("View", "Order") + "/#= Id #' title='View Details'><i class='fa fa-eye'></i></a>"
+                ).HtmlAttributes(new { @class = "text-right" });
+            })
+            .Scrollable(scroll => scroll.Enabled(true).Height("auto"))
+            .Resizable(resize => resize.Columns(true))
+            .Pageable(pageable => pageable.ButtonCount(5)) // Enable paging
+            .Sortable() // Enable sorting
+            .Filterable(f => f.Extra(true)
+                .Operators(o => o.ForString(s => s.Clear()
+                    .Contains("Contains")
+                    .DoesNotContain("Does not contain")
+                    .IsEqualTo("Is equal to")
+                    .IsNotEqualTo("Is not equal to")
+                    .StartsWith("Starts with")
+                    .EndsWith("Ends with ")
+                ))
+            )
+            .Selectable(selectable => selectable.Mode(GridSelectionMode.Multiple))
+            .Excel(excel => excel
+                .FileName("Order_Report_" + ViewBag.TableName + "_" + DateTime.Now.ToString("dd-MM-yyyy") + ".xlsx")
+                .Filterable(true)
+                .AllPages(true)
+                .ProxyURL(Url.Action("KendoExcelSave", "Admin"))
+            )
+            .ToolBar(toolBar => toolBar.Template(@<text>@ToolbarTemplate()</text>))
+            .Events(m => m.DataBound("onDataBound").Change("onChange_main"))
+            )
+        </div>
+        <script type="text/x-kendo-template" id="toolbarTemplate">
+            @helper ToolbarTemplate()
+            {
+                <a class='btn btn-sm btn-primary btn-flat' href='@Url.Action("CreateOrUpdate", "Order")'><i class='fa fa-plus'></i> Add Order</a>
+                <div class="pull-right">
+                    <a class='k-button' href='#' onclick='$("#grid-b21c").data("kendoGrid").dataSource.filter({});'>Reset</a>
+                    <a class='k-button k-button-icontext k-grid-excel' href='#'><span class='k-icon k-i-excel'></span>Export to Excel</a>
+                </div>
+            }
+            @Html.Raw(@ToolbarTemplate().ToHtmlString().Replace("#", "\\#").Replace("</scr", "<\\/scr"))
+        </script>
+        <script>
+            function onDataBound(e) {
+                var grid = $("#grid-b21c").data("kendoGrid");
+                if (is_touch_device()) {
+                    for (var i = 0; i < grid.columns.length; i++) {
+                        grid.autoFitColumn(i);
+                    }
+                }
+                //save state
+                @if (string.IsNullOrEmpty(Request.QueryString["OrderCode"]))
+                {
+                    <text>
+                	localStorage["kendo-grid-options_order_20180416_@ViewBag.TableName"] = kendo.stringify(grid.getOptions());
+                    </text>
+            	}
+            }
+
+            $(function () {
+                @*@if (string.IsNullOrEmpty(Request.QueryString["OrderCode"]))
+                {
+                    <text>
+                    //load state
+                    var grid = $("#grid-b21c").data("kendoGrid");
+                    var options = localStorage["kendo-grid-options_order_20180416_@ViewBag.TableName"];
+                    if (options) {
+                        var parsedOptions = JSON.parse(options);
+                        parsedOptions.toolbar = [
+                            { template: $("#toolbarTemplate").html() }
+                        ];
+                        grid.setOptions(parsedOptions);
+                    }
+                    </text>
+                }*@
+            });
+        </script>
+        <script>
+            $(function () {
+                @if (!string.IsNullOrEmpty(Request.QueryString["OrderCode"]))
+                {
+                    <text>
+                        var grid = $("#grid-b21c").data("kendoGrid");
+                        grid.dataSource.filter({
+                            field: "OrderCode",
+                            operator: "contains",
+                            value: "@Request.QueryString["OrderCode"]"
+                        });
+                    </text>
+                }
+                else
+                {
+                    <text>
+                    //load state
+                    var grid = $("#grid-b21c").data("kendoGrid");
+                    var options = localStorage["kendo-grid-options_order_20180416_@ViewBag.TableName"];
+                    if (options) {
+                        var parsedOptions = JSON.parse(options);
+                        parsedOptions.toolbar = [
+                            { template: $("#toolbarTemplate").html() }
+                        ];
+                        grid.setOptions(parsedOptions);
+                    }
+                    </text>
+                }
+            });
+        </script>
+        <script>
+                var SelectedOrderIds_main = "";
+                function onChange_main(e) {
+                    grid = e.sender;
+                    var selectedItemId = $.map(this.select(), function (item) {
+                        return grid.dataItem(item).Id;
+                    });
+
+                    SelectedOrderIds_main = selectedItemId.join();
+                    $('#grid-selection-action .selection-count').html(selectedItemId.length);
+                    if (SelectedOrderIds_main != null && SelectedOrderIds_main != "") {
+                        $('#grid-selection-action').show();
+                    }
+                    else {
+                        $('#grid-selection-action').hide();
+                    }
+                }
+        </script>
+    </div>
+</div>
+
+<script>
+    @if (!AccessControl.IsAccessable((long)Session["Id"], AccessModule.Order_CheckPackingCount))
+    {
+        <text>
+        $(function () {
+            $('table').removeClass('k-selectable');
+        })
+        </text>
+    }
+
+    //if touch device then disable Selectable in Kendo
+    $(function () {
+        if (is_touch_device()) {
+            $('table').removeClass('k-selectable');
+            $('table').removeAttr('style');
+        }
+    })
+</script>
+<script>
+    function gotoIncreasePackingCount(orderid_list) {
+        if (orderid_list != null && orderid_list != "") {
+            window.location.href = "@Url.Action("IncreasePackingCount")?ids=" + orderid_list;
+        }
+    }
+    function gotoDecreasePackingCount(orderid_list) {
+        if (orderid_list != null && orderid_list != "") {
+            window.location.href = "@Url.Action("DecreasePackingCount")?ids=" + orderid_list;
+        }
+    }
+    function goToMassivePrinting(orderid_list) {
+        if (orderid_list != null && orderid_list != "") {
+            window.location.href = "@Url.Action("MassivePrinting")?ids=" + orderid_list;
+        }
+    }
+    function gotoMassiveOrderCancelling(orderid_list) {
+        if (orderid_list != null && orderid_list != "") {
+            window.location.href = "@Url.Action("MassiveOrderCancelling")?ids=" + orderid_list;
+        }
+    }
+</script>

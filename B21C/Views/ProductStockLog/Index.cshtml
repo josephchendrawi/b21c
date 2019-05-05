@@ -1,0 +1,120 @@
+﻿@model B21C.Models.ProductStockLogVM
+@{
+    ViewBag.Title = "Product Stock Report";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Product Stock Report }
+
+@Html.Partial("_Kendo")
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-default">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-sm-5">
+                        @(Html.Kendo().DatePicker()
+                        .Name("Date")
+                        .Value(Model.Date)
+                        .Format("dd-MM-yyyy")
+                        .Events(e =>
+                        {
+                            e.Change("date_change");
+                        })
+                        )
+                        <script>
+                            function date_change() {
+                                //alert(kendo.toString(this.value(), 'ddMMyyyy'));
+                                date = kendo.toString(this.value(), 'dd-MM-yyyy');
+
+                                window.location.href = "@Url.Action("Index")?Date=" + date;
+                            }
+                        </script>
+                    </div>
+                    <div class="col-sm-7 text-right">
+                        @if (Model.SoldOut_Products.Count() > 0)
+                        { 
+                            @(Html.Kendo().DatePicker()
+                            .Name("CompareDate")
+                            .Value(Model.CompareDate == null ? "" : Model.CompareDate.Value.ToString("dd-MM-yyyy"))
+                            .Format("dd-MM-yyyy")
+                            .Events(e =>
+                            {
+                                e.Change("compare_date_change");
+                            })
+                            )
+
+                            <button class="btn btn-flat btn-primary" onclick="do_compare();">Compare</button>
+
+                            <script>
+                                var compare_date = "";
+
+                                function compare_date_change() {
+                                    //alert(kendo.toString(this.value(), 'ddMMyyyy'));
+                                    compare_date = kendo.toString(this.value(), 'dd-MM-yyyy');
+                                }
+
+                                function do_compare() {
+                                    window.location.href = "@Url.Action("Index")?Date=@Model.Date.ToString("dd-MM-yyyy")&CompareDate=" + compare_date;
+                                }
+                            </script>
+                        }
+                    </div>
+                </div>
+                <div class="line-light"></div>
+                <table class="table table-bordered table-responsive table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <td>Available</td>
+                            <td>Sold Out</td>
+                            <td>Canceled</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="summary-row">
+                            <td>@Model.Available_Amount</td>
+                            <td>@Model.SoldOut_Amount</td>
+                            <td>@Model.Canceled_Amount</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @foreach (var v in Model.Available_Products)
+                                {
+                                    @v <br/>
+                                }
+                            </td>
+                            <td>
+                                @foreach (var v in Model.Addition_SoldOut_Products)
+                                {
+                                    <span class="text-green">@v</span> <br />
+                                }
+                                @foreach (var v in Model.SoldOut_Products.Except(Model.Addition_SoldOut_Products))
+                                {
+                                    @v <br />
+                                }
+                            </td>
+                            <td>
+                                @foreach (var v in Model.Canceled_Products)
+                                {
+                                    @v <br/>
+                                }
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    tr.summary-row td{
+        padding: 15px 8px !important;
+        font-size: 30px;
+        background-color: #eeeeee;
+    }
+
+     table td{
+         border: 1px solid #cccccc !important;
+     }
+</style>

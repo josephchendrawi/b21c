@@ -1,0 +1,29 @@
+﻿@model B21C.Models.NewsletterSubscriberVM
+@{
+    ViewBag.Title = "Add Newsletter Subscriber";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Add Email Subscriber }
+
+<div class="row">
+    @using (Html.BeginForm("Add", "NewsletterSubscriber", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Newsletter Subscriber Information</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Email)
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                    </div>
+                </div><!-- /.box-body -->
+
+                <div class="box-footer text-right">
+                    <input type="submit" class="btn btn-flat btn-primary" value="Submit" />
+                </div>
+            </div><!-- /.box -->
+        </div>
+    }
+</div>

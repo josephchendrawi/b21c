@@ -1,0 +1,231 @@
+﻿@model B21C.Models.ProductVM
+@{
+    ViewBag.Title = "Edit Product";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Edit Product }
+
+@Html.Partial("_Kendo")
+
+<div class="row">
+    @using (Html.BeginForm("Edit", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.Stock)
+        
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Product Information</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.CategoryId)
+                        @(Html.Kendo().DropDownListFor(m => m.CategoryId)
+                            .HtmlAttributes(new { @style = "width: 100%" })
+                            .DataTextField("FullPathName")
+                            .DataValueField("CategoryId")
+                            .DataSource(source => source
+                                .Custom()
+                                .Transport(transport => transport
+                                    .Read(read => read.Action("ProductCategoryList_DDL", "ProductCategory", new { ExcludeCategoryId = Model.Id }))
+                                )
+                            )
+                        )
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Name)
+                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.ProductCode)
+                        @Html.TextBoxFor(m => m.ProductCode, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.ModalPrice) (Rp.)
+                        @Html.TextBoxFor(m => m.ModalPrice, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Price) (Rp.)
+                        @Html.TextBoxFor(m => m.Price, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Sales) (Rp.)
+                        @Html.CheckBoxFor(m => m.Sales, new { @class = "square" })
+                        @Html.LabelFor(m => m.SpecialPromo) (Rp.)
+                        @Html.CheckBoxFor(m => m.SpecialPromo, new { @class = "square" })
+                        @Html.TextBoxFor(m => m.SalesDiscount, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Point)
+                        @Html.TextBoxFor(m => m.Point, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Weight) (gram)
+                        @Html.TextBoxFor(m => m.Weight, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Stock)
+                        <div>
+                            @Model.Stock <button class="btn btn-sm btn-flat btn-primary" onclick="$('#form-stock').show(); return false;"><i class="fa fa-pencil"></i> Change</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OldStock)
+                        @Html.TextBoxFor(m => m.OldStock, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Size)
+                        @Html.TextBoxFor(m => m.Size, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Description)
+                        @Html.TextAreaFor(m => m.Description, new { @class = "form-control", @rows = 4, @style = "resize:vertical;" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.PublishAt)
+                        @(Html.Kendo().DatePickerFor(m => m.PublishAt).Format("dd/MM/yyyy")
+                          .HtmlAttributes(new { style = "width: 100%", title = "datepicker" })
+                        )
+                    </div>
+                </div><!-- /.box-body -->
+
+                <div class="box-footer text-right">
+                    <input type="submit" class="btn btn-flat btn-primary" value="Submit" />
+                </div>
+            </div><!-- /.box -->
+        </div>
+    }
+
+    <div class="col-md-6">
+        @using (Html.BeginForm("Edit_AddImage", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.HiddenFor(m => m.Id)
+
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Image</h3>
+                    <span class="pull-right"><a href="@Url.Action("ArrangeImage", "Product", new { Id = Model.Id })" class="btn btn-sm btn-flat btn-primary"><i class="fa fa-long-arrow-up"></i><i class="fa fa-long-arrow-down"></i> Arrange Image Order</a></span>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        @foreach (var v in Model.ProductImages)
+                        {
+                            <div class="img-wrapper">
+                                <a href="@Url.Action("Edit_DeleteImage", "Product", new { ProductId = Model.Id, ProductImageId = v.Id })" onclick="return confirm('Are you sure to delete this?')">
+                                    <span class="fa fa-minus-circle close"></span>
+                                </a>
+                                <a href="@Constant.UploadPath@v.URL" class="fancybox" title="@v.URL">
+                                    <div class="img-box-round">
+                                        <img src="@Constant.UploadPath@v.URL" class="img-responsive-flex img-center" />
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                        <div class="line"></div>
+                        <div class="col-md-12">
+                            <div id="files-info" class="tabs-infobox">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <input type="file" name="file" id="file" multiple="multiple" style="display: none;" accept="image/*" />
+                            <span class="btn btn-success btn-flat" id="btn-browse">Add Files</span>
+                            <input type="submit" class="btn btn-flat btn-primary" value="Upload" onclick="return confirm('Are you sure?')" />
+                        </div>
+                    </div>
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        }
+
+        @using (Html.BeginForm("Edit_ProductStock", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.Hidden("ProductId", Model.Id)
+            
+            <div id="form-stock" class="box box-primary" style="display: none;">
+                <div class="box-header">
+                    <h3 class="box-title">Stock</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Stock)
+                        @Html.TextBox("NewStockValue", Model.Stock, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        <label>Remarks</label>
+                        @Html.TextArea("Remarks", new { @class = "form-control" })
+                    </div>
+                </div><!-- /.box-body -->
+                <div class="box-footer">
+                    <input type="submit" class="btn btn-flat btn-primary" value="Submit" onclick="return confirm('Are you sure?')" />
+                </div>
+            </div><!-- /.box -->
+        }
+    </div>
+</div>
+
+@*<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js"></script>
+<script>
+    $('.mask-number').mask("#.##0", { reverse: true });
+</script>*@
+
+<script type="text/javascript">
+    $("#btn-browse").click(function () {
+        $("#file").click();
+    });
+
+    $('#file').change(function () {
+        $('#files-info').html("");
+        var files = $("#file")[0].files;
+        for (var i = 0; i < files.length; i++) {
+            var size;
+            if (files[i].size > 1048576) {
+                size = (files[i].size / 1048576).toFixed(1);
+                size += " MB";
+            }
+            else if (files[i].size > 1024) {
+                size = (files[i].size / 1024).toFixed(1);
+                size += " KB";
+            }
+            else {
+                size = files[i].size;
+                size += " B";
+            }
+
+            var reader = new FileReader();
+            reader.fileName = files[i].name;
+            reader.Size = size;
+            reader.fileType = files[i].name.substring(files[i].name.lastIndexOf('.') + 1);
+            reader.onload = function (e) {
+                var img = "<div class='img-center fa fa-file-text'></div>";
+                var type = e.target.fileType;
+                if (type == "jpg" || type == "jpeg" || type == "png" || type == "gif") {
+                    img = "<img src='" + e.target.result + "' class='img-responsive-flex-landscape img-center' />";
+                }
+                var imghtml = "<div class=\"img-wrapper\">"
+                        + "<a href='" + e.target.result + "' class='fancybox' title='" + e.target.fileName + " - " + e.target.Size + "'>"
+                        + "<div class='img-box-round'>"
+                        + img
+                        + "</div>"
+                        + "</a>"
+                        + "</div>";
+                $('#files-info').append(imghtml);
+            }
+            reader.readAsDataURL(files[i]);
+        }
+    });
+</script>
+
+<!-- Globalization dd/MM/yyyy -->
+<script type="text/javascript" src="@Url.Content("~/Scripts/globalize.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/cultures/globalize.culture.en-AU.js")"></script>
+<script>
+    $(function () {
+        $.validator.methods.date = function (value, element) {
+            Globalize.culture("en-AU");
+            // you can alternatively pass the culture to parseDate instead of
+            // setting the culture above, like so:
+            // parseDate(value, null, "en-AU")
+            return this.optional(element) || Globalize.parseDate(value) !== null;
+        }
+    })
+</script>

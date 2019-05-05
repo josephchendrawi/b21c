@@ -1,0 +1,54 @@
+﻿@{
+    ViewBag.Title = "Survey List";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Survey List }
+
+@Html.Partial("_Kendo")
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-default">
+            <div class="box-body">
+                @(Html.Kendo().Grid<SurveyVM>()
+                .Name("grid")
+                .HtmlAttributes( new { @class = "tbl-grid"})
+                .DataSource(dataSource => dataSource //Configure the Grid data source.
+                    .Ajax() //Specify that Ajax binding is used.
+                    .Read(read => read.Action("SurveyList_Read", "Survey"))
+                    .Events(events => events.Error("error_handler"))
+                )
+                .Columns(columns =>
+                {
+                    columns.Bound(v => v.Name);
+                    columns.Bound(v => v.URL);
+                    columns.Bound(v => v.LastUpdAt).Title("Last Updated").Format("{0:dd/MM/yyyy HH:mm}");
+                    columns.Bound(v => v.Status).Title("Status");
+                    columns.Bound("").Filterable(false).Sortable(false).Width(200).ClientTemplate(
+                        "#if(Status != \"Active\"){# <a class='btn btn-sm btn-success btn-flat' href='" + @Url.Action("Publish", "Survey") + "/#= Id #'><i class='fa fa-play'></i> Publish</a> #}"
+                    + "else{# <a class='btn btn-sm btn-warning btn-flat' href='" + @Url.Action("Hide", "Survey") + "/#= Id #'><i class='fa fa-stop'></i> Stop</a> #}#"
+                    + " <a class='btn btn-sm btn-primary btn-flat' href='" + @Url.Action("Edit", "Survey") + "/#= Id #'><i class='fa fa-pencil'></i> Edit</a>"
+                    + " <a class='btn btn-sm btn-danger btn-flat' href='" + @Url.Action("Delete", "Survey") + "/#= Id #' onclick=\"return confirm('Are you sure to delete this Survey?')\"><i class='fa fa-times'></i></a>"
+                    ).HtmlAttributes(new { @class = "text-right" });
+                })
+                .Scrollable(scroll => scroll.Enabled(true).Height("auto"))
+                .Resizable(resize => resize.Columns(true))
+                .ToolBar(toolBar => toolBar.Template("<a class='btn btn-sm btn-primary btn-flat' href='" + @Url.Action("Add", "Survey") + "'><i class='fa fa-plus'></i> Add Survey</a>"))
+                .Pageable() // Enable paging
+                .Sortable() // Enable sorting
+                .Filterable(f => f.Extra(true)
+                    .Operators(o => o.ForString(s => s.Clear()
+                        .Contains("Contains")
+                        .DoesNotContain("Does not contain")
+                        .IsEqualTo("Is equal to")
+                        .IsNotEqualTo("Is not equal to")
+                        .StartsWith("Starts with")
+                        .EndsWith("Ends with ")
+                    ))
+                )
+                )
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,176 @@
+﻿@model B21C.Models.MyAccountVM
+@{
+    ViewBag.Title = "Akun Saya";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- mail -->
+<div class="mail">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5 account">
+                <div class="text-center">
+                    <div class="account-img">
+                        @if (string.IsNullOrWhiteSpace(Model.MemberStatusPhotoURL))
+                        {
+                            <img src="~/Content/Store/images/no-image.jpg" alt=" " class="img-responsive" />
+                        }
+                        else
+                        {
+                            <img src="@Constant.UploadPath@Model.MemberStatusPhotoURL" alt=" " class="img-responsive" />
+                        }
+                    </div>
+                    <div class="account-status">
+                        <a href="#"><p class="button-black" onclick="open_top_up();">Top Up Saldo</p></a>
+                        <div class="col-md-7">
+                            <p class="title">Saldo</p>
+                            <p>Rp. @(Model.Balance.ToString("N0"))</p>
+                        </div>
+                        <div class="col-md-5">
+                            <p class="title">Point</p>
+                            <p>@Model.Point</p>
+                        </div>
+                        <div class="col-md-12">
+                            <p class="title">Status Member</p>
+                            <p>@Model.MemberStatus</p>
+                            <br/>
+                            <a href="@Url.Action("MemberStatus")" class="button-black"><small>UBAH STATUS</small></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="line-light visible-xs visible-sm"></div>
+            </div>
+            <div class="col-md-6 register">
+                @using (Html.BeginForm("EditAccount", "Home", FormMethod.Post, new { enctype = "multipart/form-data", @class = "signup" }))
+                {
+                    <div class="form-group">
+                        @Html.TextBoxFor(m => m.Name, new { @placeholder = "Nama", required = "" })
+                    </div>
+                    <div class="form-group">
+                        @Html.TextBoxFor(m => m.Email, new { @placeholder = "Email", required = "" })
+                    </div>
+                    <div class="form-group">
+                        @Html.TextBoxFor(m => m.Phone, new { @placeholder = "No. Handphone (optional)" })
+                    </div>
+                    <div class="form-group">
+                        <select name="Gender" id="Gender" style="padding-left: 6px;">
+                            <option value="" disabled selected>Jenis Kelamin (optional)</option>
+                            <option value="Male" @if(Model.Gender == "Male"){<text>selected</text>}>Male</option>
+                            <option value="Female" @if (Model.Gender == "Female") { <text> selected</text>}>Female</option>
+                        </select>
+
+                        <script>
+                            $('#Gender').change(function () {
+                                $(this).removeClass("unselected");
+                            });
+                        </script>
+                    </div>
+                    <div class="form-group">
+                        @Html.TextBoxFor(m => m.BirthDate, new { @placeholder = "Tanggal Lahir (optional)" })
+
+                        <script>
+                            $(function () {
+                                $('#BirthDate').mask('00/00/0000');
+                            })
+
+                            $('#BirthDate').focus(function () {
+                                $(this).attr('placeholder', 'dd/MM/yyyy')
+                            }).blur(function () {
+                                $(this).attr('placeholder', 'Tanggal Lahir (optional)')
+                            })
+                        </script>
+                    </div>
+                    <div class="line-light"></div>
+                    <div class="form-group">
+                        @Html.PasswordFor(m => m.Password, new { @placeholder = "Password Baru (isi untuk mengubah)" })
+                    </div>
+                    <div class="form-group">
+                        @Html.PasswordFor(m => m.ConfirmPassword, new { @placeholder = "Konfirmasi Password" })
+                    </div>
+                    <div class="sign-up form-group text-left">
+                        <input type="submit" value="Ubah Data">
+                    </div>
+                }
+            </div>   
+            <div class="clearfix"> </div>
+        </div>
+        <br />
+        <div>
+            <div class="col-md-12 line-light"></div>
+            <div class="col-md-12">
+                <h2>Alamat</h2>
+                <br/>
+            </div>
+            <div class="col-md-12 address row">
+                @foreach (var v in Model.AddressBookList)
+                {                    
+                    <div class="col-md-3 addr-item">
+                        <div onclick="">
+                            <div class="pull-right">
+                                <a class="btn btn-sm btn-default" href="@Url.Action("_DeleteAddress")/@v.Id" onclick="return confirm('Apakah Anda pasti ingin menghapus alamat ini?')"><i class="fa fa-trash"></i></a>
+                                <a class="btn btn-sm btn-default" href="#" onclick="open_edit_address('@v.Id');"><i class="fa fa-pencil"></i></a>
+                            </div>
+                            <div class="title">@v.AddressName</div>
+                            <div class="addr">
+                                <div>@v.Receiver - @v.Phone</div>
+                                <div>@v.Address</div>
+                                <div>@v.Subdistrict, @v.City</div>
+                                <div>@v.Postcode</div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="col-md-3 addr-item">
+                    <div onclick="open_add_address();" class="addr-item-add">
+                        <i class="fa fa-plus"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"> </div>
+        </div>
+    </div>
+</div>
+<!-- //mail -->
+
+<!-- FancyBox -->
+<link rel="stylesheet" href="@Url.Content("~/Content/plugins/fancybox/jquery.fancybox.css")">
+<script src='@Url.Content("~/Content/plugins/fancybox/jquery.fancybox.js")'></script>
+<script src='@Url.Content("~/Content/plugins/fancybox/jquery.mousewheel-3.0.6.pack.js")'></script>
+<script>
+    function open_add_address() {
+        $.fancybox.open({
+            padding: 5,
+            href: '@Url.Action("_AddAddress")',
+            type: 'iframe',
+            openSpeed: "fast",
+            beforeClose: function () {
+                var Result = $(".fancybox-iframe").contents().find("#isSuccess").val();
+                if (Result == "true") {
+                    location.reload(true);
+                }
+            }
+        });
+    }
+    function open_edit_address(id) {
+        $.fancybox.open({
+            padding: 5,
+            href: '@Url.Action("_EditAddress")/' + id,
+            type: 'iframe',
+            openSpeed: "fast",
+            beforeClose: function () {
+                var Result = $(".fancybox-iframe").contents().find("#isSuccess").val();
+                if (Result == "true") {
+                    location.reload(true);
+                }
+            }
+        });
+    }
+    function open_top_up() {
+        $.fancybox.open({
+            padding: 5,
+            href: '@Url.Action("_TopUp")',
+            type: 'iframe',
+            openSpeed: "fast",
+        });
+    }
+</script>

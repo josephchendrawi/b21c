@@ -1,0 +1,101 @@
+﻿@model B21C.Models.RoleVM
+@{
+    ViewBag.Title = "Edit Role";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Edit Role }
+
+<div class="row">
+    <div class="col-md-6">
+        @using (Html.BeginForm("Edit", "Role", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.HiddenFor(m => m.Id)
+        
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Role Information</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Name)
+                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                    </div>
+                </div><!-- /.box-body -->
+
+                <div class="box-footer text-right">
+                    <input type="submit" class="btn btn-flat btn-primary" value="Submit" />
+                </div>
+            </div><!-- /.box -->
+        }
+    </div>
+    
+    <div class="col-md-6">
+        @using (Html.BeginForm("UpdateRoleAccess", "Role", FormMethod.Post))
+        {
+            <div class="box box-primary">
+                    <div class="box-header">
+                        <h3 class="box-title">Access Control</h3>
+                    </div><!-- /.box-header -->
+                    <div class="box-body">
+                            @Html.Hidden("RoleId", Model.Id)
+                            <table class="table table-striped" id="tbl-list">
+                                <thead>
+                                    <tr>
+                                        <th class="">Module</th>
+                                        <th class=""><a href="#" onclick="SelectAllByAction('isviewable')">View</a></th>
+                                        <th class=""><a href="#" onclick="SelectAllByAction('isaddable')">Add</a></th>
+                                        <th class=""><a href="#" onclick="SelectAllByAction('iseditable')">Edit</a></th>
+                                        <th class=""><a href="#" onclick="SelectAllByAction('isdeleteable')">Delete</a></th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @foreach (var v in ViewBag.RoleAccesses as List<RoleAccessVM>)
+                                    {
+                                        <tr>
+                                            <td><a href="#" onclick="SelectAllByModule('@v.AccessModule')">@v.AccessModule</a></td>
+                                            <td>
+                                                <input type="checkbox" class="square" id="@v.AccessModule-isviewable" name="@v.AccessModule-isviewable" @if (v.Viewable) { <text> checked</text> } />
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" class="square" id="@v.AccessModule-isaddable" name="@v.AccessModule-isaddable" @if (v.Addable) { <text> checked</text> } />
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" class="square" id="@v.AccessModule-iseditable" name="@v.AccessModule-iseditable" @if (v.Editable) { <text> checked</text> } />
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" class="square" id="@v.AccessModule-isdeleteable" name="@v.AccessModule-isdeleteable" @if (v.Deletable) { <text> checked</text> } />
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                            <script>
+                                function SelectAllByAction(Action) {
+                                    if ($("#tbl-list input[id*='" + Action + "']:checked").length == $("input[id*='" + Action + "']").length) {
+                                        $("#tbl-list input[id*='" + Action + "']").iCheck('uncheck');
+                                    }
+                                    else {
+                                        $("#tbl-list input[id*='" + Action + "']").iCheck('check');
+                                    }
+                                }
+
+                                function SelectAllByModule(Module) {
+                                    if ($("#tbl-list input[id*='" + Module + "']:checked").length == $("input[id*='" + Module + "']").length) {
+                                        $("#tbl-list input[id*='" + Module + "']").iCheck('uncheck');
+                                    }
+                                    else {
+                                        $("#tbl-list input[id*='" + Module + "']").iCheck('check');
+                                    }
+                                }
+                            </script>
+                        </div><!-- /.box-body -->
+                    <div class="box-footer text-right">
+                        <input type="submit" class="btn btn-flat btn-primary" value="Update" />
+                    </div>
+            </div><!-- /.box -->
+        }
+    </div>
+
+</div>

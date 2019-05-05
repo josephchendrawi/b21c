@@ -1,0 +1,38 @@
+﻿@model B21C.Models.ProductStockActivityVM
+@{
+    ViewBag.Title = "Product Stock Activity";
+    Layout = "~/Views/Shared/_Admin_Layout_Empty.cshtml";
+}
+
+@Html.Partial("_Kendo")
+
+@(Html.Kendo().Grid<ProductStockActivityVM>()
+.Name("grid")
+.HtmlAttributes(new { @class = "tbl-grid" })
+.DataSource(dataSource => dataSource //Configure the Grid data source.
+    .Ajax() //Specify that Ajax binding is used.
+    .PageSize(10)
+    .Read(read => read.Action("ProductStockActivityList_Read", "Product", new { ProductId = ViewBag.ProductId }))
+    .Sort(sort => { sort.Add("CreatedAt").Descending(); })
+)
+.Columns(columns =>
+{
+    columns.Bound(v => v.CreatedAt).Format("{0:dd/MM/yyyy HH:mm}").Width(100);
+    columns.Bound(v => v.StockBefore).Width(50);
+    columns.Bound(v => v.StockAfter).Width(50);
+    columns.Bound(v => v.Remarks).Width(300);
+})
+.Scrollable(scroll => scroll.Enabled(true).Height("auto"))
+.Resizable(resize => resize.Columns(true)).Pageable() // Enable paging
+.Sortable() // Enable sorting
+.Filterable(f => f.Extra(true)
+    .Operators(o => o.ForString(s => s.Clear()
+        .Contains("Contains")
+        .DoesNotContain("Does not contain")
+        .IsEqualTo("Is equal to")
+        .IsNotEqualTo("Is not equal to")
+        .StartsWith("Starts with")
+        .EndsWith("Ends with ")
+    ))
+)
+)

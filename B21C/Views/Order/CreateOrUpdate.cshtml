@@ -1,0 +1,155 @@
+﻿@model B21C.Models.CreateOrUpdateOrderVM
+@{
+    ViewBag.Title = "Create or Update Order";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Create or Update Order }
+@section ContentHeader
+{
+    <a href="@Url.Action("Shipment", new { Id = Model.Id })" class="btn btn-sm btn-flat btn-primary pull-right"><i class="fa fa-dollar"></i> Payment Received <i class="fa fa-arrow-right"></i></a>
+}
+
+<div class="row">
+    @using (Html.BeginForm("CreateOrUpdate", "Order", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.HiddenFor(m => m.Id)
+
+        <div class="col-md-3">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Order Information</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.BookedBy)
+                        @Html.TextBoxFor(m => m.BookedBy, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.PaymentMethod)
+                        @{
+                            var PaymentMethodList = new List<SelectListItem>();
+                            PaymentMethodList.Add(new SelectListItem() { Text = "BCA", Value = "BCA" });
+                            PaymentMethodList.Add(new SelectListItem() { Text = "BRI", Value = "BRI" });
+                            PaymentMethodList.Add(new SelectListItem() { Text = "BNI", Value = "BNI" });
+                            PaymentMethodList.Add(new SelectListItem() { Text = "Mandiri", Value = "Mandiri" });
+                            PaymentMethodList.Add(new SelectListItem() { Text = "Cash", Value = "Cash" });
+                        }
+                        @Html.DropDownListFor(m => m.PaymentMethod, PaymentMethodList, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Shipping)
+                        @{
+                            var ShippingList = new List<SelectListItem>();
+                            ShippingList.Add(new SelectListItem() { Text = "JNE" });
+                            ShippingList.Add(new SelectListItem() { Text = "JNE CTC" });
+                            ShippingList.Add(new SelectListItem() { Text = "JNE CTCOKE" });
+                            ShippingList.Add(new SelectListItem() { Text = "JNE OKE" });
+                            ShippingList.Add(new SelectListItem() { Text = "JNE REG" });
+                            ShippingList.Add(new SelectListItem() { Text = "JNE YES" });
+                            ShippingList.Add(new SelectListItem() { Text = "JNT" });
+                            ShippingList.Add(new SelectListItem() { Text = "JNT EZ" });
+                            ShippingList.Add(new SelectListItem() { Text = "JNT Shopee" });
+                            ShippingList.Add(new SelectListItem() { Text = "Pos" });
+                            ShippingList.Add(new SelectListItem() { Text = "Pos Express Next Day Barang" });
+                            ShippingList.Add(new SelectListItem() { Text = "Pos Paket Kilat Khusus" });
+                            ShippingList.Add(new SelectListItem() { Text = "Pos Surat Kilat Khusus" });
+                            ShippingList.Add(new SelectListItem() { Text = "Tiki" });
+                            ShippingList.Add(new SelectListItem() { Text = "Tiki ECO" });
+                            ShippingList.Add(new SelectListItem() { Text = "Tiki REG" });
+                            ShippingList.Add(new SelectListItem() { Text = "Tiki TDS" });
+                            ShippingList.Add(new SelectListItem() { Text = "Lion Parcel" });
+                            ShippingList.Add(new SelectListItem() { Text = "COD" });
+                            ShippingList.Add(new SelectListItem() { Text = "Others" });
+                        }
+                        @Html.DropDownListFor(m => m.Shipping, ShippingList, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.ShippingFee) (Rp.)
+                        @Html.TextBoxFor(m => m.ShippingFee, new { @class = "form-control" })
+                    </div>
+                    @if (AccessControl.IsAccessable((long)Session["Id"], AccessModule.Order_EditDiscount))
+                    {
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Discount) (Rp.)
+                            @Html.TextBoxFor(m => m.Discount, new { @class = "form-control" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.AdditionalDiscount) (Rp.)
+                            @Html.TextBoxFor(m => m.AdditionalDiscount, new { @class = "form-control" })
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Discount) (Rp.)
+                            @Html.TextBoxFor(m => m.Discount, new { @class = "form-control", @readonly = true })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.AdditionalDiscount) (Rp.)
+                            @Html.TextBoxFor(m => m.AdditionalDiscount, new { @class = "form-control", @readonly = true })
+                        </div>
+                    }
+                </div><!-- /.box-body -->
+
+                <div class="box-footer text-right">
+                    <input type="submit" class="btn btn-flat btn-primary" value="Submit" />
+                </div>
+            </div><!-- /.box -->
+        </div>
+    }
+
+    @*Only for Edit/Update*@
+    @if (Model.Id != 0)
+    {
+        <div class="col-md-5">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Selected Product</h3>
+                    <br/>
+                    Total Weight : @Model.ProductList.Sum(m => (m.Weight * m.Quantity)).ToString("N0") gram(s)
+                    <div class="pull-right">
+                        <a class='btn btn-sm btn-primary btn-flat' href='@Url.Action("AddProduct", "Order", new { Id = Model.Id })'><i class='fa fa-plus'></i> Add Product</a>
+                    </div>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <table id="tbl-chosen-product" class="table table-bordered table-striped table-responsive table-hover">
+                        <thead class="text-bold">
+                            <tr>
+                                <td>Name</td>
+                                <td>Price</td>
+                                <td>Weight</td>
+                                <td>Quantity</td>
+                                <td></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var v in Model.ProductList)
+                            {
+                                <tr>
+                                    <td>@v.Name</td>
+                                    <td class='text-right'>@v.Price</td>
+                                    <td class='text-right'>@v.Weight</td>
+                                    <td>@v.Quantity</td>
+                                    <td class="text-right">
+                                        <a class='btn btn-sm btn-primary btn-flat' href='#' onclick="update_order_product('@v.OrderProductId');" title='Update'><i class='fa fa-pencil'></i></a>
+                                        <a class='btn btn-sm btn-primary btn-flat' href='@Url.Action("RemoveProduct", "Order", new { OrderProductId = v.OrderProductId })' title='Remove' onclick="return confirm('Are you sure to remove this product from this order?')"><i class='fa fa-times'></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div>
+        <script type="text/javascript">
+            function update_order_product(order_product_id) {
+                $.fancybox.open({
+                    padding: 10,
+                    href: '@Url.Action("_UpdateProduct")?OrderProductId=' + order_product_id,
+                    type: 'iframe',
+                    openSpeed: "fast",
+                });
+            }
+        </script>
+    }
+</div>

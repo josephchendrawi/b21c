@@ -1,0 +1,85 @@
+﻿@model B21C.Helper.Waybill
+@{
+    ViewBag.Title = "Tracking";
+    Layout = null;
+}
+
+<link href='http://fonts.googleapis.com/css?family=Glegoo:400,700' rel='stylesheet' type='text/css'>
+
+@if (Model == null)
+{
+    <h3 style="text-align:center;">No. Resi masih belum terdaftar.</h3>
+}
+else
+{
+    <table>
+        <tr>
+            <td>
+                <h3><b>Expedition</b></h3>
+            </td>
+            <td>
+                <h3><b>Status</b></h3>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h3><b style="color: #f77373;">@Model.summary.courier_name @Model.summary.service_code</b></h3>
+            </td>
+            <td>
+                <h3><b style="color: #f77373;">@Model.delivery_status.status</b></h3>
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Date Time</th>
+                <th>Status Detail</th>
+                <th>Location</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var v in Model.manifest)
+            {
+                <tr>
+                    <td>
+                        <div>@v.manifest_date @v.manifest_time</div>
+                    </td>
+                    <td>
+                        <div><b style="color: #f77373;">@v.manifest_description</b></div>
+                    </td>
+                    <td>
+                        <div>@v.city_name</div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<style>    
+    body{
+        font-family: 'Glegoo', serif;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        border: 1px solid #dbdbdb;
+    }
+
+    th, td {
+        text-align: left;
+        padding: 7px;
+        font-size: 14px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    th {
+        background-color: #f77373;
+        color: white;
+    }
+</style>

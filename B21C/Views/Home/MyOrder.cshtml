@@ -1,0 +1,238 @@
+﻿@model B21C.Models.MyOrderVM
+@{
+    ViewBag.Title = "Belanjaanku";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- FancyBox -->
+<link rel="stylesheet" href="@Url.Content("~/Content/plugins/fancybox/jquery.fancybox.css")">
+<script src='@Url.Content("~/Content/plugins/fancybox/jquery.fancybox.js")'></script>
+<script src='@Url.Content("~/Content/plugins/fancybox/jquery.mousewheel-3.0.6.pack.js")'></script>
+
+<div class="container" style="max-width: 992px;">
+    <div class="row order-status-list">
+        <a href="@Url.Action("MyOrder", new { Status = "PendingPayment" })" class="col-xs-2 text-center order-status @if(Model.Status == "PendingPayment"){<text>selected</text>}" style="width: 20%;"><i class='fa fa-dollar'></i> <span class="hidden-sm hidden-xs">Belum Dibayar</span></a>
+        <a href="@Url.Action("MyOrder", new { Status = "PrepareShipment" })" class="col-xs-2 text-center order-status @if(Model.Status == "PrepareShipment"){<text>selected</text>}" style="width: 20%;"><i class='fa fa-spinner'></i> <span class="hidden-sm hidden-xs">Belum Dikirimkan</span></a>
+        <a href="@Url.Action("MyOrder", new { Status = "Shipped" })" class="col-xs-2 text-center order-status @if(Model.Status == "Shipped"){<text>selected</text>}" style="width: 20%;"><i class='fa fa-truck'></i> <span class="hidden-sm hidden-xs">Sedang Dikirim</span></a>
+        <a href="@Url.Action("MyOrder", new { Status = "Completed" })" class="col-xs-2 text-center order-status @if(Model.Status == "Completed"){<text>selected</text>}" style="width: 20%;"><i class='fa fa-check-square-o'></i> <span class="hidden-sm hidden-xs">Selesai</span></a>
+        <a href="@Url.Action("MyOrder", new { Status = "Canceled" })" class="col-xs-2 text-center order-status @if(Model.Status == "Canceled"){<text>selected</text>}" style="width: 20%;"><i class='fa fa-times'></i> <span class="hidden-sm hidden-xs">Batal</span></a>
+    </div>
+    <div class="clearfix"> </div>
+    <div class="row">
+        @foreach (var v in Model.OrderList)
+        {
+            <div class="col-sm-12">
+                <div class="single order-item" style="padding: 25px 0;">
+                    <div class="box-header">
+                        Kode Order : @v.OrderCode
+                        @if (Model.Status == "PendingPayment")
+                        {
+                            <span>( Akan di-Cancel pada @v.ExpirationDate.Value.ToString("dd MMM yyyy HH:mm") )</span>
+                        }
+                        <div class="pull-right">
+                            @v.CreatedAt.Value.ToString("dd MMM yyyy")
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <div class="row order-item-info">
+                            <div class="col-sm-6 col-xs-6">
+                                <div><b>Pengirim</b></div>
+                                <div>@v.Sender</div>
+                                <div class="gap"></div>
+                                <div><b>Penerima</b></div>
+                                <div>@v.Receiver</div>
+                                <div class="gap"></div>
+                                <div><b>Alamat Tujuan</b></div>
+                                <div>@v.Address</div>
+                                <div>@v.City, @v.Subdistrict</div>
+                                <div>@v.ContactNo</div>
+                            </div>
+                            <div class="col-sm-3 col-xs-6">
+                                <div><b>Metode Pembayaran</b></div>
+                                <div>@v.PaymentMethod</div>
+                                <div class="gap"></div>
+                                @if (v.PaymentMethod != "Balance" && Model.Status == "PendingPayment")
+                                {
+                                    <div><b>No. Rekening Pembayaran</b></div>
+                                    <div>
+                                        @switch (v.PaymentMethod)
+                                        {
+                                            case "BCA":
+                                                <div>3400056632</div>
+                                                break;
+
+                                            case "BRI":
+                                            <div>551301014739532</div>
+                                                break;
+
+                                            case "BNI":
+                                            <div>0204068060</div>
+                                                break;
+
+                                            case "Mandiri":
+                                            <div>9000032554850</div>
+                                                break;
+                                        }
+                                    </div>
+                                    <div class="gap"></div>
+                                }
+                                <div><b>Berat</b></div>
+                                <div>@((v.TotalWeight ?? 0).ToString("n0")) g</div>
+                                <div class="gap"></div>
+                                <div><b>Ekspedisi Pengiriman</b></div>
+                                <div>@v.Shipping</div>
+                                @if (!string.IsNullOrWhiteSpace(v.TrackingNo))
+                                {
+                                    <div class="gap"></div>
+                                    <div><b>No. Resi</b></div>
+                                    <div>@v.TrackingNo</div>
+                                }
+                            </div>
+                            <div class="col-sm-3 col-xs-6">
+                                <div><b>Harga Barang</b></div>
+                                <div>Rp. @((v.TotalPrice ?? 0).ToString("n0"))</div>
+                                <div class="gap"></div>
+                                <div><b>Biaya Pengiriman</b></div>
+                                <div>Rp. @((v.ShippingFee ?? 0).ToString("n0"))</div>
+                                <div class="gap"></div>
+                                <div><b>Total</b></div>
+                                <div>Rp. @((v.GrandTotal ?? 0).ToString("n0"))</div>
+                            </div>
+                            
+                            @if (Model.Status == "PendingPayment")
+                            {
+                                <div class="col-sm-12 col-xs-12 text-right">
+                                    <div class="gap"></div>
+                                    @if (v.ReceivedPaymentConfirmation == null)
+                                    {
+                                        <a href="@Url.Action("SendPaymentConfirmation", new { OrderId = v.Id })" class="button-black" onclick="return confirm('Apakah Anda yakin untuk Konfirmasi Pembayaran ini?');">Konfirmasi Pembayaran</a>
+                                    }
+                                    else
+                                    {
+                                        <a class="button-black disabled">Pembayaran Telah Dikonfirmasi</a>
+                                    }
+                                    <a href="@Url.Action("CancelOrder", new { OrderId = v.Id })" class="button-black" onclick="return confirm('Apakah Anda yakin untuk Batal Pesanan ini?');"><i class='fa fa-times'></i> Batal Pesanan</a>
+                                    <div class="gap"></div>
+                                </div>
+                            }
+                            else if (Model.Status == "Shipped")
+                            {
+                                <div class="col-sm-12 col-xs-12 text-right">
+                                    <div class="gap"></div>
+                                    <button id="btn-track-package" class="button-black">Lacak</button>
+                                    <a href="@Url.Action("DeliveredOrder", new { OrderId = v.Id })" class="button-black" onclick="return confirm('Apakah Anda yakin Pesanan ini Telah Diterima?');"><i class='fa fa-check-square-o'></i> Pesanan Telah Diterima</a>
+                                    <div class="gap"></div>
+                                </div>
+
+                                <script>
+                                    $("#btn-track-package").click(function () {
+                                        $.fancybox.open({
+                                            padding: 10,
+                                            href: '@Url.Action("_Tracking","Home")?courier=@v.Shipping&trackingno=@v.TrackingNo.Trim()',
+                                            type: 'iframe',
+                                            openSpeed: "fast",
+                                        });
+                                        return false;
+                                    });
+                                </script>
+                            }
+                        </div>
+                        <div class="text-right"><div class="gap"></div><span class="btn-show-details" id="btn-show-details-@v.Id" onclick="toggle_details('@v.Id')">Tampilkan Detil <i class="fa fa-caret-square-o-down"></i></span></div>
+                        <script>
+                            function toggle_details(order_id) {
+                                $('#order-item-details-' + order_id).toggle();
+                                if ($('#order-item-details-' + order_id).is(":visible"))
+                                {
+                                    $('#btn-show-details-' + order_id).html('Sembunyikan <i class="fa fa-caret-square-o-up"></i>');
+                                }
+                                else {
+                                    $('#btn-show-details-' + order_id).html('Tampilkan Detil <i class="fa fa-caret-square-o-down"></i>');
+                                }
+                            }
+                        </script>
+                        <div class="row" id="order-item-details-@v.Id" style="display: none;">
+                            <div class="line-light"></div>
+                            <div class="col-sm-12">
+                                <div style="font-size: 14px;"><b>Daftar Produk</b></div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-striped tbl-cart">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Produk</th>
+                                                <th>Kuantitas</th>
+                                                <th>Nama</th>
+                                                <th>Berat Satuan</th>
+                                                <th>Harga Satuan</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{int i = 1;}
+                                            @foreach (var op in v.ProductList)
+                                            {
+                                                <tr id="row-@op.ProductId">
+                                                    <td scope="row">@i</td>
+                                                    <td><a href="#"><img src="@(Constant.UploadPath)thumb_@op.MainProductImage" alt=" " class="img-responsive" /></a></td>
+                                                    <td>
+                                                        @op.Quantity
+                                                    </td>
+                                                    <td>@op.Name</td>
+                                                    <td>@op.Weight.ToString("N0") g</td>
+                                                    <td>Rp. @op.Price.ToString("N0")</td>
+                                                </tr>
+                                                i++;
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"> </div>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (Model.OrderList.Count() <= 0)
+        {
+            <div class="empty-order">
+                <i class="fa fa-times"></i>
+                <br />
+                Anda tidak memiliki Orderan yang
+                <br />
+                <a href="#">
+                    @if (Model.Status == "PendingPayment")
+                    {
+                        <span>Belum Dibayar</span>
+                    }
+                    else if (Model.Status == "PrepareShipment")
+                    {
+                        <span>Belum Dikirimkan</span>
+                    }
+                    else if (Model.Status == "Shipped")
+                    {
+                        <span>Sedang Dikirim</span>
+                    }
+                    else if (Model.Status == "Completed")
+                    {
+                        <span>Selesai</span>
+                    }
+                    else if (Model.Status == "Canceled")
+                    {
+                        <span>Batal</span>
+                    }
+                </a>
+            </div>
+        }
+    </div>
+    <div class="clearfix"><br /></div>
+    <div class="row">
+        @if (Model.havePrevious)
+        { 
+            <div class="pull-left"><a class="button-black" href="@Url.Action("MyOrder", new { Status = Model.Status, Page = (Model.Page - 1), Size = Model.Size  })"><i class="fa fa-chevron-left"></i></a></div>
+        }
+        @if (Model.haveNext)
+        { 
+            <div class="pull-right"><a class="button-black" href="@Url.Action("MyOrder", new { Status = Model.Status, Page = (Model.Page + 1), Size = Model.Size  })"><i class="fa fa-chevron-right"></i></a></div>
+        }
+    </div>
+    <div class="clearfix"><br /><br /></div>
+</div>

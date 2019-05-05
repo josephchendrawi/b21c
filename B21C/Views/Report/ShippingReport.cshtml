@@ -1,0 +1,187 @@
+﻿@model B21C.Models.ShippingReportVM
+@{
+    ViewBag.Title = "Shipping Report";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Shipping Report }
+
+@Html.Partial("_Kendo")
+
+<div class="row">
+    <div class="col-md-12">    
+        @using (Html.BeginForm("ShippingReport", "Report", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {   
+            <div class="box box-default">
+                <div class="box-body">         
+                    @Html.TextAreaFor(m => m.Note, new { @class = "form-control", rows = "6" })
+                </div>
+                <div class="box-footer text-right">
+                    <input type="submit" class="btn btn-flat btn-primary" value="Save" />
+                </div>
+            </div>
+        }
+    </div>
+    <div class="col-md-12">
+        <div class="box box-default">
+            <div class="box-body">
+                <div class="text-left">
+                    @{
+                        var inMonth = Request.QueryString["inMonth"] ?? DateTime.Now.Month.ToString();
+                        var inYear = Request.QueryString["inYear"] ?? DateTime.Now.Year.ToString();
+                    }
+                    <select id="select-month" class="btn btn-default btn-flat">
+                        @for (int i = 1; i <= 12; i++)
+                        {
+                            <option @if (inMonth == i.ToString()) { <text> selected</text>}>@i</option>
+                        }
+                    </select>
+                    <script>
+                        $('#select-month').on('change', function () {
+                            var inMonth = this.value;
+                            var inYear = $('#select-year option:selected').text();
+
+                            window.location.href = "@Url.Action("ShippingReport", "Report")?inMonth=" + inMonth + "&inYear=" + inYear;
+                        })
+                    </script>
+                    <select id="select-year" class="btn btn-default btn-flat">
+                        @for (int i = DateTime.Now.Year; i >= DateTime.Now.Year - 5; i--)
+                        {
+                            <option @if (inYear == i.ToString()) { <text> selected</text>}>@i</option>
+                        }
+                    </select>
+                    <script>
+                        $('#select-year').on('change', function () {
+                            var inMonth = $('#select-month option:selected').text();
+                            var inYear = this.value;
+
+                            window.location.href = "@Url.Action("ShippingReport", "Report")?inMonth=" + inMonth + "&inYear=" + inYear;
+                        })
+                    </script>
+                </div>
+                <br />
+                @(Html.Kendo().Grid<ShippingReportItem>()
+                .Name("grid")
+                .DataSource(dataSource => dataSource //Configure the Grid data source.
+                    .Ajax() //Specify that Ajax binding is used.
+                    .Read(read => read.Action("ShippingReportList_Read", "Report", new { inMonth = Request.QueryString["inMonth"], inYear = Request.QueryString["inYear"] }))
+                    .Events(events => events.Error("error_handler"))
+                    .PageSize(50)
+                    .Sort(sort => { sort.Add("OrderId").Descending(); })
+                    .Aggregates(aggregates =>
+                    {
+                        aggregates.Add(p => p.ShippingFee).Sum();
+                        aggregates.Add(p => p.TrackingNoCount).Sum();
+                    })
+                )
+                .Columns(columns =>
+                {
+                    columns.Bound(v => v.OrderCode);
+                    columns.Bound(v => v.ShippingDate).Format("{0:dd/MM/yyyy}");
+                    columns.Bound(v => v.TrackingNo).ClientTemplate("#=generateTrackingNo(TrackingNo)#");
+                    columns.Bound(v => v.TrackingNoCount).Title("T-No. Count").Filterable(false).Sortable(false).HtmlAttributes(new { @class = "text-right" })
+                        .ClientFooterTemplate("<div class='text-right' id='Total_TrackingNoCount'>#=kendo.toString(sum,'n0')#</div>");
+                    columns.Bound(v => v.Sender);
+                    columns.Bound(v => v.Receiver);
+                    columns.Bound(v => v.ShippingMethod);
+                    columns.Bound(v => v.ShippingFee).HtmlAttributes(new { @class = "text-right" })
+                        .ClientFooterTemplate("<div class='text-right' id='Total_ShippingFee'>#=kendo.toString(sum,'n0')#</div>");
+                })
+                .Scrollable(scroll => scroll.Enabled(true).Height("auto"))
+                .Resizable(resize => resize.Columns(true))
+                .Pageable(pageable => pageable.ButtonCount(5)) // Enable paging
+                .Sortable() // Enable sorting
+                .Filterable(f => f.Extra(true)
+                    .Operators(o => o.ForString(s => s.Clear()
+                        .Contains("Contains")
+                        .DoesNotContain("Does not contain")
+                        .IsEqualTo("Is equal to")
+                        .IsNotEqualTo("Is not equal to")
+                        .StartsWith("Starts with")
+                        .EndsWith("Ends with ")
+                    ))
+                )
+                .Events(e => e.DataBound("onDataBound"))
+                .Excel(excel => excel
+                    .FileName("Shipping_Report_" + DateTime.Now.ToString("dd-MM-yyyy") + ".xlsx")
+                    .Filterable(true)
+                    .AllPages(true)
+                    .ProxyURL(Url.Action("KendoExcelSave", "Admin"))
+                )
+                .ToolBar(tools => tools.Excel())
+                .Events(e => e.ExcelExport("onExcelExport"))
+                )
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function generateTrackingNo(TrackingNo_strings) {
+        if (TrackingNo_strings != null) {
+            var regexp = new RegExp('\n', 'g');
+            return TrackingNo_strings.replace(regexp, '<br\>');
+        }
+    }
+</script>
+
+<style>
+    .k-grid-footer
+    {
+        padding-right: 0 !important;
+    }
+    .k-grid-content .list-group
+    {
+        margin-bottom: 0;
+    }
+    .k-grid-content .list-group-item
+    {
+        background-color: transparent;
+        padding: 5px 0;
+        border: none;
+        border-bottom: 1px solid #ddd;
+    }
+    .k-grid-content .list-group .list-group-item:last-child
+    {
+        border: none;
+    }
+</style>
+
+<script>
+    function onExcelExport(e) {
+        var rows = e.workbook.sheets[0].rows;
+
+        for (var ri = 0; ri < rows.length; ri++) {
+            var row = rows[ri];
+
+            if (row.type == "group-footer" || row.type == "footer") {
+                for (var ci = 0; ci < row.cells.length; ci++) {
+                    var cell = row.cells[ci];
+                    if (cell.value) {
+                        // Use jQuery.fn.text to remove the HTML and get only the text
+                        cell.value = $(cell.value).text();
+                        // Set the alignment
+                        cell.hAlign = "right";
+                    }
+                }
+            }
+        }
+    }
+
+    function onDataBound(e) {
+        var grid = $("#grid").data("kendoGrid");
+        if (is_touch_device()) {
+            for (var i = 0; i < grid.columns.length; i++) {
+                grid.autoFitColumn(i);
+            }
+        }
+    }
+</script>
+
+@*<!-- CK Editor -->
+<script src="//cdn.ckeditor.com/4.4.3/standard/ckeditor.js"></script>
+<script type="text/javascript">
+    $(function () {
+        CKEDITOR.replace('Note');
+    });
+</script>*@

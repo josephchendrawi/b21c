@@ -1,0 +1,92 @@
+﻿@model B21C.Models.CategoryProductPageVM
+@{
+    ViewBag.Title = Model.CategoryName;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="new-products">
+    <div class="container">
+        <h3>@Model.CategoryName</h3>
+
+        <div class="row">
+            <div class="col-xs-12 text-right">
+                <select id="select-pagesize" class="btn btn-default btn-flat">
+                    <option @if (Model.Size == 12) { <text> selected</text>}>12</option>
+                    <option @if (Model.Size == 24) { <text> selected</text>}>24</option>
+                    <option @if (Model.Size == 48) { <text> selected</text>}>48</option>
+                    <option @if (Model.Size == 72) { <text> selected</text>}>72</option>
+                </select>
+
+                <script>
+                    $('#select-pagesize').on('change', function () {
+                        window.location.href = "@Url.Action("CategoryProducts", "Home")?Id=@(Model.CategoryId)Page=1&Size=" + this.value;
+                    })
+                </script>
+            </div>
+
+            <div class="clearfix"> </div>
+        </div>
+
+        <div class="agileinfo_new_products_grids">
+            @foreach (var v in Model.ProductList)
+            { 
+                <div class="col-md-3 agileinfo_new_products_grid">
+                    <div class="agile_ecommerce_tab_left agileinfo_new_products_grid1">
+                        <div class="hs-wrapper hs-wrapper1 @if(v.Stock <= 0){ <text>soldout</text> }">
+                            @for (int i = 0; i < 6; i++)
+                            {
+                                if (!string.IsNullOrWhiteSpace(v.MainProductImage))
+                                {
+                                    <img src="@(Constant.UploadPath)thumb_@v.MainProductImage" alt=" " class="img-responsive" />
+                                }
+                                else
+                                {
+                                    <img src="~/Content/Store/images/no-image.jpg" alt=" " class="img-responsive" />
+                                }
+                            }
+                            <div class="w3_hs_bottom w3_hs_bottom_sub">
+                                <ul>
+                                    <li>
+                                        <a href="@Url.Action("Product","Home")/@v.Id" data-toggle="modal" data-target=""><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="hs-download hs-download1">
+                            <a download="@v.MainProductImage" href="@(Constant.UploadPath)@v.MainProductImage"><p class="button-black">SIMPAN FOTO</p></a>
+                        </div>
+                        <h5><a href="@Url.Action("Product","Home")/@v.Id">@v.Name</a></h5>
+                        <div class="stock-status">                              
+                            @if (v.Stock > 0)
+                            {
+                                <span>Tersedia</span>
+                            }
+                            else
+                            {
+                                <span class="soldout">STOK HABIS</span>
+                            }
+                        </div>
+                        <div class="simpleCart_shelfItem">
+                            <p>@if (v.Sales)
+                            { <span>Rp. @((v.Price ?? 0).ToString("N0"))</span> } <i class="item_price">Rp. @((v.TotalPrice).ToString("N0"))</i></p>
+                            <p><a class="@if(v.Stock <= 0){ <text>disabled</text> }" href="@Url.Action("Product", "Home")/@v.Id"><i class="fa fa-plus-circle"></i> Beli</a></p>
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="clearfix"> </div>
+        </div>
+
+        <nav class="in">
+            <ul class="pagination">
+                <li @if (!Model.havePrevious) { <text> class="disabled no-event" </text>  }><a href="@Url.Action("CategoryProducts", "Home", new { Id = Model.CategoryId, Page = Model.Page - 1, Size = Model.Size, Query = Model.Query, OrderBy = Model.OrderBy, OrderDir = Model.OrderDir })" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                @foreach (var v in Model.AvailablePage)
+                {
+                    <li @if (Model.Page == v) { <text> class="active" </text>   }><a href="@Url.Action("CategoryProducts", "Home", new { Id = Model.CategoryId, Page = v, Size = Model.Size, Query = Model.Query, OrderBy = Model.OrderBy, OrderDir = Model.OrderDir })">@v <span class="sr-only"></span></a></li>
+                }
+                <li @if (!Model.haveNext) { <text> class="disabled no-event" </text>    }> <a href="@Url.Action("CategoryProducts", "Home", new { Id = Model.CategoryId, Page = Model.Page + 1, Size = Model.Size, Query = Model.Query, OrderBy = Model.OrderBy, OrderDir = Model.OrderDir })" aria-label="Next"><span aria-hidden="true">»</span> </a> </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+

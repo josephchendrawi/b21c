@@ -1,0 +1,103 @@
+﻿@model B21C.Models.CheckOutPaymentVM
+@{
+    ViewBag.Title = "Check Out";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- checkout -->
+<div class="container">
+    @using (Html.BeginForm("CheckOutPayment", "Home", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return validate_checkout_form();" }))
+    {
+        <div class="row">
+            <div class="col-sm-6 col-sm-offset-3">
+                <div class="special-deals" style="padding-top: 25px; padding-bottom: 0px;">
+                    <div class="box-header">Metode Pembayaran</div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="payment-method">
+                                    @Html.HiddenFor(m => m.PaymentMethod)
+                                    <div class="row">
+                                        <div class="col-xs-6 payment-item">
+                                            <div class="text-center" id="pm-bca">
+                                                <img class="img-responsive" src="~/Content/Store/images/bca.png" />
+                                                <input type="text" class="form-control" readonly required />
+                                                <span class="hidden">BCA</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-6 payment-item">
+                                            <div class="text-center" id="pm-mandiri">
+                                                <img class="img-responsive" src="~/Content/Store/images/mandiri.png" />
+                                                <input type="text" class="form-control" readonly required />
+                                                <span class="hidden">Mandiri</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-6 payment-item">
+                                            <div class="text-center" id="pm-bri">
+                                                <img class="img-responsive" src="~/Content/Store/images/bri.png" />
+                                                <input type="text" class="form-control" readonly required />
+                                                <span class="hidden">BRI</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-6 payment-item">
+                                            <div class="text-center" id="pm-bni">
+                                                <img class="img-responsive" src="~/Content/Store/images/bni.png" />
+                                                <input type="text" class="form-control" readonly required />
+                                                <span class="hidden">BNI</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <script>
+                                        $('.payment-item div').click(function (event) {
+                                            $('.payment-item div').removeClass("selected");
+                                            $('.payment-item div input').attr("readonly", "");
+                                            $('.payment-item div input').removeAttr("placeholder");
+                                            $('.payment-item div input').val("");
+                                            $('.payment-item div input').attr("name", "");
+
+                                            $("#" + $(this).attr('id')).addClass("selected");
+                                            $("#" + $(this).attr('id') + " input").removeAttr("readonly");
+                                            $("#" + $(this).attr('id') + " input").attr("placeholder", "Nama Pemilik Rekening");
+                                            $("#" + $(this).attr('id') + " input").focus();
+                                            $("#" + $(this).attr('id') + " input").attr("name", "BankAccountName");
+                                            $("#PaymentMethod").val($("#" + $(this).attr('id') + " span").html());
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div>
+                    <button type="submit" class="button-black" style="padding: 10px 20px !important; float: right; margin-bottom: 25px;">LANJUT <span class="fa fa-angle-right"></span></button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<!-- //checkout -->
+<!-- FancyBox -->
+<link rel="stylesheet" href="@Url.Content("~/Content/plugins/fancybox/jquery.fancybox.css")">
+<script src='@Url.Content("~/Content/plugins/fancybox/jquery.fancybox.js")'></script>
+<script src='@Url.Content("~/Content/plugins/fancybox/jquery.mousewheel-3.0.6.pack.js")'></script>
+
+<style>
+    .row {
+		margin-right: -15px !important;
+        margin-left: -15px !important;
+	}
+
+    input[readonly], textarea[readonly], select[disabled] {
+        background-color: #eee !important;
+    }
+</style>
+
+<script>
+    function validate_checkout_form() {
+        if ($('#PaymentMethod').val() == "") {
+            alert("Silahkan pilih Metode Pembayaran.");
+            return false;
+        }
+    }
+</script>

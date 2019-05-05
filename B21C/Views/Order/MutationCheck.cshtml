@@ -1,0 +1,194 @@
+﻿@model B21C.Models.MutationCheckVM
+@{
+    ViewBag.Title = "Mutation Check";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Order Details }
+
+@Html.Partial("_Kendo")
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            @using (Html.BeginForm("MutationCheck", "Order", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div class="box-header">
+                    <h3 class="box-title">Mutation Check</h3>
+                    <div class="pull-right">
+                        @(Html.Kendo().DatePickerFor(m=>m.PrepareShipmentDate).Format("dd/MM/yyyy"))
+                        <input type="submit" class="btn btn-flat btn-primary btn-sm" value="Upload" />
+                    </div>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <h4>BCA</h4>
+                            <input type="file" id="bca" name="bca" />
+                        </div>
+                        <div class="col-sm-4">
+                            <h4>Mandiri</h4>
+                            <input type="file" id="mandiri" name="mandiri" />
+                        </div>
+                        <div class="col-sm-4">
+                            <h4>BRI</h4>
+                            <input type="file" id="bri" name="bri" />
+                        </div>
+                    </div>
+                    <div class="line-light"></div>
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            @if (Model.BCAMutation.Count() > 0)
+                            {
+                                <table class="table table-bordered table-responsive table-striped table-hover table-condensed">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Description</th>
+                                            <th>Credit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var v in Model.BCAMutation)
+                                        {
+                                            <tr>
+                                                <td>@v.Date</td>
+                                                <td>@v.TransactionDescription</td>
+                                                <td>@v.Credit.Value.ToString("n0")</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                        </div>
+                        <div class="col-sm-4">
+                            @if (Model.MandiriMutation.Count() > 0)
+                            {
+                                <table class="table table-bordered table-responsive table-striped table-hover table-condensed">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Description</th>
+                                            <th>Credit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var v in Model.MandiriMutation)
+                                        {
+                                            <tr>
+                                                <td>@v.Date</td>
+                                                <td>@v.TransactionDescription</td>
+                                                <td>@v.Credit.Value.ToString("n0")</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                        </div>
+                        <div class="col-sm-4">
+                            @if (Model.BRIMutation.Count() > 0)
+                            {
+                                <table class="table table-bordered table-responsive table-striped table-hover table-condensed">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Description</th>
+                                            <th>Credit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var v in Model.BRIMutation)
+                                        {
+                                            <tr>
+                                                <td>@v.Date</td>
+                                                <td>@v.TransactionDescription</td>
+                                                <td>@v.Credit.Value.ToString("n0")</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                        </div>
+                    </div>
+                </div><!-- /.box-body -->
+            }
+        </div><!-- /.box -->
+
+        @(Html.Kendo().Grid(Model.MutationCheckOrderList)
+            .Name("grid")
+            .Columns(columns =>
+            {
+                columns.Bound(p => p.OrderCode);
+                columns.Bound(p => p.CreatedBy);
+                columns.Bound(p => p.BookedBy);
+                columns.Bound(v => v.GrandTotal).Title("Grand Total (Rp.)").ClientTemplate("<div class='text-right'>#=kendo.toString(GrandTotal,'n0')#</div>");
+                columns.Bound(p => p.UserPaymentAmount).ClientTemplate("<div class='text-right'>#=kendo.toString(UserPaymentAmount,'n0')#</div>");
+                columns.Bound(p => p.PaymentMethod);
+                columns.Bound(p => p.MatchedBank);
+                columns.Bound("").Filterable(false).Sortable(false).Width(120).ClientTemplate(
+                    "<a class='btn btn-sm btn-danger btn-flat' href='" + @Url.Action("Cancel", "Order") + "/#= Id #' title='Cancel' onclick=\"return confirm('Are you sure to Cancel this order?')\"><i class='fa fa-times'></i></a>"
+                    + " <a class='btn btn-sm btn-primary btn-flat' href='" + @Url.Action("Shipped", "Order") + "/#= Id #' title='Shipped' onclick=\"return confirm('Are you sure this Order is shipped?')\"><i class='fa fa-truck'></i></a>"
+                //+ " <a class='btn btn-sm btn-warning btn-flat' href='" + @Url.Action("Shipment", "Order") + "/#= Id #' title='Edit Shipment Info'><i class='fa fa-pencil'></i></a>"
+                ).HtmlAttributes(new { @class = "text-right" });
+            })
+            .Scrollable(scroll => scroll.Enabled(true).Height("auto"))
+            .Resizable(resize => resize.Columns(true))
+            .Pageable(pageable => pageable.ButtonCount(5)) // Enable paging
+            .Sortable() // Enable sorting
+            .Filterable(f => f.Extra(true)
+                .Operators(o => o.ForString(s => s.Clear()
+                    .Contains("Contains")
+                    .DoesNotContain("Does not contain")
+                    .IsEqualTo("Is equal to")
+                    .IsNotEqualTo("Is not equal to")
+                    .StartsWith("Starts with")
+                    .EndsWith("Ends with ")
+                ))
+            )
+            .DataSource(dataSource => dataSource
+                .Ajax()
+                .PageSize(20)
+                .ServerOperation(false)
+            )
+            .Events(m => m.DataBound("onDataBound"))
+            .ClientRowTemplate("")
+            .Excel(excel => excel
+                .FileName("Mutation_Check_" + ViewBag.TableName + "_" + DateTime.Now.ToString("dd-MM-yyyy") + ".xlsx")
+                .Filterable(true)
+                .AllPages(true)
+                .ProxyURL(Url.Action("KendoExcelSave", "Admin"))
+            )
+            .ToolBar(toolBar => toolBar.Template("<a class='k-button k-button-icontext k-grid-excel pull-right' href='#'><span class='k-icon k-i-excel'></span>Export to Excel</a>"))
+        )
+
+        <script>
+            function onDataBound(e) {
+                var grid = $("#grid").data("kendoGrid");
+
+                var items = e.sender.items();
+                items.each(function (index) {
+                    var dataItem = grid.dataItem(this);
+
+                    if (dataItem.MatchedBank != null && dataItem.MatchedBank != "") {
+                        this.className += " k-state-selected";
+                    }
+                })
+            }
+        </script>
+    </div>
+</div>
+
+<!-- Globalization dd/MM/yyyy -->
+<script type="text/javascript" src="@Url.Content("~/Scripts/globalize.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/cultures/globalize.culture.en-AU.js")"></script>
+<script>
+    $(function () {
+        $.validator.methods.date = function (value, element) {
+            Globalize.culture("en-AU");
+            // you can alternatively pass the culture to parseDate instead of
+            // setting the culture above, like so:
+            // parseDate(value, null, "en-AU")
+            return this.optional(element) || Globalize.parseDate(value) !== null;
+        }
+    })
+</script>

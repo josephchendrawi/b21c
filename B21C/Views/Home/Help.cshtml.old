@@ -1,0 +1,404 @@
+﻿@model List<UserStatusVM>
+@{
+    ViewBag.Title = "Reseller";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="new-products">
+    <div class="container">
+        <h3>Pertanyaan Favorit</h3>
+
+        <ul class="faq" style="padding-top: 0px;">
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Bagaimana cara berbelanja di Bags21century ?
+            </li>
+            <li class="a" style="line-height: 43px;">
+                Klik tombol <span href="#" class="buy-button"><i class="fa fa-plus-circle"></i> Beli</span> yang terletak di bawah gambar produk untuk membuat pesanan, anda akan disambungkan ke halaman produk. Pilih Kuantitas yang diinginkan dan klik lagi tombol <span href="#" class="buy-button"><i class="fa fa-plus-circle"></i> Beli</span> untuk menambahkan ke Keranjang Belanja.
+                <br />
+                Akan muncul kolum dengan pesan "Produk berhasil dimasukkan ke Keranjan Belanja". <br />
+                Jika klik tombol <span class="button-black">LANJUT BERBELANJA</span> maka silahkan anda pilih produk yang anda inginkan lagi
+                <br />
+                Jika Klik tombol <span class="button-black">BAYAR</span> maka akan disambungkan ke halaman Keranjang Belanja.
+                <br />
+                Apabila pesanan anda sudah betul, maka klik tombol <span class="button-black">CHECK OUT <i class="fa fa-angle-right"></i></span> dibagian kanan bawah. Lalu klik tombol <span class="button-black">Tambah Alamat</span> lalu isi alamat lengkap anda. Silahkan klik kolom expedisi yang anda inginkan, Klik kolom centang (gunakan saldo anda) apabila anda ingin menggunakan saldo top up.
+                <br />
+                Klik tombol <span class="button-black">LANJUT <i class="fa fa-angle-right"></i></span> Pilih metode bank pembayaran anda lalu isikan nama pemilik rekening yang  akan ditransfer nanti, Lalu klik kolom <span class="button-black">LANJUT <i class="fa fa-angle-right"></i></span> lagi.
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Apakah ada diskon khusus dalam pembelian jumlah besar ?
+            </li>
+            <li class="a">
+                Iya, tentu ada, jika pembelian minimal 8 pcs per transaksi maka akan mendapat tambahan potongan reseller sebesar Rp 5.000 / pcs. Berlaku juga untuk produk yang sedang diskon.
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Bagaimana saya melakukan top up saldo ?
+            </li>
+            <li class="a">
+                Klik tombol menu lalu pilih (akun saya) yang terletak di bagian atas kiri. Setelah itu klik tombol top up saldo, lalu isikan data-data tersebut dan klik konfirmasi. Silahkan menunggu dan Saldo anda akan bertambah ketika sudah dicek dan di verifikasi admin.
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Bagaimana saya mendaftar Reseller ?
+            </li>
+            <li class="a">
+                anda dapat langsung klik icon Menu pada halaman depan bagian kiri atas, lalu klik daftar, isikan semua kolom yang ada, setelah itu klik tombol daftar akun baru.
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Apakah fasilitas yang didapatkan ketika mencapai peringkat Reseller?
+            </li>
+            <li class="a">
+                Fasilitas Peringkat Reseller Bags21century adalah mendapat diskon sebagai berikut :
+                <br />
+                @foreach (var v in Model)
+                {
+                    <div>@v.Name : Rp. @v.Discount.Value.ToString("n0") / pcs</div>
+                }
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Bolehkah memilih expedisi JNE dengan fasilitas OKE tetapi dikirim fasilitas REG?
+            </li>
+            <li class="a">
+                iya tentu boleh, khusus expedisi  jne anda cukup membayar harga OKE dan paket akan dikirim fasilitas REG, jadi tentunya harga ongkos kirim menjadi lebih murah dan pengiriman bisa lebih cepat sampai ke tujuan.
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Bagaimana kompensasi apabila barang yang diterima rusak?
+            </li>
+            <li class="a">
+                Jika barang yang diterima rusak maka anda berhak return barang nya dan biaya pengiriman untuk barang retur akan ditanggung Bags21century. dan dalam kasus ini, anda mempunyai 2 pilihan yaitu tas yang rusak akan kami ganti dan kami kirim lagi atau anda boleh request pengembalian dana dan Bags21century akan mentransfer nominal harga tas plus ongkir.
+            </li>
+        </ul>
+        <br />
+
+        <h3>Pembelian</h3>
+
+        <ul class="faq" style="padding-top: 0px;">
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Bagaimana cara berbelanja di Bags21century ?
+            </li>
+            <li class="a" style="line-height: 43px;">                
+                Klik tombol <span href="#" class="buy-button"><i class="fa fa-plus-circle"></i> Beli</span> yang terletak di bawah gambar produk untuk membuat pesanan, anda akan disambungkan ke halaman produk. Pilih Kuantitas yang diinginkan dan klik lagi tombol <span href="#" class="buy-button"><i class="fa fa-plus-circle"></i> Beli</span> untuk menambahkan ke Keranjang Belanja.
+                <br/>
+                Akan muncul kolum dengan pesan "Produk berhasil dimasukkan ke Keranjan Belanja". <br/>
+                Jika klik tombol <span class="button-black">LANJUT BERBELANJA</span> maka silahkan anda pilih produk yang anda inginkan lagi
+                <br/>
+                Jika Klik tombol <span class="button-black">BAYAR</span> maka akan disambungkan ke halaman Keranjang Belanja.
+                <br/>
+                Apabila pesanan anda sudah betul, maka klik tombol <span class="button-black">CHECK OUT <i class="fa fa-angle-right"></i></span> dibagian kanan bawah. Lalu klik tombol <span class="button-black">Tambah Alamat</span> lalu isi alamat lengkap anda. Silahkan klik kolom expedisi yang anda inginkan, Klik kolom centang (gunakan saldo anda) apabila anda ingin menggunakan saldo top up.
+                <br/>
+                Klik tombol <span class="button-black">LANJUT <i class="fa fa-angle-right"></i></span> Pilih metode bank pembayaran anda lalu isikan nama pemilik rekening yang  akan ditransfer nanti, Lalu klik kolom <span class="button-black">LANJUT <i class="fa fa-angle-right"></i></span> lagi.
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Apakah harga yang tercantum sudah termasuk ongkos kirim ?
+            </li>
+            <li class="a">
+                Harga yang tercantum pada website belum termasuk ongkos kirim, berapa jumlah ongkos kirim ditentukan dari tiap lokasi yang dituju.
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Apakah ada diskon khusus dalam pembelian jumlah besar ?
+            </li>
+            <li class="a">
+                Iya, tentu ada, jika pembelian minimal 8 pcs per transaksi maka akan mendapat tambahan potongan reseller sebesar Rp 5.000 / pcs. Berlaku juga untuk produk yang sedang diskon.
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Apakah produk diskon masih mendapat potongan Reseller ?
+            </li>
+            <li class="a">
+                Produk yg sedang diskon tidak mendapat potongan Reseller lagi.
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Berapa lama barang dikirim setelah pembayaran pesanan?
+            </li>
+            <li class="a">
+                Paket akan dikirim satu hari setelah transfer atau +H1, apabila transferan melewati batas waktu pukul 20.00 maka transaksi akan diproses besok dan dikirim lusanya. Jika pembayaran dilakukan pada hari sabtu maka paket akan dikirim pada hari senin dan pembayaran dilakukan pada hari minggu maka akan diproses senin dan dikrim pada hari selasa.
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Dapatkan saya menawar harga yang tertera di website ?
+            </li>
+            <li class="a">
+                harga tas yang tertera di website sudah harga pas dan tidak bisa ditawar lagi
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Dapatkan saya membatalkan pesanan ?
+            </li>
+            <li class="a">
+                ya, pesanan anda yang belum dibayar dapat dibatalkan dengan mengklik tombol batalkan pesanan  distatus belum bayar.
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Dapatkan saya membatalkan pesanan apabila sudah melakukan pembayaran?
+            </li>
+            <li class="a">
+                Ya, anda dapat membatalkan pesanan meskipun sudah melakukan pembayaran apabila status pesanan anda masih belum dikirimkan, dan segera menghubungi admin yang melayani anda.
+            </li>
+        </ul>
+        <br />
+
+        <h3>Pembayaran</h3>
+
+        <ul class="faq" style="padding-top: 0px;">
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Metode pembayaran apa saja yang dapat digunakan di Bags21century?
+            </li>
+            <li class="a">
+                Anda dapat menggunakan metode pembayaran transfer ke rekening Bags21century dan metode pembayaran top up saldo.
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Bagaimana melakukan pembayaran melalui transfer bank?
+            </li>
+            <li class="a">
+                Setelah anda berhasil melakukan check out maka akan muncul nomor rekening yang harus di transfer, silahkan lakukan pembayaran maka pesanan anda akan segera diproses dan dikirim.
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Bagaimana cara melakukan pembayaran melalui top up saldo Bags21century? 
+            </li>
+            <li class="a">
+                Klik kolom centang (gunakan saldo anda) apabila anda ingin menggunakan top up saldo dibagian bawah ringkasan tagihan 
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Bagaimana saya melakukan top up saldo ? 
+            </li>
+            <li class="a">
+                Klik tombol menu lalu pilih (akun saya) yang terletak di bagian atas kiri. Setelah itu klik tombol top up saldo, lalu isikan data-data tersebut dan klik konfirmasi. Silahkan menunggu dan Saldo anda akan bertambah ketika sudah dicek dan di verifikasi admin.
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Apa yang terjadi apabila saya tidak membayar setelah batas waktu pembayarannya berakhir? 
+            </li>
+            <li class="a">
+                Apabila sampai batas waktu yang ditentukan anda tidak melakukan pembayaran maka secara otomatis pesanan akan dibatalkan oleh system.
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Apa yang harus saya lakukan jika saya membayar lebih ataupun kurang dari nominal yang perlu dibayar ? 
+            </li>
+            <li class="a">
+                jika kelebihan bayar maka paket tetap akan diproses dulu, nominal yang kelebihan bayar akan transfer balik ke rekening anda langsung, apabila kekurangan bayar maka silahkan anda langsung menghubungi admin yang melayani anda.
+            </li>
+        </ul>
+        <br />
+
+        <h3>Reseller</h3>
+
+        <ul class="faq" style="padding-top: 0px;">
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Bagaimana saya mendaftar Reseller ? 
+            </li>
+            <li class="a">
+                anda dapat langsung klik icon Menu pada halaman depan bagian kiri atas, lalu klik daftar, isikan semua kolom yang ada, setelah itu klik tombol daftar akun baru.
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Apakah syaratnya menjadi Reseller ? 
+            </li>
+            <li class="a">
+                untuk saat ini belum ada ketentuan/ syarat menjadi Reseller. anda boleh segera mendaftar menjadi reseller tanpa perlu membayar biaya pendaftaran reseller.
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Apakah itu Point Reseller? 
+            </li>
+            <li class="a">
+                Point Reseller digunakan untuk mencapai peringkat reseller. Setiap pembelian tas akan menambah point anda dan nantinya point itu akan diakumulasikan untuk mengukur tingkat pencapaian anda.
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Bagaimana saya mendapatkan Point Reseller? 
+            </li>
+            <li class="a">
+                setiap transaksi pembelian tas anda akan menambah jumlah point sebesar 3 point.
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Apakah itu peringkat Reseller dan syarat mencapai peringkat Reseller? 
+            </li>
+            <li class="a">
+                peringkat Reseller merupakan status atau pangkat yang diterapkan di sistem Bags21century,  digunakan untuk mengkategorikan dan mengukur seberapa banyak anda telah menjual tas di Bags21century. Untuk saat ini peringkat reseller dibagi menjadi beberapa peringkat. Setiap pencapaian tingkatan reseller akan menpunyai  fasilitas yang berbeda dalam jumlah diskon.
+                <br/>
+                Berikut ini adalah persyaratan mencapai peringkat reseller.<br />
+                @foreach (var v in Model)
+                {
+                    <div>@v.Name : @v.PointNeeded.Value.ToString("n0") point</div>
+                }
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Apakah fasilitas yang didapatkan ketika mencapai peringkat Reseller? 
+            </li>
+            <li class="a">
+                Fasilitas Peringkat Reseller Bags21century adalah mendapat diskon sebagai berikut :
+                <br />
+                @foreach (var v in Model)
+                {
+                    <div>@v.Name : Rp. @v.Discount.Value.ToString("n0") / pcs</div>
+                }
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Apakah saldo yang sudah ditop up bisa dicairkan ke rekening ?
+            </li>
+            <li class="a">
+                Saldo yang sudah ditop up tidak bisa dicairkan kembali lagi. Akan tetapi apabila anda sudah mengundurkan diri atau tidak mau menjadi reseller kami lagi maka sisa top up saldo yang ada dibags21century akan kami cairkan kembali ke rekening anda.
+            </li>
+        </ul>
+        <br />
+
+        <h3>Pengiriman &<br/>pengembalian Produk</h3>
+
+        <ul class="faq" style="padding-top: 0px;">
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Bolehkah memilih expedisi JNE dengan fasilitas OKE tetapi dikirim fasilitas REG? 
+            </li>
+            <li class="a">
+                iya tentu boleh, khusus expedisi  jne anda cukup membayar harga OKE dan paket akan dikirim fasilitas REG, jadi tentunya harga ongkos kirim menjadi lebih murah dan pengiriman bisa lebih cepat sampai ke tujuan.
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Bagaimana kompensasi apabila barang yang diterima rusak? 
+            </li>
+            <li class="a">
+                Jika barang yang diterima rusak maka anda berhak return barang nya dan biaya pengiriman untuk barang retur akan ditanggung Bags21century. dan dalam kasus ini, anda mempunyai 2 pilihan yaitu tas yang rusak akan kami ganti dan kami kirim lagi atau anda boleh request pengembalian dana dan Bags21century akan mentransfer nominal harga tas plus ongkir.
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Bagaimana kompensasi apabila barang yang diterima tidak sesuai warna? 
+            </li>
+            <li class="a">
+                Anda boleh menukar kembali barang yang tidak sesuai warna dengan pesanan anda dan biaya pengiriman balik akan ditanggung Bags21century, atau anda boleh menerima pesanan dengan kondisi salah warna dan Bags21century akan melakukan kompensasi sebesar Rp25.000 / pcs.
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Bagaimana kompensasi apabila barang yg diterima tidak sesuai pesanan ? 
+            </li>
+            <li class="a">
+                Anda boleh menukar kembali barang yang tidak sesuai warna dengan pesanan anda dan biaya pengiriman balik akan ditanggung bags21century, atau anda boleh menerima pesanan dengan kondisi barang tidak sesuai warna dan bags21century akan melakukan kompensasi sebesar Rp25.000 / pcs.
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Bagaimana kompensasi apabila barang yg diterima kurang? 
+            </li>
+            <li class="a">
+                jika barang yang diterima kurang dengan jumlah pesanan maka bags21century akan mengirimkan lagi produk yang kurang, biaya ongkos kirim akan ditanggung oleh kami.
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Apa saja expedisi yang dipakai ?
+            </li>
+            <li class="a">
+                expedisi yang dipakai untuk saat ini adalah JNE JNT TIKI POS
+            </li>
+            <li class="q">
+                <i class="fa fa-arrow-right arw"></i><span> </span>
+                Bagaimana mengecek ongkos kirim ? 
+            </li>
+            <li class="a">
+                pada halaman depan terdapat kolom cek ongkir, anda tinggal masukkan nama kota dan kecamatan, ongkos kirim akan otomatis muncul dan anda tinggal memilih expedisi yang anda inginkan.
+            </li>
+        </ul>
+        <br />
+    </div>
+</div>
+
+<style>
+    .faq li {
+        padding: 20px;
+        list-style: none;
+    }
+
+    .faq li.q {
+        background: none;
+        font-weight: bold;
+        font-size: 120%;
+        border-bottom: 1px #ddd solid;
+        cursor: pointer;
+
+        color: #f77373;
+        font-family: 'Glegoo', serif;
+    }
+
+    .faq li.q .arw {
+        color: #606060 !important;
+    }
+        
+    .faq li.q span {
+        padding-right: 10px;
+    }
+
+    .faq li.a {
+        background: #f8f8f8;
+        display: none;
+        color: #0d0d0d;
+        padding-left: 55px;
+        font-size: 14px;
+    }
+
+    .rotate {
+        -moz-transform: rotate(90deg);
+        -webkit-transform: rotate(90deg);
+        transform: rotate(90deg);
+    }
+</style>
+
+<script>
+    // Accordian Action
+    var action = 'click';
+    var speed = "500";
+
+
+    $(document).ready(function () {
+
+        // Question handler
+        $('li.q').on(action, function () {
+
+            // gets next element
+            // opens .a of selected question
+            $(this).next().slideToggle(speed)
+
+            // selects all other answers and slides up any open answer
+            .siblings('li.a').slideUp();
+
+            // Grab arw from clicked question
+            var arw = $(this).children('.arw');
+
+            // remove Rotate class from all arw except the active
+            $('.arw').not(arw).removeClass('rotate');
+
+            // toggle rotate class
+            arw.toggleClass('rotate');
+
+        });
+
+    });
+</script>
+
+
+<style>
+    .buy-button {
+        font-size: 14px;
+        color: #212121;
+        margin: 0;
+        text-decoration: none;
+        text-transform: uppercase;
+        padding: .5em 2em;
+        border: 1px solid;
+        border-radius: 25px;
+    }
+</style>

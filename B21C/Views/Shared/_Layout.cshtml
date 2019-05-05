@@ -1,0 +1,521 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <!-- for-mobile-apps -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="application/x-javascript">
+        addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false);
+               function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <!-- //for-mobile-apps -->
+    <link href="~/Content/Store/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="~/Content/Store/css/style.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="~/Content/Store/css/fasthover.css" rel="stylesheet" type="text/css" media="all" />
+    <!-- js -->
+    <script src="~/Content/Store/js/jquery.min.js"></script>
+    <!-- //js -->
+    <!-- countdown -->
+    <link rel="stylesheet" href="~/Content/Store/css/jquery.countdown.css" />
+    <!-- //countdown -->
+    <!-- for bootstrap working -->
+    <script type="text/javascript" src="~/Content/Store/js/bootstrap-3.1.1.min.js"></script>
+    <!-- //for bootstrap working -->
+    <link href='https://fonts.googleapis.com/css?family=Glegoo:400,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
+    <!-- start-smooth-scrolling -->
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
+            $(".scroll").click(function (event) {
+                event.preventDefault();
+                $('html,body').animate({ scrollTop: $(this.hash).offset().top }, 1000);
+            });
+        });
+    </script>
+    <!-- //end-smooth-scrolling -->
+
+    <!-- jquery mask -->
+    <script src="~/Content/jquery.mask/jquery.mask.min.js"></script>
+
+    <!-- Font Awesome Icons -->
+    <link href="@Url.Content("~/Content/font-awesome/css/font-awesome.min.css")" rel="stylesheet" type="text/css" />
+    <!-- Socicon -->
+    <link href="@Url.Content("~/Content/socicon/styles.css")" rel="stylesheet" type="text/css" />
+    <!-- Font mFizz -->
+    <link href="@Url.Content("~/Content/font-mfizz/font-mfizz.css")" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <!-- loading overlay -->
+    <div id="loading-overlay" style="display:none;"></div>
+
+    @if (TempData["Message"] != null)
+    {
+        <script type="text/javascript">
+            alert("@Html.Raw(TempData["Message"])");
+        </script>
+    }
+    
+    @if ((Session["User_Username"] != null && Session["User_ID"] != null) && (Session["User_SurveyID"] != null && Session["User_SurveyURL"] != null))
+    {
+        <div class="modal fade" id="myModal99" tabindex="-1" role="dialog" aria-labelledby="myModal99"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <!--- Begin SurveyPlanet survey embed--><iframe id="survey-iframe" frameborder="0" width="100%" height="480" src="@Session["User_SurveyURL"]"></iframe><!--- End SurveyPlanet survey embed -->
+                </div>
+            </div>
+        </div>
+        <script>
+            $('#myModal99').modal('show');
+
+            var surveyLoad = 0;
+            $('iframe#survey-iframe').load(function() {
+                surveyLoad += 1;
+
+                if(surveyLoad == 2){
+                    $('#myModal99').modal('hide');
+
+                    //alert("success");
+
+                    $.ajax({
+                        url: "@Url.Action("SetSurveyAsCompleted", "Home")",
+                        type: "POST",
+                        dataType: "json",
+                        contentType: "application/json",
+                        success: function (result) {
+                            if (result.Success)
+                            {
+                            }
+                            else
+                            {
+                                alert(result.Message);
+                            }
+                        },
+                        error: function () {
+                            alert("Error while authenticating user credentials!");
+                            //location.reload();
+                        }
+                    });
+                }
+            });
+        </script>
+    }
+    
+    <!-- header -->
+    <div class="modal fade" id="myModal88" tabindex="-1" role="dialog" aria-labelledby="myModal88"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        Jangan Menunggu Lagi, Login sekarang!
+                    </h4>
+                </div>
+                <div class="modal-body modal-body-sub">
+                    <div class="row">
+                        <div class="col-md-12 modal_body_left modal_body_left1" style="border-right: 1px dotted #C2C2C2;padding-right:3em;">
+                            <div class="sap_tabs">
+                                <div id="horizontalTab" style="display: block; width: 100%; margin: 0px;">
+                                    <ul>
+                                        <li class="resp-tab-item" aria-controls="tab_item-0"><span>Login</span></li>
+                                        <li class="resp-tab-item" aria-controls="tab_item-1"><span>Daftar</span></li>
+                                    </ul>
+                                    <div class="tab-1 resp-tab-content" aria-labelledby="tab_item-0">
+                                        <div class="facts">
+                                            <div class="register">
+                                                <form action="#" method="post" id="login">
+                                                    <input id="login-email" placeholder="Email" type="text" required="">
+                                                    <input id="login-password" placeholder="Password" type="password" required="">
+                                                    <div class="sign-up">
+                                                        <input id="login-submit" type="submit" value="Masuk" />
+                                                    </div>
+                                                </form>
+                                                <script>
+                                                    $( "form#login" ).submit(function( event ) {
+                                                        event.preventDefault();
+
+                                                        $("#login-submit").val("Logging in...");
+                                                        $("#login-submit").prop('disabled', true);
+
+                                                        var data = { 
+                                                            "email": $("#login-email").val(), 
+                                                            "password": $("#login-password").val()
+                                                        };
+
+                                                        $.ajax({
+                                                            url: "@Url.Action("Login", "Home")",
+                                                            type: "POST",
+                                                            data: JSON.stringify(data),
+                                                            dataType: "json",
+                                                            contentType: "application/json",
+                                                            success: function (result) {
+                                                                $("#login-submit").val("Login");
+                                                                $("#login-submit").prop('disabled', false);
+
+                                                                if (result.Success)
+                                                                {
+                                                                    window.location.href = result.ReturnURL;
+                                                                }
+                                                                else
+                                                                {                                                                   
+                                                                    alert(result.Message);
+                                                                }
+                                                            },
+                                                            error: function () {
+                                                                alert("Error while authenticating user credentials!");
+                                                                //location.reload();
+                                                            }
+                                                        });
+                                                    });
+                                                </script>
+                                            </div>
+                                        </div>
+                                    </div>                                    
+
+                                    <script>
+                                        function remove_unselected_class(this_object){
+                                            $(this_object).removeClass("unselected");
+                                        }
+                                    </script>
+                                    <div class="tab-2 resp-tab-content" aria-labelledby="tab_item-1">
+                                        <div class="facts">
+                                            <div class="register">
+                                                @using (Html.BeginForm("Signup", "Home", FormMethod.Post, new { enctype = "multipart/form-data", @class = "signup" }))
+                                                {
+                                                    <div class="form-group">
+                                                        @Html.TextBox("Name", "", new { @placeholder = "Nama", required = "" })
+                                                    </div>
+                                                    <div class="form-group">
+                                                        @Html.TextBox("Email", "", new { @placeholder = "Email", required = "" })
+                                                    </div>
+                                                    <div class="form-group">
+                                                        @Html.Password("Password", "", new { @placeholder = "Password", required = "" })
+                                                    </div>
+                                                    <div class="form-group">
+                                                        @Html.Password("ConfirmPassword", "", new { @placeholder = "Konfirmasi Password", required = "" })
+                                                    </div>
+                                                    <div class="form-group">
+                                                        @Html.TextBox("Phone", "", new { @placeholder = "No. Handphone (optional)" })
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <select name="Gender" id="#su_Gender" class="unselected" onchange="remove_unselected_class(this);">
+                                                            <option value="" disabled selected>Jenis Kelamin (optional)</option>
+                                                            <option value="Male">Male</option>
+                                                            <option value="Female">Female</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        @Html.TextBox("BirthDate", null, new { @placeholder = "Tanggal Lahir (optional)", @class = "BirthDate", @id = "su_BirthDate" })
+
+                                                        <script>
+                                                            $(function () {
+                                                                $('#su_BirthDate').mask('00/00/0000');
+                                                            })
+
+                                                            $('#su_BirthDate').focus(function () {
+                                                                $(this).attr('placeholder', 'dd/MM/yyyy')
+                                                            }).blur(function () {
+                                                                $(this).attr('placeholder', 'Tanggal Lahir (optional)')
+                                                            })
+                                                        </script>
+                                                    </div>
+                                                    <div class="sign-up form-group">
+                                                        <input type="submit" value="DAFTAR AKUN BARU">
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <script src="~/Content/Store/js/easyResponsiveTabs.js" type="text/javascript"></script>
+                            <script type="text/javascript">
+                                $(document).ready(function () {
+                                    $('#horizontalTab').easyResponsiveTabs({
+                                        type: 'default', //Types: default, vertical, accordion
+                                        width: 'auto', //auto or any width like 600px
+                                        fit: true   // 100% fit in a container
+                                    });
+                                });
+                            </script>
+                            @*<div id="OR" class="hidden-xs">
+                                OR
+                            </div>*@
+                        </div>
+                        @*<div class="col-md-4 modal_body_right modal_body_right1">
+                            <div class="row text-center sign-with">
+                                <div class="col-md-12">
+                                    <h3 class="other-nw">
+                                        Sign in with
+                                    </h3>
+                                </div>
+                                <div class="col-md-12">
+                                    <ul class="social">
+                                        <li class="social_facebook"><a href="#" class="entypo-facebook"></a></li>
+                                        <li class="social_dribbble"><a href="#" class="entypo-dribbble"></a></li>
+                                        <li class="social_twitter"><a href="#" class="entypo-twitter"></a></li>
+                                        <li class="social_behance"><a href="#" class="entypo-behance"></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="header">
+        <div class="container">
+            <div class="w3l_login">
+                @if (Session["User_Username"] == null || Session["User_ID"] == null)
+                {
+                    <a href="#" data-toggle="modal" data-target="#myModal88" class="user-icon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></a>
+                }
+                else
+                {
+                    <div class="dropdown">
+                        <a href="#" data-toggle="dropdown" class="user-icon active"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="@Url.Action("MyAccount", "Home")">AKUN SAYA</a></li>
+                            <li><a href="@Url.Action("MyOrder", "Home", new { Status = "PendingPayment" })">BELANJAANKU</a></li>
+                            <li><a href="@Url.Action("Logout", "Home")">KELUAR</a></li>
+                        </ul>
+                    </div>
+                }   
+            </div>
+            <div class="w3l_logo">
+                <h1><a href="@Url.Action("Index","Home")"><img src="~/Content/Store/images/logo-text-sm.png" class="img-responsive logo" />@*<span>For Fashion Lovers</span>*@</a></h1>
+            </div>
+            <div class="search">
+                <input class="search_box" type="checkbox" id="search_box">
+                <label class="icon-search" for="search_box"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></label>
+                <div class="search_form">
+                    @using (Html.BeginForm("AllProducts", "Home", FormMethod.Get))
+                    {
+                        <input type="text" name="Query" placeholder="Search...">
+                        <input type="submit" value="Cari">
+                    }
+                </div>
+            </div>
+            <div class="cart box_1">
+                @if (Session["User_Username"] != null && Session["User_ID"] != null)
+                {
+                    <p><a href="@Url.Action("MyAccount","Home")" class="myaccount">@Session["User_Username"]</a></p>
+                }
+                <a href="@Url.Action("ShoppingCart","Home")">
+                    <div class="total">
+                        <span id="simpleCart_total"></span> (<span id="simpleCart_quantity" class="simpleCart_quantity">0</span> items)
+                    </div>
+                    <img src="~/Content/Store/images/bag.png" alt="" />
+                </a>
+
+                <script>
+                    function reload_CartSum(){                        
+                        $.ajax({
+                            url: "@Url.Action("GetCartCount", "Home")",
+                            type: "POST",
+                            dataType: "json",
+                            contentType: "application/json",
+                            success: function (result) {
+                                $("#item_add").removeClass('disabled');
+
+                                if (result.Success)
+                                {
+                                    $('#simpleCart_quantity').html(result.Result);
+                                }
+                                else
+                                {                                                                   
+                                    alert(result.Message);
+                                }
+                            },
+                            error: function () {
+                                reload_CartSum();
+                                //location.reload();
+                            }
+                        });
+                    }
+
+                    $(function(){
+                        reload_CartSum();
+                    });
+                </script>
+
+                @*<p><a href="javascript:;" class="simpleCart_empty">Empty Cart</a></p>*@
+                <div class="clearfix"> </div>
+            </div>
+            <div class="clearfix"> </div>
+        </div>
+    </div>
+    <div class="navigation">
+        <div class="container">
+            <nav class="navbar navbar-default">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header nav_2">
+                    <button type="button" class="navbar-toggle collapsed navbar-toggle1" data-toggle="collapse" data-target="#bs-megadropdown-tabs">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div class="collapse navbar-collapse" id="bs-megadropdown-tabs">
+                    <ul class="nav navbar-nav">
+                        <li><a href="@Url.Action("Index","Home")">Beranda</a></li>
+                        <!-- Mega Menu -->
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Produk <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="@Url.Action("NewProducts", "Home")">PRODUK BARU</a></li>
+                                @foreach (var v in ViewBag.ProductCategoryList as IEnumerable<ProductCategoryVM>)
+                                {
+                                    <li><a href="@Url.Action("CategoryProducts", "Home", new { Id = v.Id })">@v.Name.ToUpper()</a></li>
+                                }
+                                <li><a href="@Url.Action("AllProducts", "Home")">SEMUA PRODUK</a></li>
+                            </ul>
+                        </li>                        <!-- Mega Menu -->
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="color: red;">Sale <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="@Url.Action("SpecialPromo", "Home")" style="color: red;">SPESIAL PROMO</a></li>
+                                <li><a href="@Url.Action("Sales", "Home")" style="color: red;">CLEARANCE SALE</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="@Url.Action("Help", "Home")">Bantuan</a></li>             
+                        @*<li><a href="@Url.Action("AboutUs", "Home")">Tentang Kami</a></li>*@       
+                        @if (Session["User_Username"] == null || Session["User_ID"] == null)
+                        {
+                            <li class="visible-xs"><a href="#" class="act" data-toggle="modal" data-target="#myModal88">LOGIN</a></li>
+                        }
+                        else
+                        {
+                            <li class="visible-xs"><span class="line"></span></li>
+                            <li class="visible-xs"><a href="@Url.Action("MyAccount", "Home")">AKUN SAYA</a></li>
+                            <li class="visible-xs"><a href="@Url.Action("MyOrder", "Home", new { Status = "PendingPayment" })">BELANJAANKU</a></li>
+                            <li class="visible-xs"><a href="@Url.Action("Logout", "Home")">KELUAR</a></li>
+                        }
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <!-- //header -->
+
+    <section>
+        @RenderBody()
+    </section>
+
+    <!-- newsletter -->
+    <div class="newsletter">
+        <div class="container">
+            <div class="col-md-6 w3agile_newsletter_left">
+                <h3>Katalog</h3>
+                <p>Masukkan email Anda untuk langganan katalog mingguan.</p>
+            </div>
+            <div class="col-md-6 w3agile_newsletter_right">
+                @using (Html.BeginForm("AddSubscriber", "Home", FormMethod.Post, new { onsubmit = "return validateForm();" }))
+                {
+                    <input type="email" name="SubscriberEmail" id="SubscriberEmail" value="Email" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Email';}" required="">
+                    <input type="submit" value="" />
+                }
+
+                <script type="text/javascript">
+                    function validateForm() {
+                        // Validate Email
+                        var email = $("#SubscriberEmail").val();
+                        if (@Html.Raw(@"(/(.+)@(.+){2,}\.(.+){2,}/.test(email))") || email == "" || email == null) { } else {
+                            alert("Please enter a valid email");
+                            return false;
+                        }
+                        return true;
+                    }
+                </script>
+            </div>
+            <div class="clearfix"> </div>
+        </div>
+    </div>
+    <!-- //newsletter -->
+
+    <!-- footer -->
+    <div class="footer">
+        <div class="container">
+            <div class="w3_footer_grids">
+                <div class="col-md-3 w3_footer_grid">
+                    <h3>Kontak</h3>
+                    @*<p>Duis aute irure dolor in reprehenderit in voluptate velit esse.</p>*@
+                    <ul class="address">
+                        @*<li><i class="glyphicon glyphicon-map-marker" aria-hidden="true"></i>1234k Avenue, 4th block, <span>New York City.</span></li>*@
+                        <li><i class="socicon-line" aria-hidden="true" style="display: inline-block;"></i>@Html.Raw("@bags21century (pake @)")</li>
+                        <li><i class="socicon-line" aria-hidden="true" style="display: inline-block;"></i>@Html.Raw("@b21ckatalog (Katalog Harian)")</li>
+                        <li><i class="glyphicon glyphicon-envelope" aria-hidden="true"></i><a href="mailto:bags21century@gmail.com">bags21century@gmail.com</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 w3_footer_grid">
+                    <h3>Shipping</h3>
+                    <ul class="info">
+                        <li><a><img src="~/Content/Store/images/jne.png" /></a></li>
+                        <li><a><img src="~/Content/Store/images/tiki.png" /></a></li>
+                        <li><a><img src="~/Content/Store/images/pos.png" /></a></li>
+                        <li><a><img src="~/Content/Store/images/jnt.png" /></a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 w3_footer_grid">
+                    <h3>Pembayaran</h3>
+                    <ul class="info">
+                        <li><a><img src="~/Content/Store/images/bca.png" /></a></li>
+                        <li><a><img src="~/Content/Store/images/bni.png" /></a></li>
+                        <li><a><img src="~/Content/Store/images/bri.png" /></a></li>
+                        <li><a><img src="~/Content/Store/images/mandiri.png" /></a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 w3_footer_grid">
+                    <h3>Follow Us</h3>
+                    <div class="agileits_social_button">
+                        <ul>
+                            <li><a href="https://www.facebook.com/bags21century/" class="facebook"> </a></li>
+                            <li><a href="https://www.instagram.com/bags21century/" class="instagram"> </a></li>
+                            <li><a href="@Html.Raw("line://ti/p/@zaw1022h")" class="line"> </a></li>
+                        </ul>
+                    </div>
+                    <div>-</div>
+                    <div style="font-size: 14px;">
+                        <div><b>Jam Operasional</b></div>
+                        <div>Senin - Sabtu : 09.00 - 17.00</div>
+                        <div>Minggu : Libur</div>
+                    </div>
+                </div>
+                <div class="clearfix"> </div>
+            </div>
+        </div>
+        <div class="footer-copy">
+            <div class="footer-copy1">
+                <div class="footer-copy-pos">
+                    <a href="#home1" class="scroll"><img src="~/Content/Store/images/arrow.png" alt=" " class="img-responsive" /></a>
+                </div>
+            </div>
+            <div class="container">
+                <p>Copyright &copy; 2016. All rights reserved</a></p>
+            </div>
+        </div>
+    </div>
+    <!-- //footer -->
+
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+        (function(){
+            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+            s1.async=true;
+            s1.src='https://embed.tawk.to/584830b8f9976a1964ca2f28/1bekdld6f';
+            s1.charset='UTF-8';
+            s1.setAttribute('crossorigin','*');
+            s0.parentNode.insertBefore(s1,s0);
+        })();
+    </script>
+    <!--End of Tawk.to Script-->
+</body>
+</html>

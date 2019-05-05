@@ -1,0 +1,114 @@
+﻿@{
+    ViewBag.Title = "Customer & Reseller List";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Customer & Reseller List }
+
+@Html.Partial("_Kendo")
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-default">
+            <div class="box-body">
+                <div class="text-right" id="grid-selection-action" style="display:none;">
+                    <span class="selection-count">0</span> item(s) selected
+                    <button class="btn btn-danger btn-flat" onclick='deleteUsers(SelectedOrderIds_main);'><i class="fa fa-trash"></i> Delete</button>
+                </div>
+                @(Html.Kendo().Grid<BuyerVM>()
+                .Name("grid")
+                .HtmlAttributes(new { @class = "tbl-grid" })
+                .DataSource(dataSource => dataSource //Configure the Grid data source.
+                    .Ajax() //Specify that Ajax binding is used.
+                    .PageSize(25)
+                    .Read(read => read.Action("BuyerList_Read", "User"))
+                    .Events(events => events.Error("error_handler"))
+                )
+                .Columns(columns =>
+                {
+                    columns.Bound(v => v.Name);
+                    columns.Bound(v => v.Username);
+                    columns.Bound(v => v.Phone);
+                    columns.Bound(v => v.Gender);
+                    columns.Bound(v => v.BirthDate).Format("{0:dd/MM/yyyy}");
+                    columns.Bound(v => v.Type);
+                    columns.Bound(v => v.Point);
+                    columns.Bound(v => v.UserStatus);
+                    columns.Bound(v => v.RegisteredAt).Format("{0:dd/MM/yyyy}");
+                    columns.Bound("").Filterable(false).Sortable(false).Width(280).ClientTemplate(
+                      " <a class='btn btn-sm btn-danger btn-flat' href='" + @Url.Action("Inactive", "User") + "/#= Id #'><i class='fa fa-times'></i> Remove</a>"
+                    + " <a class='btn btn-sm btn-success btn-flat' href='" + @Url.Action("ChangeBalance", "User") + "/#= Id #')\"><i class='fa fa-dollar'></i> Change Balance</a>"
+                    + " <a class='btn btn-sm btn-warning btn-flat' href='" + @Url.Action("ResetPassword", "User") + "/#= Id #'><i class='fa fa-undo'></i> Reset Password</a>"
+                    + " <a class='btn btn-sm btn-primary btn-flat' href='" + @Url.Action("Edit", "User") + "/#= Id #')\"><i class='fa fa-pencil'></i> Edit</a>"
+                    + " <a class='btn btn-sm btn-primary btn-flat' href='" + @Url.Action("View", "User") + "/#= Id #')\"><i class='fa fa-eye'></i> View</a>"
+                    ).HtmlAttributes(new { @class = "text-right" });
+                })
+                .Scrollable(scroll => scroll.Enabled(true).Height("auto"))
+                .Resizable(resize => resize.Columns(true))
+                .Pageable() // Enable paging
+                .Sortable() // Enable sorting
+                .Filterable(f => f.Extra(true)
+                    .Operators(o => o.ForString(s => s.Clear()
+                        .Contains("Contains")
+                        .DoesNotContain("Does not contain")
+                        .IsEqualTo("Is equal to")
+                        .IsNotEqualTo("Is not equal to")
+                        .StartsWith("Starts with")
+                        .EndsWith("Ends with ")
+                    ))
+                )
+                .Selectable(selectable => selectable.Mode(GridSelectionMode.Multiple))
+                .Excel(excel => excel
+                    .FileName("Reseller_List_" + DateTime.Now.ToString("dd-MM-yyyy") + ".xlsx")
+                    .Filterable(true)
+                    .AllPages(true)
+                    .ProxyURL(Url.Action("KendoExcelSave", "Admin"))
+                )
+                .ToolBar(tools => tools.Excel())
+                .Events(m => m.Change("onChange_main"))
+                )
+            </div>
+            <script>
+                var SelectedOrderIds_main = "";
+                function onChange_main(e) {
+                    grid = e.sender;
+                    var selectedItemId = $.map(this.select(), function (item) {
+                        return grid.dataItem(item).Id;
+                    });
+
+                    SelectedOrderIds_main = selectedItemId.join();
+                    $('#grid-selection-action .selection-count').html(selectedItemId.length);
+                    if (SelectedOrderIds_main != null && SelectedOrderIds_main != "") {
+                        $('#grid-selection-action').show();
+                    }
+                    else {
+                        $('#grid-selection-action').hide();
+                    }
+                }
+                
+                function deleteUsers(orderid_list) {
+                    if (orderid_list != null && orderid_list != "") {
+                        if (confirm('Are you sure?')) {
+                            $.ajax({
+                                url: "@Url.Action("InactiveMassive", "User")?ids=" + orderid_list,
+                                type: "POST",
+                                dataType: "json",
+                                contentType: "application/json",
+                                success: function (result) {
+                                    if (result == "success") {
+                                        $('#grid').data('kendoGrid').dataSource.read();
+                                    }
+                                    else {
+                                        alert(result.Message);
+                                    }
+                                },
+                                error: function () {
+                                    alert("Error!");
+                                }
+                            });
+                        }
+                    }
+                }
+            </script>
+        </div>
+    </div>
+</div>

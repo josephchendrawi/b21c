@@ -1,0 +1,116 @@
+﻿@model B21C.Models.ShoppingCartVM
+@{
+    ViewBag.Title = "Keranjang Belanja";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- checkout -->
+<div class="checkout">
+    <div class="container">
+        @if (Model.ItemList.Count() > 0)
+        {
+            <h3>Keranjang Belanja berisi: <span>@Model.ItemList.Count() Produk</span></h3>
+
+            <div class="table-responsive">
+                <table class="table table-hover table-striped tbl-cart">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Produk</th>
+                            <th>Kuantitas</th>
+                            <th>Nama</th>
+                            <th>Berat Satuan</th>
+                            <th>Harga Satuan</th>
+                            <th> </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{int i = 1;}
+                        @foreach (var v in Model.ItemList)
+                        {
+                            <tr id="row-@v.ProductId">
+                                <td scope="row">@i</td>
+                                <td><a href="@Url.Action("Product", "Home", new { Id = v.ProductId })"><img src="@(Constant.UploadPath)thumb_@v.ProductDetails.ProductImageList.FirstOrDefault().URL" alt=" " class="img-responsive" /></a></td>
+                                <td>
+                                    @v.Quantity
+                                    <a href="#" class="change" onclick="edit_item('@v.CartId');"><i class="fa fa-pencil"></i> Ubah</a>
+                                    @if (v.isStockInsufficient) { 
+                                        <big style="color: #f22525;" title="Stok tidak mencukupi! Mohon untuk mengurangi kuantitasnya."><i class="fa fa-info-circle"></i></big>
+                                    }
+                                </td>
+                                <td>@v.ProductDetails.Name</td>
+                                <td>@((v.ProductDetails.Weight ?? 0).ToString("N0")) g</td>
+                                <td>Rp. @((v.ProductDetails.TotalPrice).ToString("N0"))</td>
+                                <td><div class="close" onclick="remove_item('@v.CartId');"><i class="fa fa-close"></i></div></td>
+                            </tr>
+                            i++;
+                        }
+                    </tbody>
+                </table>
+                <script>
+                    function remove_item(product_id) {
+                        $('#row-' + product_id).fadeOut('slow', function (c) {
+                            $('#row-' + product_id).remove();
+                        });
+                    }
+                </script>
+            </div>
+            <div class="checkout-left">
+                <div class="row">
+                    <div class="checkout-left-basket col-md-3">
+                        <h4>Ringkasan</h4>
+                        <ul>
+                            @foreach (var v in Model.ItemList)
+                            {
+                                <li>
+                                    @v.ProductDetails.Name <i>-</i> <span>Rp. @((v.ProductDetails.TotalPrice * v.Quantity).ToString("N0"))</span>
+                                    <div><small>Berat : </small> <span><small>@((v.Quantity * v.ProductDetails.Weight ?? 0).ToString("N0")) g</small></span></div>
+                                </li>
+                            }
+                            @if (Model.QuantityDiscount > 0)
+                            {
+                                <li>
+                                    Diskon Kuantitas <span>- Rp. @Model.QuantityDiscount.ToString("N0")</span>
+                                </li>
+                            }
+                            <li>
+                                Total <i>-</i> <span>Rp. @((Model.TotalPrice - Model.QuantityDiscount).ToString("N0"))</span>
+                                <div><small>Total Berat : </small> <span><small>@Model.ItemList.Sum(v => v.Quantity * v.ProductDetails.Weight ?? 0).ToString("N0") g</small></span></div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-9 text-right right-side">
+                        <a href="@Url.Action("CheckOut","Home")" class="button @if(Model.ItemList.Where(m => m.isStockInsufficient == true).Count() > 0){ <text>disabled</text> }">Check Out <span class="fa fa-angle-right"></span></a>
+                    </div>
+                </div>
+                <div class="clearfix"> </div>
+            </div>
+        }
+        else
+        {
+            <div class="empty-cart"><i class="fa fa-shopping-basket"></i><br/>Keranjang belanja Anda kosong.<br/><a href="@Url.Action("AllProducts","Home")">Ayo mulai belanja!</a></div>
+        }
+    </div>
+</div>
+<!-- //checkout -->
+
+<!-- FancyBox -->
+<link rel="stylesheet" href="@Url.Content("~/Content/plugins/fancybox/jquery.fancybox.css")">
+<script src='@Url.Content("~/Content/plugins/fancybox/jquery.fancybox.js")'></script>
+<script src='@Url.Content("~/Content/plugins/fancybox/jquery.mousewheel-3.0.6.pack.js")'></script>
+<script>
+    function edit_item(cart_id) {
+        $.fancybox.open({
+            padding: 10,
+            href: '@Url.Action("_UpdateCartItem")?CartId=' + cart_id,
+            type: 'iframe',
+            openSpeed: "fast",
+        });
+    }
+
+    function remove_item(cart_id) {
+        if (confirm('Apakah Anda pasti untuk menghapus barang ini?')) {
+            window.location.href = "@Url.Action("RemoveCartItem", "Home")?CartId=" + cart_id;
+        }
+    }
+</script>

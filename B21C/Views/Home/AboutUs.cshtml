@@ -1,0 +1,123 @@
+﻿@{
+    ViewBag.Title = "Tentang Kami";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="new-products">
+    <div class="container">
+        <h3>Tentang Kami</h3>
+        <br/>
+        <div class="w3_footer_grids">
+            <div class="col-md-3 col-md-offset-3 w3_footer_grid">
+                @*<p>Duis aute irure dolor in reprehenderit in voluptate velit esse.</p>*@
+                <ul class="address">
+                    @*<li><i class="glyphicon glyphicon-map-marker" aria-hidden="true"></i>1234k Avenue, 4th block, <span>New York City.</span></li>*@
+                    <li><i class="socicon-line" aria-hidden="true" style="display: inline-block;"></i>@Html.Raw("@bags21century (pake @)")</li>
+                    <li><i class="glyphicon glyphicon-envelope" aria-hidden="true"></i><a href="mailto:bags21century@gmail.com">bags21century@gmail.com</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 w3_footer_grid text-right">
+                <div class="agileits_social_button">
+                    <ul>
+                        <li><a href="https://www.facebook.com/bags21century/" class="facebook"> </a></li>
+                        <li><a href="https://www.instagram.com/bags21century/" class="instagram"> </a></li>
+                        <li><a href="@Html.Raw("line://ti/p/@zaw1022h")" class="line"> </a></li>
+                    </ul>
+                </div>
+                <div>-</div>
+                <div style="font-size: 14px;">
+                    <div><b>Jam Operasional</b></div>
+                    <div>Senin - Sabtu : 09.00 - 17.00</div>
+                    <div>Minggu : Libur</div>
+                </div>
+            </div>
+            <div class="clearfix"> </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .faq li {
+        padding: 20px;
+        list-style: none;
+    }
+
+    .faq li.q {
+        background: none;
+        font-weight: bold;
+        font-size: 120%;
+        border-bottom: 1px #ddd solid;
+        cursor: pointer;
+
+        color: #f77373;
+        font-family: 'Glegoo', serif;
+    }
+
+    .faq li.q .arw {
+        color: #606060 !important;
+    }
+        
+    .faq li.q span {
+        padding-right: 10px;
+    }
+
+    .faq li.a {
+        background: #f8f8f8;
+        display: none;
+        color: #0d0d0d;
+        padding-left: 55px;
+        font-size: 14px;
+    }
+
+    .rotate {
+        -moz-transform: rotate(90deg);
+        -webkit-transform: rotate(90deg);
+        transform: rotate(90deg);
+    }
+</style>
+
+<script>
+    // Accordian Action
+    var action = 'click';
+    var speed = "500";
+
+
+    $(document).ready(function () {
+
+        // Question handler
+        $('li.q').on(action, function () {
+
+            // gets next element
+            // opens .a of selected question
+            $(this).next().slideToggle(speed)
+
+            // selects all other answers and slides up any open answer
+            .siblings('li.a').slideUp();
+
+            // Grab arw from clicked question
+            var arw = $(this).children('.arw');
+
+            // remove Rotate class from all arw except the active
+            $('.arw').not(arw).removeClass('rotate');
+
+            // toggle rotate class
+            arw.toggleClass('rotate');
+
+        });
+
+    });
+</script>
+
+
+<style>
+    .buy-button {
+        font-size: 14px;
+        color: #212121;
+        margin: 0;
+        text-decoration: none;
+        text-transform: uppercase;
+        padding: .5em 2em;
+        border: 1px solid;
+        border-radius: 25px;
+    }
+</style>

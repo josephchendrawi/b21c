@@ -1,0 +1,171 @@
+﻿@model B21C.Models.ShippedOrderVM
+@{
+    ViewBag.Title = "Order Shipped";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Order Shipped }
+@section ContentHeader
+{
+    <a href="@Url.Action("View", new { Id = Model.Id })" class="btn btn-sm btn-flat btn-primary pull-right">View Details</a>
+}
+
+@Html.Partial("_Kendo")
+
+<div class="row">
+    @using (Html.BeginForm("Shipped", "Order", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.OrderInfo.BookedBy)
+        @Html.HiddenFor(m => m.OrderInfo.AdditionalDiscount)
+        @Html.HiddenFor(m => m.OrderInfo.OrderCode)
+        @Html.HiddenFor(m => m.OrderInfo.PaymentMethod)
+        @Html.HiddenFor(m => m.OrderInfo.Receiver)
+        @Html.HiddenFor(m => m.OrderInfo.Sender)
+        @Html.HiddenFor(m => m.OrderInfo.Shipping)
+        @Html.HiddenFor(m => m.OrderInfo.ShippingFee)
+        @Html.HiddenFor(m => m.OrderInfo.TotalPrice)
+        @Html.HiddenFor(m => m.OrderInfo.GrandTotal)
+        @Html.HiddenFor(m => m.OrderInfo.TotalWeight)
+        @Html.HiddenFor(m => m.OrderInfo.BankAccountName)
+        @Html.HiddenFor(m => m.OrderInfo.UserPaymentAmount)
+
+        <div class="col-md-3">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Order Information</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OrderInfo.OrderCode)
+                        <div>
+                            @Model.OrderInfo.OrderCode
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OrderInfo.BookedBy)
+                        <div>
+                            @Model.OrderInfo.BookedBy
+                        </div>
+                    </div>
+                    <div class="line-light"></div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OrderInfo.PaymentMethod)
+                        <div>
+                            @Model.OrderInfo.PaymentMethod
+                        </div>
+                    </div>
+                    @if (Model.OrderInfo.UserPaymentAmount > 0)
+                    { 
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.OrderInfo.BankAccountName)
+                            <div>
+                                @Model.OrderInfo.BankAccountName
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.OrderInfo.UserPaymentAmount)
+                            <div>
+                                Rp. @Model.OrderInfo.UserPaymentAmount.ToString("N0")
+                            </div>
+                        </div>
+                    }
+                    <div class="line-light"></div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OrderInfo.Shipping)
+                        <div>
+                            @Model.OrderInfo.Shipping
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OrderInfo.TotalWeight)
+                        <div>
+                            @((Model.OrderInfo.TotalWeight).ToString("N0")) gram(s)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OrderInfo.ShippingFee)
+                        <div>
+                            Rp. @((Model.OrderInfo.ShippingFee).ToString("N0"))
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OrderInfo.TotalPrice)
+                        <div>
+                            Rp. @((Model.OrderInfo.TotalPrice).ToString("N0"))
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OrderInfo.AdditionalDiscount)
+                        <div>
+                            Rp. @((Model.OrderInfo.AdditionalDiscount).ToString("N0"))
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OrderInfo.GrandTotal)
+                        <div>
+                            Rp. @((Model.OrderInfo.GrandTotal).ToString("N0"))
+                        </div>
+                    </div>
+                    <div class="line-light"></div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OrderInfo.Sender)
+                        <div>
+                            @Model.OrderInfo.Sender
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OrderInfo.Receiver)
+                        <div>
+                            @Model.OrderInfo.Receiver
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OrderInfo.ShippingCode)
+                        <div>
+                            @Model.OrderInfo.ShippingCode
+                        </div>
+                    </div>
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div>
+
+        <div class="col-md-9">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Shipment</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.TrackingNo)
+                        @Html.TextAreaFor(m => m.TrackingNo, new { @class = "form-control", @rows = 6, @style="resize:vertical ;" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.ShippingDate)
+                        @(Html.Kendo().DatePickerFor(m => m.ShippingDate).Format("dd/MM/yyyy")
+                          .HtmlAttributes(new { style = "width: 100%", title = "datepicker" })
+                        )
+                    </div>
+                </div><!-- /.box-body -->
+
+                <div class="box-footer text-right">
+                    <input type="submit" class="btn btn-flat btn-primary" value="Submit" />
+                </div>
+            </div><!-- /.box -->
+        </div>
+    }
+</div>
+
+<!-- Globalization dd/MM/yyyy -->
+<script type="text/javascript" src="@Url.Content("~/Scripts/globalize.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/cultures/globalize.culture.en-AU.js")"></script>
+<script>
+    $(function () {
+        $.validator.methods.date = function (value, element) {
+            Globalize.culture("en-AU");
+            // you can alternatively pass the culture to parseDate instead of
+            // setting the culture above, like so:
+            // parseDate(value, null, "en-AU")
+            return this.optional(element) || Globalize.parseDate(value) !== null;
+        }
+    })
+</script>

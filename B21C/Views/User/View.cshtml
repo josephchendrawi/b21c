@@ -1,0 +1,95 @@
+﻿@model B21C.Models.BuyerVM
+@{
+    ViewBag.Title = "Customer & Reseller Details";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Customer & Reseller Details }
+
+@Html.Partial("_Kendo")
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">User Information</h3>
+            </div><!-- /.box-header -->
+            <div class="box-body">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Username)
+                    <div>@Model.Username</div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Name)
+                    <div>@Model.Name</div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Phone)
+                    <div>@Model.Phone</div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Gender)
+                    <div>@Model.Gender</div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.BirthDate)
+                    <div>@(Model.BirthDate == null ? "-" : Model.BirthDate.Value.ToString("dd MMM yyyy"))</div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Balance)
+                    <div>Rp. @Model.Balance.ToString("N0")</div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Type)
+                    <div>@Model.Type</div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Point)
+                    <div>@Model.Point</div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.UserStatus)
+                    <div>@Model.UserStatus</div>
+                </div>
+            </div><!-- /.box-body -->
+        </div><!-- /.box -->
+    </div>
+    <div class="col-md-8">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Balance Transaction List</h3>
+            </div><!-- /.box-header -->
+            <div class="box-body">
+                @(Html.Kendo().Grid<UserBalanceTrxVM>()
+                .Name("grid")
+                .HtmlAttributes(new { @class = "tbl-grid" })
+                .DataSource(dataSource => dataSource //Configure the Grid data source.
+                    .Ajax() //Specify that Ajax binding is used.
+                    .Read(read => read.Action("UserBalanceTrxList_Read", "User", new { UserId = Model.Id }))
+                    .Events(events => events.Error("error_handler"))
+                )
+                .Columns(columns =>
+                {
+                    columns.Bound(v => v.LastUpdAt).Title("At").Format("{0:dd/MM/yyyy HH:mm}").Width(180);
+                    columns.Bound(v => v.Amount).ClientTemplate("<div class='text-right'>#=kendo.toString(Amount,'n0')#</div>").Width(120);
+                    columns.Bound(v => v.Remarks);
+                })
+                .Scrollable(scroll => scroll.Enabled(true).Height("auto"))
+                .Resizable(resize => resize.Columns(true))
+                .Pageable() // Enable paging
+                .Sortable() // Enable sorting
+                .Filterable(f => f.Extra(true)
+                    .Operators(o => o.ForString(s => s.Clear()
+                        .Contains("Contains")
+                        .DoesNotContain("Does not contain")
+                        .IsEqualTo("Is equal to")
+                        .IsNotEqualTo("Is not equal to")
+                        .StartsWith("Starts with")
+                        .EndsWith("Ends with ")
+                    ))
+                )
+                )
+
+            </div>
+        </div>
+    </div>
+</div>

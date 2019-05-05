@@ -1,0 +1,5 @@
+ALTER TABLE [PRODUCT]
+add Point int
+
+ALTER TABLE [ORDER_PRODUCT]
+add Point int

@@ -1,0 +1,35 @@
+﻿@model B21C.Models.CatalogVM
+@{
+    ViewBag.Title = "Edit Catalog";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Edit Catalog }
+
+<div class="row">
+    @using (Html.BeginForm("Edit", "Catalog", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.HiddenFor(m => m.Id)
+        
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Catalog Information</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Name)
+                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.URL)
+                        @Html.TextBoxFor(m => m.URL, new { @class = "form-control" })
+                    </div>
+                </div><!-- /.box-body -->
+
+                <div class="box-footer text-right">
+                    <input type="submit" class="btn btn-flat btn-primary" value="Submit" />
+                </div>
+            </div><!-- /.box -->
+        </div>
+    }
+</div>

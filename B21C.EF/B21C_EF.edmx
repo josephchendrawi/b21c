@@ -1,0 +1,1931 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="b21cModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ADDRESS_BOOK">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="LastUpdBy" Type="bigint" />
+          <Property Name="LastUpdAt" Type="datetime" />
+          <Property Name="AddressName" Type="nvarchar" MaxLength="100" />
+          <Property Name="Receiver" Type="nvarchar" MaxLength="100" />
+          <Property Name="Address" Type="nvarchar(max)" />
+          <Property Name="Postcode" Type="nvarchar" MaxLength="15" />
+          <Property Name="Province" Type="nvarchar" MaxLength="100" />
+          <Property Name="City" Type="nvarchar" MaxLength="100" />
+          <Property Name="Subdistrict" Type="nvarchar" MaxLength="100" />
+          <Property Name="SubdistrictId" Type="int" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="100" />
+          <Property Name="UserId" Type="bigint" />
+        </EntityType>
+        <EntityType Name="BANNER">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="LastUpdBy" Type="bigint" />
+          <Property Name="LastUpdAt" Type="datetime" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="URL" Type="nvarchar" MaxLength="100" />
+          <Property Name="ImageURL" Type="nvarchar" MaxLength="100" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="CATALOG">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="LastUpdBy" Type="bigint" />
+          <Property Name="LastUpdAt" Type="datetime" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="URL" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="EMAIL">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="LastUpdBy" Type="bigint" />
+          <Property Name="LastUpdAt" Type="datetime" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="Subject" Type="nvarchar" MaxLength="100" />
+          <Property Name="Body" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="EMAIL_SUBSCRIBER">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="LastUpdBy" Type="bigint" />
+          <Property Name="LastUpdAt" Type="datetime" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="Email" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LOOKUP">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="LastUpdBy" Type="bigint" />
+          <Property Name="LastUpdAt" Type="datetime" />
+          <Property Name="Type" Type="nvarchar" MaxLength="255" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Value" Type="nvarchar(max)" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="ActiveFlag" Type="bit" />
+        </EntityType>
+        <EntityType Name="ORDER">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="LastUpdBy" Type="bigint" />
+          <Property Name="LastUpdAt" Type="datetime" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="Sender" Type="nvarchar" MaxLength="100" />
+          <Property Name="TotalWeight" Type="int" />
+          <Property Name="ShippingFee" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="TotalPrice" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="OrderCode" Type="nvarchar" MaxLength="100" />
+          <Property Name="PaymentMethod" Type="nvarchar" MaxLength="100" />
+          <Property Name="ExpirationDate" Type="datetime" />
+          <Property Name="Receiver" Type="nvarchar" MaxLength="100" />
+          <Property Name="Address" Type="nvarchar(max)" />
+          <Property Name="ContactNo" Type="nvarchar" MaxLength="100" />
+          <Property Name="FlgAdminLogo" Type="bit" />
+          <Property Name="TrackingNo" Type="nvarchar(max)" />
+          <Property Name="BookedBy" Type="nvarchar" MaxLength="100" />
+          <Property Name="Shipping" Type="nvarchar" MaxLength="100" />
+          <Property Name="Discount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="ShippingCode" Type="nvarchar" MaxLength="100" />
+          <Property Name="PrepareShipmentDate" Type="datetime" />
+          <Property Name="Note" Type="nvarchar" MaxLength="255" />
+          <Property Name="AdditionalDiscount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="City" Type="nvarchar" MaxLength="255" />
+          <Property Name="Province" Type="nvarchar" MaxLength="255" />
+          <Property Name="Subdistrict" Type="nvarchar" MaxLength="255" />
+          <Property Name="SubdistrictId" Type="int" />
+          <Property Name="BankAccountName" Type="nvarchar" MaxLength="100" />
+          <Property Name="ShippingDate" Type="datetime" />
+          <Property Name="UserPaymentAmount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="TotalPartnerDiscount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="PackedCount" Type="int" />
+          <Property Name="PackingCode" Type="nvarchar" MaxLength="5" />
+          <Property Name="PaymentCode" Type="int" />
+          <Property Name="ReceivedPaymentConfirmationAt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ORDER_PRODUCT">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="LastUpdBy" Type="bigint" />
+          <Property Name="LastUpdAt" Type="datetime" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="ProductId" Type="bigint" Nullable="false" />
+          <Property Name="OrderId" Type="bigint" Nullable="false" />
+          <Property Name="Price" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Quantity" Type="int" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="Weight" Type="int" />
+          <Property Name="Point" Type="int" />
+          <Property Name="Modal" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="ProductCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="Color" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="PRODUCT">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="LastUpdBy" Type="bigint" />
+          <Property Name="LastUpdAt" Type="datetime" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="ProductCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Price" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Size" Type="nvarchar" MaxLength="100" />
+          <Property Name="Weight" Type="int" />
+          <Property Name="Color" Type="nvarchar" MaxLength="100" />
+          <Property Name="Stock" Type="int" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="Sales" Type="bit" />
+          <Property Name="SalesDiscount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="ModalPrice" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="OldStock" Type="int" />
+          <Property Name="Point" Type="int" />
+          <Property Name="PublishAt" Type="datetime" />
+          <Property Name="Section" Type="nvarchar(max)" />
+          <Property Name="CategoryId" Type="bigint" />
+        </EntityType>
+        <EntityType Name="PRODUCT_CATEGORY">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="LastUpdBy" Type="bigint" />
+          <Property Name="LastUpdAt" Type="datetime" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="ParentCategoryId" Type="bigint" />
+        </EntityType>
+        <EntityType Name="PRODUCT_IMAGE">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="LastUpdBy" Type="bigint" />
+          <Property Name="LastUpdAt" Type="datetime" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="ProductId" Type="bigint" Nullable="false" />
+          <Property Name="URL" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="DisplayOrder" Type="int" />
+        </EntityType>
+        <EntityType Name="PRODUCT_ORDER_STATUS_RESET">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="LastUpdBy" Type="bigint" />
+          <Property Name="LastUpdAt" Type="datetime" />
+          <Property Name="ProductId" Type="bigint" />
+          <Property Name="UserId" Type="bigint" />
+          <Property Name="ResetDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="PRODUCT_STOCK_ACTIVITY">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="LastUpdBy" Type="bigint" />
+          <Property Name="LastUpdAt" Type="datetime" />
+          <Property Name="ProductId" Type="bigint" Nullable="false" />
+          <Property Name="StockBefore" Type="int" Nullable="false" />
+          <Property Name="StockAfter" Type="int" Nullable="false" />
+          <Property Name="Remarks" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="PRODUCT_STOCK_LOG">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="LastUpdBy" Type="bigint" />
+          <Property Name="LastUpdAt" Type="datetime" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="Available" Type="nvarchar(max)" />
+          <Property Name="SoldOut" Type="nvarchar(max)" />
+          <Property Name="Canceled" Type="nvarchar(max)" />
+          <Property Name="Action" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="PRODUCT_TRENDING">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="LastUpdBy" Type="bigint" />
+          <Property Name="LastUpdAt" Type="datetime" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="ProductId" Type="bigint" Nullable="false" />
+          <Property Name="ValidFrom" Type="datetime" />
+          <Property Name="ValidTo" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ROLE">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="LastUpdBy" Type="bigint" />
+          <Property Name="LastUpdAt" Type="datetime" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="Description" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="ROLE_ACCESS">
+          <Key>
+            <PropertyRef Name="RoleId" />
+            <PropertyRef Name="AccessModule" />
+          </Key>
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="LastUpdBy" Type="bigint" />
+          <Property Name="LastUpdAt" Type="datetime" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="RoleId" Type="bigint" Nullable="false" />
+          <Property Name="AccessModule" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Viewable" Type="bit" />
+          <Property Name="Editable" Type="bit" />
+          <Property Name="Addable" Type="bit" />
+          <Property Name="Deletable" Type="bit" />
+        </EntityType>
+        <EntityType Name="SHOPPING_CART">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="LastUpdBy" Type="bigint" />
+          <Property Name="LastUpdAt" Type="datetime" />
+          <Property Name="ProductId" Type="bigint" />
+          <Property Name="Quantity" Type="int" />
+          <Property Name="UserId" Type="bigint" />
+          <Property Name="GuestID" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="SURVEY">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="LastUpdBy" Type="bigint" />
+          <Property Name="LastUpdAt" Type="datetime" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="URL" Type="nvarchar(max)" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="USER">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="LastUpdBy" Type="bigint" />
+          <Property Name="LastUpdAt" Type="datetime" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="Username" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="Type" Type="nvarchar" MaxLength="255" />
+          <Property Name="Website" Type="nvarchar" MaxLength="255" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="100" />
+          <Property Name="BirthDate" Type="datetime" />
+          <Property Name="Gender" Type="nvarchar" MaxLength="50" />
+          <Property Name="Balance" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Point" Type="int" />
+          <Property Name="UserStatusId" Type="bigint" />
+          <Property Name="RoleId" Type="bigint" />
+        </EntityType>
+        <EntityType Name="USER_BALANCE_TOPUP">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="LastUpdBy" Type="bigint" />
+          <Property Name="LastUpdAt" Type="datetime" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="AccountName" Type="nvarchar(max)" />
+          <Property Name="Amount" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="Bank" Type="nvarchar" MaxLength="100" />
+          <Property Name="TransferDateTime" Type="datetime" />
+          <Property Name="UserId" Type="bigint" />
+        </EntityType>
+        <EntityType Name="USER_BALANCE_TRX">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="LastUpdBy" Type="bigint" />
+          <Property Name="LastUpdAt" Type="datetime" />
+          <Property Name="TransactionDate" Type="datetime" />
+          <Property Name="Amount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Remarks" Type="nvarchar(max)" />
+          <Property Name="UserId" Type="bigint" />
+        </EntityType>
+        <EntityType Name="USER_STATUS">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="LastUpdBy" Type="bigint" />
+          <Property Name="LastUpdAt" Type="datetime" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="Discount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="PointNeeded" Type="int" />
+          <Property Name="IconImage" Type="nvarchar(max)" />
+          <Property Name="PartnerDiscount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="PartnerName" Type="nvarchar" MaxLength="100" />
+          <Property Name="PartnerIconImage" Type="nvarchar(max)" />
+          <Property Name="RegistrationFee" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="PartnerRegistrationFee" Type="decimal" Precision="18" Scale="2" />
+        </EntityType>
+        <EntityType Name="USER_SURVEY">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="LastUpdBy" Type="bigint" />
+          <Property Name="LastUpdAt" Type="datetime" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="UserId" Type="bigint" />
+          <Property Name="SurveyId" Type="bigint" />
+        </EntityType>
+        <Association Name="ADDRESS_BOOK_USER_F01">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="ADDRESS_BOOK" Type="Self.ADDRESS_BOOK" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ADDRESS_BOOK">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ORDER_PRODUCT_F01">
+          <End Role="ORDER" Type="Self.ORDER" Multiplicity="1" />
+          <End Role="ORDER_PRODUCT" Type="Self.ORDER_PRODUCT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ORDER">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ORDER_PRODUCT">
+              <PropertyRef Name="OrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ORDER_PRODUCT_F02">
+          <End Role="PRODUCT" Type="Self.PRODUCT" Multiplicity="1" />
+          <End Role="ORDER_PRODUCT" Type="Self.ORDER_PRODUCT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRODUCT">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ORDER_PRODUCT">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="PRODUCT_IMAGE_F01">
+          <End Role="PRODUCT" Type="Self.PRODUCT" Multiplicity="1" />
+          <End Role="PRODUCT_IMAGE" Type="Self.PRODUCT_IMAGE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRODUCT">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PRODUCT_IMAGE">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="PRODUCT_ORDER_STATUS_RESET_PRODUCT_F01">
+          <End Role="PRODUCT" Type="Self.PRODUCT" Multiplicity="0..1" />
+          <End Role="PRODUCT_ORDER_STATUS_RESET" Type="Self.PRODUCT_ORDER_STATUS_RESET" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRODUCT">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PRODUCT_ORDER_STATUS_RESET">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="PRODUCT_ORDER_STATUS_RESET_USER_F01">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="PRODUCT_ORDER_STATUS_RESET" Type="Self.PRODUCT_ORDER_STATUS_RESET" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PRODUCT_ORDER_STATUS_RESET">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="PRODUCT_PRODUCT_CATEGORY_F01">
+          <End Role="PRODUCT_CATEGORY" Type="Self.PRODUCT_CATEGORY" Multiplicity="0..1" />
+          <End Role="PRODUCT" Type="Self.PRODUCT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRODUCT_CATEGORY">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PRODUCT">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="PRODUCT_STOCK_ACTIVITY_PRODUCT_F01">
+          <End Role="PRODUCT" Type="Self.PRODUCT" Multiplicity="1" />
+          <End Role="PRODUCT_STOCK_ACTIVITY" Type="Self.PRODUCT_STOCK_ACTIVITY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRODUCT">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PRODUCT_STOCK_ACTIVITY">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="PRODUCT_TRENDING_PRODUCT_F01">
+          <End Role="PRODUCT" Type="Self.PRODUCT" Multiplicity="1" />
+          <End Role="PRODUCT_TRENDING" Type="Self.PRODUCT_TRENDING" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRODUCT">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PRODUCT_TRENDING">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ROLE_ACCESS_F01">
+          <End Role="ROLE" Type="Self.ROLE" Multiplicity="1" />
+          <End Role="ROLE_ACCESS" Type="Self.ROLE_ACCESS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ROLE">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ROLE_ACCESS">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SHOPPING_CART_PRODUCT_F01">
+          <End Role="PRODUCT" Type="Self.PRODUCT" Multiplicity="0..1" />
+          <End Role="SHOPPING_CART" Type="Self.SHOPPING_CART" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRODUCT">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SHOPPING_CART">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SHOPPING_CART_USER_F01">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="SHOPPING_CART" Type="Self.SHOPPING_CART" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SHOPPING_CART">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="USER_BALANCE_TOPUP_USER_F01">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="USER_BALANCE_TOPUP" Type="Self.USER_BALANCE_TOPUP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="USER_BALANCE_TOPUP">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="USER_BALANCE_TRX_USER_F01">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="USER_BALANCE_TRX" Type="Self.USER_BALANCE_TRX" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="USER_BALANCE_TRX">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="USER_ROLE_F02">
+          <End Role="ROLE" Type="Self.ROLE" Multiplicity="0..1" />
+          <End Role="USER" Type="Self.USER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ROLE">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="USER">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="USER_SURVEY_F01">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="USER_SURVEY" Type="Self.USER_SURVEY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="USER_SURVEY">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="USER_SURVEY_F02">
+          <End Role="SURVEY" Type="Self.SURVEY" Multiplicity="0..1" />
+          <End Role="USER_SURVEY" Type="Self.USER_SURVEY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SURVEY">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="USER_SURVEY">
+              <PropertyRef Name="SurveyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="USER_USER_STATUS_F01">
+          <End Role="USER_STATUS" Type="Self.USER_STATUS" Multiplicity="0..1" />
+          <End Role="USER" Type="Self.USER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER_STATUS">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="USER">
+              <PropertyRef Name="UserStatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="b21cModelStoreContainer">
+          <EntitySet Name="ADDRESS_BOOK" EntityType="Self.ADDRESS_BOOK" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BANNER" EntityType="Self.BANNER" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CATALOG" EntityType="Self.CATALOG" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EMAIL" EntityType="Self.EMAIL" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EMAIL_SUBSCRIBER" EntityType="Self.EMAIL_SUBSCRIBER" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LOOKUP" EntityType="Self.LOOKUP" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ORDER" EntityType="Self.ORDER" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ORDER_PRODUCT" EntityType="Self.ORDER_PRODUCT" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PRODUCT" EntityType="Self.PRODUCT" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PRODUCT_CATEGORY" EntityType="Self.PRODUCT_CATEGORY" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PRODUCT_IMAGE" EntityType="Self.PRODUCT_IMAGE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PRODUCT_ORDER_STATUS_RESET" EntityType="Self.PRODUCT_ORDER_STATUS_RESET" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PRODUCT_STOCK_ACTIVITY" EntityType="Self.PRODUCT_STOCK_ACTIVITY" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PRODUCT_STOCK_LOG" EntityType="Self.PRODUCT_STOCK_LOG" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PRODUCT_TRENDING" EntityType="Self.PRODUCT_TRENDING" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ROLE" EntityType="Self.ROLE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ROLE_ACCESS" EntityType="Self.ROLE_ACCESS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SHOPPING_CART" EntityType="Self.SHOPPING_CART" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SURVEY" EntityType="Self.SURVEY" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="USER" EntityType="Self.USER" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="USER_BALANCE_TOPUP" EntityType="Self.USER_BALANCE_TOPUP" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="USER_BALANCE_TRX" EntityType="Self.USER_BALANCE_TRX" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="USER_STATUS" EntityType="Self.USER_STATUS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="USER_SURVEY" EntityType="Self.USER_SURVEY" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="ADDRESS_BOOK_USER_F01" Association="Self.ADDRESS_BOOK_USER_F01">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="ADDRESS_BOOK" EntitySet="ADDRESS_BOOK" />
+          </AssociationSet>
+          <AssociationSet Name="ORDER_PRODUCT_F01" Association="Self.ORDER_PRODUCT_F01">
+            <End Role="ORDER" EntitySet="ORDER" />
+            <End Role="ORDER_PRODUCT" EntitySet="ORDER_PRODUCT" />
+          </AssociationSet>
+          <AssociationSet Name="ORDER_PRODUCT_F02" Association="Self.ORDER_PRODUCT_F02">
+            <End Role="PRODUCT" EntitySet="PRODUCT" />
+            <End Role="ORDER_PRODUCT" EntitySet="ORDER_PRODUCT" />
+          </AssociationSet>
+          <AssociationSet Name="PRODUCT_IMAGE_F01" Association="Self.PRODUCT_IMAGE_F01">
+            <End Role="PRODUCT" EntitySet="PRODUCT" />
+            <End Role="PRODUCT_IMAGE" EntitySet="PRODUCT_IMAGE" />
+          </AssociationSet>
+          <AssociationSet Name="PRODUCT_ORDER_STATUS_RESET_PRODUCT_F01" Association="Self.PRODUCT_ORDER_STATUS_RESET_PRODUCT_F01">
+            <End Role="PRODUCT" EntitySet="PRODUCT" />
+            <End Role="PRODUCT_ORDER_STATUS_RESET" EntitySet="PRODUCT_ORDER_STATUS_RESET" />
+          </AssociationSet>
+          <AssociationSet Name="PRODUCT_ORDER_STATUS_RESET_USER_F01" Association="Self.PRODUCT_ORDER_STATUS_RESET_USER_F01">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="PRODUCT_ORDER_STATUS_RESET" EntitySet="PRODUCT_ORDER_STATUS_RESET" />
+          </AssociationSet>
+          <AssociationSet Name="PRODUCT_PRODUCT_CATEGORY_F01" Association="Self.PRODUCT_PRODUCT_CATEGORY_F01">
+            <End Role="PRODUCT_CATEGORY" EntitySet="PRODUCT_CATEGORY" />
+            <End Role="PRODUCT" EntitySet="PRODUCT" />
+          </AssociationSet>
+          <AssociationSet Name="PRODUCT_STOCK_ACTIVITY_PRODUCT_F01" Association="Self.PRODUCT_STOCK_ACTIVITY_PRODUCT_F01">
+            <End Role="PRODUCT" EntitySet="PRODUCT" />
+            <End Role="PRODUCT_STOCK_ACTIVITY" EntitySet="PRODUCT_STOCK_ACTIVITY" />
+          </AssociationSet>
+          <AssociationSet Name="PRODUCT_TRENDING_PRODUCT_F01" Association="Self.PRODUCT_TRENDING_PRODUCT_F01">
+            <End Role="PRODUCT" EntitySet="PRODUCT" />
+            <End Role="PRODUCT_TRENDING" EntitySet="PRODUCT_TRENDING" />
+          </AssociationSet>
+          <AssociationSet Name="ROLE_ACCESS_F01" Association="Self.ROLE_ACCESS_F01">
+            <End Role="ROLE" EntitySet="ROLE" />
+            <End Role="ROLE_ACCESS" EntitySet="ROLE_ACCESS" />
+          </AssociationSet>
+          <AssociationSet Name="SHOPPING_CART_PRODUCT_F01" Association="Self.SHOPPING_CART_PRODUCT_F01">
+            <End Role="PRODUCT" EntitySet="PRODUCT" />
+            <End Role="SHOPPING_CART" EntitySet="SHOPPING_CART" />
+          </AssociationSet>
+          <AssociationSet Name="SHOPPING_CART_USER_F01" Association="Self.SHOPPING_CART_USER_F01">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="SHOPPING_CART" EntitySet="SHOPPING_CART" />
+          </AssociationSet>
+          <AssociationSet Name="USER_BALANCE_TOPUP_USER_F01" Association="Self.USER_BALANCE_TOPUP_USER_F01">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="USER_BALANCE_TOPUP" EntitySet="USER_BALANCE_TOPUP" />
+          </AssociationSet>
+          <AssociationSet Name="USER_BALANCE_TRX_USER_F01" Association="Self.USER_BALANCE_TRX_USER_F01">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="USER_BALANCE_TRX" EntitySet="USER_BALANCE_TRX" />
+          </AssociationSet>
+          <AssociationSet Name="USER_ROLE_F02" Association="Self.USER_ROLE_F02">
+            <End Role="ROLE" EntitySet="ROLE" />
+            <End Role="USER" EntitySet="USER" />
+          </AssociationSet>
+          <AssociationSet Name="USER_SURVEY_F01" Association="Self.USER_SURVEY_F01">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="USER_SURVEY" EntitySet="USER_SURVEY" />
+          </AssociationSet>
+          <AssociationSet Name="USER_SURVEY_F02" Association="Self.USER_SURVEY_F02">
+            <End Role="SURVEY" EntitySet="SURVEY" />
+            <End Role="USER_SURVEY" EntitySet="USER_SURVEY" />
+          </AssociationSet>
+          <AssociationSet Name="USER_USER_STATUS_F01" Association="Self.USER_USER_STATUS_F01">
+            <End Role="USER_STATUS" EntitySet="USER_STATUS" />
+            <End Role="USER" EntitySet="USER" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="b21cModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="b21cEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ADDRESS_BOOK" EntityType="b21cModel.ADDRESS_BOOK" />
+          <EntitySet Name="BANNERs" EntityType="b21cModel.BANNER" />
+          <EntitySet Name="CATALOGs" EntityType="b21cModel.CATALOG" />
+          <EntitySet Name="EMAILs" EntityType="b21cModel.EMAIL" />
+          <EntitySet Name="EMAIL_SUBSCRIBER" EntityType="b21cModel.EMAIL_SUBSCRIBER" />
+          <EntitySet Name="ORDERs" EntityType="b21cModel.ORDER" />
+          <EntitySet Name="ORDER_PRODUCT" EntityType="b21cModel.ORDER_PRODUCT" />
+          <EntitySet Name="PRODUCTs" EntityType="b21cModel.PRODUCT" />
+          <EntitySet Name="PRODUCT_IMAGE" EntityType="b21cModel.PRODUCT_IMAGE" />
+          <EntitySet Name="PRODUCT_STOCK_LOG" EntityType="b21cModel.PRODUCT_STOCK_LOG" />
+          <EntitySet Name="SHOPPING_CART" EntityType="b21cModel.SHOPPING_CART" />
+          <EntitySet Name="USER_BALANCE_TRX" EntityType="b21cModel.USER_BALANCE_TRX" />
+          <AssociationSet Name="ORDER_PRODUCT_F01" Association="b21cModel.ORDER_PRODUCT_F01">
+            <End Role="ORDER" EntitySet="ORDERs" />
+            <End Role="ORDER_PRODUCT" EntitySet="ORDER_PRODUCT" />
+          </AssociationSet>
+          <AssociationSet Name="ORDER_PRODUCT_F02" Association="b21cModel.ORDER_PRODUCT_F02">
+            <End Role="PRODUCT" EntitySet="PRODUCTs" />
+            <End Role="ORDER_PRODUCT" EntitySet="ORDER_PRODUCT" />
+          </AssociationSet>
+          <AssociationSet Name="PRODUCT_IMAGE_F01" Association="b21cModel.PRODUCT_IMAGE_F01">
+            <End Role="PRODUCT" EntitySet="PRODUCTs" />
+            <End Role="PRODUCT_IMAGE" EntitySet="PRODUCT_IMAGE" />
+          </AssociationSet>
+          <AssociationSet Name="SHOPPING_CART_PRODUCT_F01" Association="b21cModel.SHOPPING_CART_PRODUCT_F01">
+            <End Role="PRODUCT" EntitySet="PRODUCTs" />
+            <End Role="SHOPPING_CART" EntitySet="SHOPPING_CART" />
+          </AssociationSet>
+          <EntitySet Name="PRODUCT_TRENDING" EntityType="b21cModel.PRODUCT_TRENDING" />
+          <AssociationSet Name="PRODUCT_TRENDING_PRODUCT_F01" Association="b21cModel.PRODUCT_TRENDING_PRODUCT_F01">
+            <End Role="PRODUCT" EntitySet="PRODUCTs" />
+            <End Role="PRODUCT_TRENDING" EntitySet="PRODUCT_TRENDING" />
+          </AssociationSet>
+          <EntitySet Name="PRODUCT_STOCK_ACTIVITY" EntityType="b21cModel.PRODUCT_STOCK_ACTIVITY" />
+          <AssociationSet Name="PRODUCT_STOCK_ACTIVITY_PRODUCT_F01" Association="b21cModel.PRODUCT_STOCK_ACTIVITY_PRODUCT_F01">
+            <End Role="PRODUCT" EntitySet="PRODUCTs" />
+            <End Role="PRODUCT_STOCK_ACTIVITY" EntitySet="PRODUCT_STOCK_ACTIVITY" />
+          </AssociationSet>
+          <EntitySet Name="USER_BALANCE_TOPUP" EntityType="b21cModel.USER_BALANCE_TOPUP" />
+          <EntitySet Name="PRODUCT_ORDER_STATUS_RESET" EntityType="b21cModel.PRODUCT_ORDER_STATUS_RESET" />
+          <AssociationSet Name="PRODUCT_ORDER_STATUS_RESET_PRODUCT_F01" Association="b21cModel.PRODUCT_ORDER_STATUS_RESET_PRODUCT_F01">
+            <End Role="PRODUCT" EntitySet="PRODUCTs" />
+            <End Role="PRODUCT_ORDER_STATUS_RESET" EntitySet="PRODUCT_ORDER_STATUS_RESET" />
+          </AssociationSet>
+          <EntitySet Name="LOOKUPs" EntityType="b21cModel.LOOKUP" />
+          <EntitySet Name="SURVEYs" EntityType="b21cModel.SURVEY" />
+          <EntitySet Name="USER_SURVEY" EntityType="b21cModel.USER_SURVEY" />
+          <AssociationSet Name="USER_SURVEY_F02" Association="b21cModel.USER_SURVEY_F02">
+            <End Role="SURVEY" EntitySet="SURVEYs" />
+            <End Role="USER_SURVEY" EntitySet="USER_SURVEY" />
+          </AssociationSet>
+          <EntitySet Name="ROLEs" EntityType="b21cModel.ROLE" />
+          <EntitySet Name="USERs" EntityType="b21cModel.USER" />
+          <AssociationSet Name="ADDRESS_BOOK_USER_F01" Association="b21cModel.ADDRESS_BOOK_USER_F01">
+            <End Role="USER" EntitySet="USERs" />
+            <End Role="ADDRESS_BOOK" EntitySet="ADDRESS_BOOK" />
+          </AssociationSet>
+          <AssociationSet Name="PRODUCT_ORDER_STATUS_RESET_USER_F01" Association="b21cModel.PRODUCT_ORDER_STATUS_RESET_USER_F01">
+            <End Role="USER" EntitySet="USERs" />
+            <End Role="PRODUCT_ORDER_STATUS_RESET" EntitySet="PRODUCT_ORDER_STATUS_RESET" />
+          </AssociationSet>
+          <AssociationSet Name="USER_ROLE_F02" Association="b21cModel.USER_ROLE_F02">
+            <End Role="ROLE" EntitySet="ROLEs" />
+            <End Role="USER" EntitySet="USERs" />
+          </AssociationSet>
+          <AssociationSet Name="SHOPPING_CART_USER_F01" Association="b21cModel.SHOPPING_CART_USER_F01">
+            <End Role="USER" EntitySet="USERs" />
+            <End Role="SHOPPING_CART" EntitySet="SHOPPING_CART" />
+          </AssociationSet>
+          <AssociationSet Name="USER_BALANCE_TOPUP_USER_F01" Association="b21cModel.USER_BALANCE_TOPUP_USER_F01">
+            <End Role="USER" EntitySet="USERs" />
+            <End Role="USER_BALANCE_TOPUP" EntitySet="USER_BALANCE_TOPUP" />
+          </AssociationSet>
+          <AssociationSet Name="USER_BALANCE_TRX_USER_F01" Association="b21cModel.USER_BALANCE_TRX_USER_F01">
+            <End Role="USER" EntitySet="USERs" />
+            <End Role="USER_BALANCE_TRX" EntitySet="USER_BALANCE_TRX" />
+          </AssociationSet>
+          <AssociationSet Name="USER_SURVEY_F01" Association="b21cModel.USER_SURVEY_F01">
+            <End Role="USER" EntitySet="USERs" />
+            <End Role="USER_SURVEY" EntitySet="USER_SURVEY" />
+          </AssociationSet>
+          <EntitySet Name="ROLE_ACCESS" EntityType="b21cModel.ROLE_ACCESS" />
+          <AssociationSet Name="ROLE_ACCESS_F01" Association="b21cModel.ROLE_ACCESS_F01">
+            <End Role="ROLE" EntitySet="ROLEs" />
+            <End Role="ROLE_ACCESS" EntitySet="ROLE_ACCESS" />
+          </AssociationSet>
+          <EntitySet Name="USER_STATUS" EntityType="b21cModel.USER_STATUS" />
+          <AssociationSet Name="USER_USER_STATUS_F01" Association="b21cModel.USER_USER_STATUS_F01">
+            <End Role="USER_STATUS" EntitySet="USER_STATUS" />
+            <End Role="USER" EntitySet="USERs" />
+          </AssociationSet>
+          <EntitySet Name="PRODUCT_CATEGORY" EntityType="b21cModel.PRODUCT_CATEGORY" />
+          <AssociationSet Name="PRODUCT_PRODUCT_CATEGORY_F01" Association="b21cModel.PRODUCT_PRODUCT_CATEGORY_F01">
+            <End Role="PRODUCT_CATEGORY" EntitySet="PRODUCT_CATEGORY" />
+            <End Role="PRODUCT" EntitySet="PRODUCTs" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="ADDRESS_BOOK">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdBy" Type="Int64" />
+          <Property Name="LastUpdAt" Type="DateTime" Precision="3" />
+          <Property Name="AddressName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Receiver" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Postcode" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="Province" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="City" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Subdistrict" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="SubdistrictId" Type="Int32" />
+          <Property Name="Phone" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="UserId" Type="Int64" />
+          <NavigationProperty Name="USER" Relationship="b21cModel.ADDRESS_BOOK_USER_F01" FromRole="ADDRESS_BOOK" ToRole="USER" />
+        </EntityType>
+        <EntityType Name="BANNER">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdBy" Type="Int64" />
+          <Property Name="LastUpdAt" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="URL" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ImageURL" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CATALOG">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdBy" Type="Int64" />
+          <Property Name="LastUpdAt" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="URL" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="EMAIL">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdBy" Type="Int64" />
+          <Property Name="LastUpdAt" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Subject" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Body" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="EMAIL_SUBSCRIBER">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdBy" Type="Int64" />
+          <Property Name="LastUpdAt" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="ORDER">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdBy" Type="Int64" />
+          <Property Name="LastUpdAt" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Sender" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="TotalWeight" Type="Int32" />
+          <Property Name="ShippingFee" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="TotalPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="OrderCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="PaymentMethod" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ExpirationDate" Type="DateTime" Precision="3" />
+          <Property Name="Receiver" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ContactNo" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FlgAdminLogo" Type="Boolean" />
+          <Property Name="TrackingNo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="BookedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Shipping" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Discount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="ShippingCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="PrepareShipmentDate" Type="DateTime" Precision="3" />
+          <Property Name="Note" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AdditionalDiscount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="City" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Province" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Subdistrict" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SubdistrictId" Type="Int32" />
+          <NavigationProperty Name="ORDER_PRODUCT" Relationship="b21cModel.ORDER_PRODUCT_F01" FromRole="ORDER" ToRole="ORDER_PRODUCT" />
+          <Property Name="BankAccountName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ShippingDate" Type="DateTime" Precision="3" />
+          <Property Name="UserPaymentAmount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="TotalPartnerDiscount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="PackedCount" Type="Int32" />
+          <Property Name="PackingCode" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="PaymentCode" Type="Int32" />
+          <Property Name="ReceivedPaymentConfirmationAt" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="ORDER_PRODUCT">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdBy" Type="Int64" />
+          <Property Name="LastUpdAt" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ProductId" Type="Int64" Nullable="false" />
+          <Property Name="OrderId" Type="Int64" Nullable="false" />
+          <Property Name="Price" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Quantity" Type="Int32" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Weight" Type="Int32" />
+          <NavigationProperty Name="ORDER" Relationship="b21cModel.ORDER_PRODUCT_F01" FromRole="ORDER_PRODUCT" ToRole="ORDER" />
+          <NavigationProperty Name="PRODUCT" Relationship="b21cModel.ORDER_PRODUCT_F02" FromRole="ORDER_PRODUCT" ToRole="PRODUCT" />
+          <Property Name="Point" Type="Int32" />
+          <Property Name="Modal" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="ProductCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Color" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="PRODUCT">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdBy" Type="Int64" />
+          <Property Name="LastUpdAt" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ProductCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Price" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Size" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Weight" Type="Int32" />
+          <Property Name="Color" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Stock" Type="Int32" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Sales" Type="Boolean" />
+          <Property Name="SalesDiscount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="ModalPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="OldStock" Type="Int32" />
+          <NavigationProperty Name="ORDER_PRODUCT" Relationship="b21cModel.ORDER_PRODUCT_F02" FromRole="PRODUCT" ToRole="ORDER_PRODUCT" />
+          <NavigationProperty Name="PRODUCT_IMAGE" Relationship="b21cModel.PRODUCT_IMAGE_F01" FromRole="PRODUCT" ToRole="PRODUCT_IMAGE" />
+          <NavigationProperty Name="SHOPPING_CART" Relationship="b21cModel.SHOPPING_CART_PRODUCT_F01" FromRole="PRODUCT" ToRole="SHOPPING_CART" />
+          <NavigationProperty Name="PRODUCT_TRENDING" Relationship="b21cModel.PRODUCT_TRENDING_PRODUCT_F01" FromRole="PRODUCT" ToRole="PRODUCT_TRENDING" />
+          <NavigationProperty Name="PRODUCT_STOCK_ACTIVITY" Relationship="b21cModel.PRODUCT_STOCK_ACTIVITY_PRODUCT_F01" FromRole="PRODUCT" ToRole="PRODUCT_STOCK_ACTIVITY" />
+          <NavigationProperty Name="PRODUCT_ORDER_STATUS_RESET" Relationship="b21cModel.PRODUCT_ORDER_STATUS_RESET_PRODUCT_F01" FromRole="PRODUCT" ToRole="PRODUCT_ORDER_STATUS_RESET" />
+          <Property Name="Point" Type="Int32" />
+          <Property Name="PublishAt" Type="DateTime" Precision="3" />
+          <Property Name="Section" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CategoryId" Type="Int64" />
+          <NavigationProperty Name="PRODUCT_CATEGORY" Relationship="b21cModel.PRODUCT_PRODUCT_CATEGORY_F01" FromRole="PRODUCT" ToRole="PRODUCT_CATEGORY" />
+        </EntityType>
+        <EntityType Name="PRODUCT_IMAGE">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdBy" Type="Int64" />
+          <Property Name="LastUpdAt" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ProductId" Type="Int64" Nullable="false" />
+          <Property Name="URL" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="DisplayOrder" Type="Int32" />
+          <NavigationProperty Name="PRODUCT" Relationship="b21cModel.PRODUCT_IMAGE_F01" FromRole="PRODUCT_IMAGE" ToRole="PRODUCT" />
+        </EntityType>
+        <EntityType Name="PRODUCT_STOCK_LOG">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdBy" Type="Int64" />
+          <Property Name="LastUpdAt" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Available" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SoldOut" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Canceled" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Action" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SHOPPING_CART">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdBy" Type="Int64" />
+          <Property Name="LastUpdAt" Type="DateTime" Precision="3" />
+          <Property Name="ProductId" Type="Int64" />
+          <Property Name="Quantity" Type="Int32" />
+          <Property Name="UserId" Type="Int64" />
+          <NavigationProperty Name="PRODUCT" Relationship="b21cModel.SHOPPING_CART_PRODUCT_F01" FromRole="SHOPPING_CART" ToRole="PRODUCT" />
+          <Property Name="GuestID" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="USER" Relationship="b21cModel.SHOPPING_CART_USER_F01" FromRole="SHOPPING_CART" ToRole="USER" />
+        </EntityType>
+        <EntityType Name="USER_BALANCE_TRX">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdBy" Type="Int64" />
+          <Property Name="LastUpdAt" Type="DateTime" Precision="3" />
+          <Property Name="TransactionDate" Type="DateTime" Precision="3" />
+          <Property Name="Amount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Remarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UserId" Type="Int64" />
+          <NavigationProperty Name="USER" Relationship="b21cModel.USER_BALANCE_TRX_USER_F01" FromRole="USER_BALANCE_TRX" ToRole="USER" />
+        </EntityType>
+        <Association Name="ORDER_PRODUCT_F01">
+          <End Type="b21cModel.ORDER" Role="ORDER" Multiplicity="1" />
+          <End Type="b21cModel.ORDER_PRODUCT" Role="ORDER_PRODUCT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ORDER">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ORDER_PRODUCT">
+              <PropertyRef Name="OrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ORDER_PRODUCT_F02">
+          <End Type="b21cModel.PRODUCT" Role="PRODUCT" Multiplicity="1" />
+          <End Type="b21cModel.ORDER_PRODUCT" Role="ORDER_PRODUCT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRODUCT">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ORDER_PRODUCT">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="PRODUCT_IMAGE_F01">
+          <End Type="b21cModel.PRODUCT" Role="PRODUCT" Multiplicity="1" />
+          <End Type="b21cModel.PRODUCT_IMAGE" Role="PRODUCT_IMAGE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRODUCT">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PRODUCT_IMAGE">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SHOPPING_CART_PRODUCT_F01">
+          <End Type="b21cModel.PRODUCT" Role="PRODUCT" Multiplicity="0..1" />
+          <End Type="b21cModel.SHOPPING_CART" Role="SHOPPING_CART" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRODUCT">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SHOPPING_CART">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="PRODUCT_TRENDING">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdBy" Type="Int64" />
+          <Property Name="LastUpdAt" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ProductId" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="PRODUCT" Relationship="b21cModel.PRODUCT_TRENDING_PRODUCT_F01" FromRole="PRODUCT_TRENDING" ToRole="PRODUCT" />
+          <Property Name="ValidFrom" Type="DateTime" Precision="3" />
+          <Property Name="ValidTo" Type="DateTime" Precision="3" />
+        </EntityType>
+        <Association Name="PRODUCT_TRENDING_PRODUCT_F01">
+          <End Type="b21cModel.PRODUCT" Role="PRODUCT" Multiplicity="1" />
+          <End Type="b21cModel.PRODUCT_TRENDING" Role="PRODUCT_TRENDING" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRODUCT">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PRODUCT_TRENDING">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="PRODUCT_STOCK_ACTIVITY">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdBy" Type="Int64" />
+          <Property Name="LastUpdAt" Type="DateTime" Precision="3" />
+          <Property Name="ProductId" Type="Int64" Nullable="false" />
+          <Property Name="StockBefore" Type="Int32" Nullable="false" />
+          <Property Name="StockAfter" Type="Int32" Nullable="false" />
+          <Property Name="Remarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="PRODUCT" Relationship="b21cModel.PRODUCT_STOCK_ACTIVITY_PRODUCT_F01" FromRole="PRODUCT_STOCK_ACTIVITY" ToRole="PRODUCT" />
+        </EntityType>
+        <Association Name="PRODUCT_STOCK_ACTIVITY_PRODUCT_F01">
+          <End Type="b21cModel.PRODUCT" Role="PRODUCT" Multiplicity="1" />
+          <End Type="b21cModel.PRODUCT_STOCK_ACTIVITY" Role="PRODUCT_STOCK_ACTIVITY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRODUCT">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PRODUCT_STOCK_ACTIVITY">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="USER_BALANCE_TOPUP">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdBy" Type="Int64" />
+          <Property Name="LastUpdAt" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AccountName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Amount" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Bank" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="TransferDateTime" Type="DateTime" Precision="3" />
+          <Property Name="UserId" Type="Int64" />
+          <NavigationProperty Name="USER" Relationship="b21cModel.USER_BALANCE_TOPUP_USER_F01" FromRole="USER_BALANCE_TOPUP" ToRole="USER" />
+        </EntityType>
+        <EntityType Name="PRODUCT_ORDER_STATUS_RESET">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdBy" Type="Int64" />
+          <Property Name="LastUpdAt" Type="DateTime" Precision="3" />
+          <Property Name="ProductId" Type="Int64" />
+          <Property Name="UserId" Type="Int64" />
+          <Property Name="ResetDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="PRODUCT" Relationship="b21cModel.PRODUCT_ORDER_STATUS_RESET_PRODUCT_F01" FromRole="PRODUCT_ORDER_STATUS_RESET" ToRole="PRODUCT" />
+          <NavigationProperty Name="USER" Relationship="b21cModel.PRODUCT_ORDER_STATUS_RESET_USER_F01" FromRole="PRODUCT_ORDER_STATUS_RESET" ToRole="USER" />
+        </EntityType>
+        <Association Name="PRODUCT_ORDER_STATUS_RESET_PRODUCT_F01">
+          <End Type="b21cModel.PRODUCT" Role="PRODUCT" Multiplicity="0..1" />
+          <End Type="b21cModel.PRODUCT_ORDER_STATUS_RESET" Role="PRODUCT_ORDER_STATUS_RESET" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRODUCT">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PRODUCT_ORDER_STATUS_RESET">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="LOOKUP">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdBy" Type="Int64" />
+          <Property Name="LastUpdAt" Type="DateTime" Precision="3" />
+          <Property Name="Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="ActiveFlag" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="SURVEY">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdBy" Type="Int64" />
+          <Property Name="LastUpdAt" Type="DateTime" Precision="3" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="URL" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="USER_SURVEY" Relationship="b21cModel.USER_SURVEY_F02" FromRole="SURVEY" ToRole="USER_SURVEY" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="USER_SURVEY">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdBy" Type="Int64" />
+          <Property Name="LastUpdAt" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UserId" Type="Int64" />
+          <Property Name="SurveyId" Type="Int64" />
+          <NavigationProperty Name="SURVEY" Relationship="b21cModel.USER_SURVEY_F02" FromRole="USER_SURVEY" ToRole="SURVEY" />
+          <NavigationProperty Name="USER" Relationship="b21cModel.USER_SURVEY_F01" FromRole="USER_SURVEY" ToRole="USER" />
+        </EntityType>
+        <Association Name="USER_SURVEY_F02">
+          <End Type="b21cModel.SURVEY" Role="SURVEY" Multiplicity="0..1" />
+          <End Type="b21cModel.USER_SURVEY" Role="USER_SURVEY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SURVEY">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="USER_SURVEY">
+              <PropertyRef Name="SurveyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ROLE">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdBy" Type="Int64" />
+          <Property Name="LastUpdAt" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="USERs" Relationship="b21cModel.USER_ROLE_F02" FromRole="ROLE" ToRole="USER" />
+          <NavigationProperty Name="ROLE_ACCESS" Relationship="b21cModel.ROLE_ACCESS_F01" FromRole="ROLE" ToRole="ROLE_ACCESS" />
+        </EntityType>
+        <EntityType Name="USER">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdBy" Type="Int64" />
+          <Property Name="LastUpdAt" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Username" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Website" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="BirthDate" Type="DateTime" Precision="3" />
+          <Property Name="Gender" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Balance" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Point" Type="Int32" />
+          <Property Name="UserStatusId" Type="Int64" />
+          <Property Name="RoleId" Type="Int64" />
+          <NavigationProperty Name="ADDRESS_BOOK" Relationship="b21cModel.ADDRESS_BOOK_USER_F01" FromRole="USER" ToRole="ADDRESS_BOOK" />
+          <NavigationProperty Name="PRODUCT_ORDER_STATUS_RESET" Relationship="b21cModel.PRODUCT_ORDER_STATUS_RESET_USER_F01" FromRole="USER" ToRole="PRODUCT_ORDER_STATUS_RESET" />
+          <NavigationProperty Name="ROLE" Relationship="b21cModel.USER_ROLE_F02" FromRole="USER" ToRole="ROLE" />
+          <NavigationProperty Name="SHOPPING_CART" Relationship="b21cModel.SHOPPING_CART_USER_F01" FromRole="USER" ToRole="SHOPPING_CART" />
+          <NavigationProperty Name="USER_BALANCE_TOPUP" Relationship="b21cModel.USER_BALANCE_TOPUP_USER_F01" FromRole="USER" ToRole="USER_BALANCE_TOPUP" />
+          <NavigationProperty Name="USER_BALANCE_TRX" Relationship="b21cModel.USER_BALANCE_TRX_USER_F01" FromRole="USER" ToRole="USER_BALANCE_TRX" />
+          <NavigationProperty Name="USER_SURVEY" Relationship="b21cModel.USER_SURVEY_F01" FromRole="USER" ToRole="USER_SURVEY" />
+          <NavigationProperty Name="USER_STATUS" Relationship="b21cModel.USER_USER_STATUS_F01" FromRole="USER" ToRole="USER_STATUS" />
+        </EntityType>
+        <Association Name="ADDRESS_BOOK_USER_F01">
+          <End Type="b21cModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="b21cModel.ADDRESS_BOOK" Role="ADDRESS_BOOK" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ADDRESS_BOOK">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="PRODUCT_ORDER_STATUS_RESET_USER_F01">
+          <End Type="b21cModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="b21cModel.PRODUCT_ORDER_STATUS_RESET" Role="PRODUCT_ORDER_STATUS_RESET" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PRODUCT_ORDER_STATUS_RESET">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="USER_ROLE_F02">
+          <End Type="b21cModel.ROLE" Role="ROLE" Multiplicity="0..1" />
+          <End Type="b21cModel.USER" Role="USER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ROLE">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="USER">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SHOPPING_CART_USER_F01">
+          <End Type="b21cModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="b21cModel.SHOPPING_CART" Role="SHOPPING_CART" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SHOPPING_CART">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="USER_BALANCE_TOPUP_USER_F01">
+          <End Type="b21cModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="b21cModel.USER_BALANCE_TOPUP" Role="USER_BALANCE_TOPUP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="USER_BALANCE_TOPUP">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="USER_BALANCE_TRX_USER_F01">
+          <End Type="b21cModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="b21cModel.USER_BALANCE_TRX" Role="USER_BALANCE_TRX" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="USER_BALANCE_TRX">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="USER_SURVEY_F01">
+          <End Type="b21cModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="b21cModel.USER_SURVEY" Role="USER_SURVEY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="USER_SURVEY">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ROLE_ACCESS">
+          <Key>
+            <PropertyRef Name="RoleId" />
+            <PropertyRef Name="AccessModule" />
+          </Key>
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdBy" Type="Int64" />
+          <Property Name="LastUpdAt" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RoleId" Type="Int64" Nullable="false" />
+          <Property Name="AccessModule" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Viewable" Type="Boolean" />
+          <Property Name="Editable" Type="Boolean" />
+          <Property Name="Addable" Type="Boolean" />
+          <Property Name="Deletable" Type="Boolean" />
+          <NavigationProperty Name="ROLE" Relationship="b21cModel.ROLE_ACCESS_F01" FromRole="ROLE_ACCESS" ToRole="ROLE" />
+        </EntityType>
+        <Association Name="ROLE_ACCESS_F01">
+          <End Type="b21cModel.ROLE" Role="ROLE" Multiplicity="1" />
+          <End Type="b21cModel.ROLE_ACCESS" Role="ROLE_ACCESS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ROLE">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ROLE_ACCESS">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="USER_STATUS">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdBy" Type="Int64" />
+          <Property Name="LastUpdAt" Type="DateTime" Precision="3" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Discount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="PointNeeded" Type="Int32" />
+          <Property Name="IconImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PartnerDiscount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="PartnerName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="PartnerIconImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="USERs" Relationship="b21cModel.USER_USER_STATUS_F01" FromRole="USER_STATUS" ToRole="USER" />
+          <Property Name="RegistrationFee" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="PartnerRegistrationFee" Type="Decimal" Precision="18" Scale="2" />
+        </EntityType>
+        <Association Name="USER_USER_STATUS_F01">
+          <End Type="b21cModel.USER_STATUS" Role="USER_STATUS" Multiplicity="0..1" />
+          <End Type="b21cModel.USER" Role="USER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER_STATUS">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="USER">
+              <PropertyRef Name="UserStatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="PRODUCT_CATEGORY">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdBy" Type="Int64" />
+          <Property Name="LastUpdAt" Type="DateTime" Precision="3" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ParentCategoryId" Type="Int64" />
+          <NavigationProperty Name="PRODUCTs" Relationship="b21cModel.PRODUCT_PRODUCT_CATEGORY_F01" FromRole="PRODUCT_CATEGORY" ToRole="PRODUCT" />
+        </EntityType>
+        <Association Name="PRODUCT_PRODUCT_CATEGORY_F01">
+          <End Type="b21cModel.PRODUCT_CATEGORY" Role="PRODUCT_CATEGORY" Multiplicity="0..1" />
+          <End Type="b21cModel.PRODUCT" Role="PRODUCT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRODUCT_CATEGORY">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PRODUCT">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="b21cModelStoreContainer" CdmEntityContainer="b21cEntities">
+          <EntitySetMapping Name="ADDRESS_BOOK">
+            <EntityTypeMapping TypeName="b21cModel.ADDRESS_BOOK">
+              <MappingFragment StoreEntitySet="ADDRESS_BOOK">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="SubdistrictId" ColumnName="SubdistrictId" />
+                <ScalarProperty Name="Subdistrict" ColumnName="Subdistrict" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Province" ColumnName="Province" />
+                <ScalarProperty Name="Postcode" ColumnName="Postcode" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Receiver" ColumnName="Receiver" />
+                <ScalarProperty Name="AddressName" ColumnName="AddressName" />
+                <ScalarProperty Name="LastUpdAt" ColumnName="LastUpdAt" />
+                <ScalarProperty Name="LastUpdBy" ColumnName="LastUpdBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BANNERs">
+            <EntityTypeMapping TypeName="b21cModel.BANNER">
+              <MappingFragment StoreEntitySet="BANNER">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ImageURL" ColumnName="ImageURL" />
+                <ScalarProperty Name="URL" ColumnName="URL" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="LastUpdAt" ColumnName="LastUpdAt" />
+                <ScalarProperty Name="LastUpdBy" ColumnName="LastUpdBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CATALOGs">
+            <EntityTypeMapping TypeName="b21cModel.CATALOG">
+              <MappingFragment StoreEntitySet="CATALOG">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="URL" ColumnName="URL" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="LastUpdAt" ColumnName="LastUpdAt" />
+                <ScalarProperty Name="LastUpdBy" ColumnName="LastUpdBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EMAILs">
+            <EntityTypeMapping TypeName="b21cModel.EMAIL">
+              <MappingFragment StoreEntitySet="EMAIL">
+                <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="LastUpdAt" ColumnName="LastUpdAt" />
+                <ScalarProperty Name="LastUpdBy" ColumnName="LastUpdBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EMAIL_SUBSCRIBER">
+            <EntityTypeMapping TypeName="b21cModel.EMAIL_SUBSCRIBER">
+              <MappingFragment StoreEntitySet="EMAIL_SUBSCRIBER">
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="LastUpdAt" ColumnName="LastUpdAt" />
+                <ScalarProperty Name="LastUpdBy" ColumnName="LastUpdBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ORDERs">
+            <EntityTypeMapping TypeName="b21cModel.ORDER">
+              <MappingFragment StoreEntitySet="ORDER">
+                <ScalarProperty Name="ReceivedPaymentConfirmationAt" ColumnName="ReceivedPaymentConfirmationAt" />
+                <ScalarProperty Name="PaymentCode" ColumnName="PaymentCode" />
+                <ScalarProperty Name="PackingCode" ColumnName="PackingCode" />
+                <ScalarProperty Name="PackedCount" ColumnName="PackedCount" />
+                <ScalarProperty Name="TotalPartnerDiscount" ColumnName="TotalPartnerDiscount" />
+                <ScalarProperty Name="UserPaymentAmount" ColumnName="UserPaymentAmount" />
+                <ScalarProperty Name="ShippingDate" ColumnName="ShippingDate" />
+                <ScalarProperty Name="BankAccountName" ColumnName="BankAccountName" />
+                <ScalarProperty Name="SubdistrictId" ColumnName="SubdistrictId" />
+                <ScalarProperty Name="Subdistrict" ColumnName="Subdistrict" />
+                <ScalarProperty Name="Province" ColumnName="Province" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="AdditionalDiscount" ColumnName="AdditionalDiscount" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="PrepareShipmentDate" ColumnName="PrepareShipmentDate" />
+                <ScalarProperty Name="ShippingCode" ColumnName="ShippingCode" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+                <ScalarProperty Name="Shipping" ColumnName="Shipping" />
+                <ScalarProperty Name="BookedBy" ColumnName="BookedBy" />
+                <ScalarProperty Name="TrackingNo" ColumnName="TrackingNo" />
+                <ScalarProperty Name="FlgAdminLogo" ColumnName="FlgAdminLogo" />
+                <ScalarProperty Name="ContactNo" ColumnName="ContactNo" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Receiver" ColumnName="Receiver" />
+                <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+                <ScalarProperty Name="PaymentMethod" ColumnName="PaymentMethod" />
+                <ScalarProperty Name="OrderCode" ColumnName="OrderCode" />
+                <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
+                <ScalarProperty Name="ShippingFee" ColumnName="ShippingFee" />
+                <ScalarProperty Name="TotalWeight" ColumnName="TotalWeight" />
+                <ScalarProperty Name="Sender" ColumnName="Sender" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="LastUpdAt" ColumnName="LastUpdAt" />
+                <ScalarProperty Name="LastUpdBy" ColumnName="LastUpdBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ORDER_PRODUCT">
+            <EntityTypeMapping TypeName="b21cModel.ORDER_PRODUCT">
+              <MappingFragment StoreEntitySet="ORDER_PRODUCT">
+                <ScalarProperty Name="Color" ColumnName="Color" />
+                <ScalarProperty Name="ProductCode" ColumnName="ProductCode" />
+                <ScalarProperty Name="Modal" ColumnName="Modal" />
+                <ScalarProperty Name="Point" ColumnName="Point" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="LastUpdAt" ColumnName="LastUpdAt" />
+                <ScalarProperty Name="LastUpdBy" ColumnName="LastUpdBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PRODUCTs">
+            <EntityTypeMapping TypeName="b21cModel.PRODUCT">
+              <MappingFragment StoreEntitySet="PRODUCT">
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="Section" ColumnName="Section" />
+                <ScalarProperty Name="PublishAt" ColumnName="PublishAt" />
+                <ScalarProperty Name="Point" ColumnName="Point" />
+                <ScalarProperty Name="OldStock" ColumnName="OldStock" />
+                <ScalarProperty Name="ModalPrice" ColumnName="ModalPrice" />
+                <ScalarProperty Name="SalesDiscount" ColumnName="SalesDiscount" />
+                <ScalarProperty Name="Sales" ColumnName="Sales" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Stock" ColumnName="Stock" />
+                <ScalarProperty Name="Color" ColumnName="Color" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="Size" ColumnName="Size" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ProductCode" ColumnName="ProductCode" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="LastUpdAt" ColumnName="LastUpdAt" />
+                <ScalarProperty Name="LastUpdBy" ColumnName="LastUpdBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PRODUCT_IMAGE">
+            <EntityTypeMapping TypeName="b21cModel.PRODUCT_IMAGE">
+              <MappingFragment StoreEntitySet="PRODUCT_IMAGE">
+                <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+                <ScalarProperty Name="URL" ColumnName="URL" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="LastUpdAt" ColumnName="LastUpdAt" />
+                <ScalarProperty Name="LastUpdBy" ColumnName="LastUpdBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PRODUCT_STOCK_LOG">
+            <EntityTypeMapping TypeName="b21cModel.PRODUCT_STOCK_LOG">
+              <MappingFragment StoreEntitySet="PRODUCT_STOCK_LOG">
+                <ScalarProperty Name="Action" ColumnName="Action" />
+                <ScalarProperty Name="Canceled" ColumnName="Canceled" />
+                <ScalarProperty Name="SoldOut" ColumnName="SoldOut" />
+                <ScalarProperty Name="Available" ColumnName="Available" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="LastUpdAt" ColumnName="LastUpdAt" />
+                <ScalarProperty Name="LastUpdBy" ColumnName="LastUpdBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SHOPPING_CART">
+            <EntityTypeMapping TypeName="b21cModel.SHOPPING_CART">
+              <MappingFragment StoreEntitySet="SHOPPING_CART">
+                <ScalarProperty Name="GuestID" ColumnName="GuestID" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="LastUpdAt" ColumnName="LastUpdAt" />
+                <ScalarProperty Name="LastUpdBy" ColumnName="LastUpdBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="USER_BALANCE_TRX">
+            <EntityTypeMapping TypeName="b21cModel.USER_BALANCE_TRX">
+              <MappingFragment StoreEntitySet="USER_BALANCE_TRX">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Remarks" ColumnName="Remarks" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="TransactionDate" ColumnName="TransactionDate" />
+                <ScalarProperty Name="LastUpdAt" ColumnName="LastUpdAt" />
+                <ScalarProperty Name="LastUpdBy" ColumnName="LastUpdBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PRODUCT_TRENDING">
+            <EntityTypeMapping TypeName="b21cModel.PRODUCT_TRENDING">
+              <MappingFragment StoreEntitySet="PRODUCT_TRENDING">
+                <ScalarProperty Name="ValidTo" ColumnName="ValidTo" />
+                <ScalarProperty Name="ValidFrom" ColumnName="ValidFrom" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="LastUpdAt" ColumnName="LastUpdAt" />
+                <ScalarProperty Name="LastUpdBy" ColumnName="LastUpdBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PRODUCT_STOCK_ACTIVITY">
+            <EntityTypeMapping TypeName="b21cModel.PRODUCT_STOCK_ACTIVITY">
+              <MappingFragment StoreEntitySet="PRODUCT_STOCK_ACTIVITY">
+                <ScalarProperty Name="Remarks" ColumnName="Remarks" />
+                <ScalarProperty Name="StockAfter" ColumnName="StockAfter" />
+                <ScalarProperty Name="StockBefore" ColumnName="StockBefore" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="LastUpdAt" ColumnName="LastUpdAt" />
+                <ScalarProperty Name="LastUpdBy" ColumnName="LastUpdBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="USER_BALANCE_TOPUP">
+            <EntityTypeMapping TypeName="b21cModel.USER_BALANCE_TOPUP">
+              <MappingFragment StoreEntitySet="USER_BALANCE_TOPUP">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="TransferDateTime" ColumnName="TransferDateTime" />
+                <ScalarProperty Name="Bank" ColumnName="Bank" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="AccountName" ColumnName="AccountName" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="LastUpdAt" ColumnName="LastUpdAt" />
+                <ScalarProperty Name="LastUpdBy" ColumnName="LastUpdBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PRODUCT_ORDER_STATUS_RESET">
+            <EntityTypeMapping TypeName="b21cModel.PRODUCT_ORDER_STATUS_RESET">
+              <MappingFragment StoreEntitySet="PRODUCT_ORDER_STATUS_RESET">
+                <ScalarProperty Name="ResetDate" ColumnName="ResetDate" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="LastUpdAt" ColumnName="LastUpdAt" />
+                <ScalarProperty Name="LastUpdBy" ColumnName="LastUpdBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LOOKUPs">
+            <EntityTypeMapping TypeName="b21cModel.LOOKUP">
+              <MappingFragment StoreEntitySet="LOOKUP">
+                <ScalarProperty Name="ActiveFlag" ColumnName="ActiveFlag" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="LastUpdAt" ColumnName="LastUpdAt" />
+                <ScalarProperty Name="LastUpdBy" ColumnName="LastUpdBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SURVEYs">
+            <EntityTypeMapping TypeName="b21cModel.SURVEY">
+              <MappingFragment StoreEntitySet="SURVEY">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="URL" ColumnName="URL" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="LastUpdAt" ColumnName="LastUpdAt" />
+                <ScalarProperty Name="LastUpdBy" ColumnName="LastUpdBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="USER_SURVEY">
+            <EntityTypeMapping TypeName="b21cModel.USER_SURVEY">
+              <MappingFragment StoreEntitySet="USER_SURVEY">
+                <ScalarProperty Name="SurveyId" ColumnName="SurveyId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="LastUpdAt" ColumnName="LastUpdAt" />
+                <ScalarProperty Name="LastUpdBy" ColumnName="LastUpdBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ROLEs">
+            <EntityTypeMapping TypeName="b21cModel.ROLE">
+              <MappingFragment StoreEntitySet="ROLE">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="LastUpdAt" ColumnName="LastUpdAt" />
+                <ScalarProperty Name="LastUpdBy" ColumnName="LastUpdBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="USERs">
+            <EntityTypeMapping TypeName="b21cModel.USER">
+              <MappingFragment StoreEntitySet="USER">
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="UserStatusId" ColumnName="UserStatusId" />
+                <ScalarProperty Name="Point" ColumnName="Point" />
+                <ScalarProperty Name="Balance" ColumnName="Balance" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="BirthDate" ColumnName="BirthDate" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Website" ColumnName="Website" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="LastUpdAt" ColumnName="LastUpdAt" />
+                <ScalarProperty Name="LastUpdBy" ColumnName="LastUpdBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ROLE_ACCESS">
+            <EntityTypeMapping TypeName="b21cModel.ROLE_ACCESS">
+              <MappingFragment StoreEntitySet="ROLE_ACCESS">
+                <ScalarProperty Name="Deletable" ColumnName="Deletable" />
+                <ScalarProperty Name="Addable" ColumnName="Addable" />
+                <ScalarProperty Name="Editable" ColumnName="Editable" />
+                <ScalarProperty Name="Viewable" ColumnName="Viewable" />
+                <ScalarProperty Name="AccessModule" ColumnName="AccessModule" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="LastUpdAt" ColumnName="LastUpdAt" />
+                <ScalarProperty Name="LastUpdBy" ColumnName="LastUpdBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="USER_STATUS">
+            <EntityTypeMapping TypeName="b21cModel.USER_STATUS">
+              <MappingFragment StoreEntitySet="USER_STATUS">
+                <ScalarProperty Name="PartnerRegistrationFee" ColumnName="PartnerRegistrationFee" />
+                <ScalarProperty Name="RegistrationFee" ColumnName="RegistrationFee" />
+                <ScalarProperty Name="PartnerIconImage" ColumnName="PartnerIconImage" />
+                <ScalarProperty Name="PartnerName" ColumnName="PartnerName" />
+                <ScalarProperty Name="PartnerDiscount" ColumnName="PartnerDiscount" />
+                <ScalarProperty Name="IconImage" ColumnName="IconImage" />
+                <ScalarProperty Name="PointNeeded" ColumnName="PointNeeded" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="LastUpdAt" ColumnName="LastUpdAt" />
+                <ScalarProperty Name="LastUpdBy" ColumnName="LastUpdBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PRODUCT_CATEGORY">
+            <EntityTypeMapping TypeName="b21cModel.PRODUCT_CATEGORY">
+              <MappingFragment StoreEntitySet="PRODUCT_CATEGORY">
+                <ScalarProperty Name="ParentCategoryId" ColumnName="ParentCategoryId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="LastUpdAt" ColumnName="LastUpdAt" />
+                <ScalarProperty Name="LastUpdBy" ColumnName="LastUpdBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

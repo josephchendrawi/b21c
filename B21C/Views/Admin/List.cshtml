@@ -1,0 +1,49 @@
+﻿@{
+    ViewBag.Title = "Admin List";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Admin List }
+
+@Html.Partial("_Kendo")
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-default">
+            <div class="box-body">
+                @(Html.Kendo().Grid<AdminVM>()
+                .Name("grid")
+                .HtmlAttributes( new { @class = "tbl-grid"})
+                .DataSource(dataSource => dataSource //Configure the Grid data source.
+                    .Ajax() //Specify that Ajax binding is used.
+                    .Read(read => read.Action("AdminList_Read", "Admin"))
+                    .Events(events => events.Error("error_handler"))
+                )
+                .Columns(columns =>
+                {
+                    columns.Bound(v => v.Name);
+                    columns.Bound(v => v.Username);
+                    columns.Bound(v => v.RoleName);
+                    columns.Bound("").Filterable(false).Sortable(false).Width(200).ClientTemplate(
+                      " <a class='btn btn-sm btn-primary btn-flat' href='" + @Url.Action("Edit", "Admin") + "/#= Id #')\"><i class='fa fa-pencil'></i> Edit</a>"
+                    ).HtmlAttributes(new { @class = "text-right" });
+                })
+                .Scrollable(scroll => scroll.Enabled(true).Height("auto"))
+                .Resizable(resize => resize.Columns(true))
+                .Pageable() // Enable paging
+                .Sortable() // Enable sorting
+                .ToolBar(toolBar => toolBar.Template("<a class='btn btn-sm btn-primary btn-flat' href='" + @Url.Action("Add", "Admin") + "'><i class='fa fa-plus'></i> Add Admin</a>"))
+                .Filterable(f => f.Extra(true)
+                    .Operators(o => o.ForString(s => s.Clear()
+                        .Contains("Contains")
+                        .DoesNotContain("Does not contain")
+                        .IsEqualTo("Is equal to")
+                        .IsNotEqualTo("Is not equal to")
+                        .StartsWith("Starts with")
+                        .EndsWith("Ends with ")
+                    ))
+                )
+                )
+            </div>
+        </div>
+    </div>
+</div>

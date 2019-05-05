@@ -1,0 +1,225 @@
+﻿@model B21C.Models.UpdateOrderProductVM
+@{
+    ViewBag.Title = "Add Order Product";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Add Order Product }
+@section ContentHeader
+{
+    <a href="@Url.Action("CreateOrUpdate", new { Id = Model.Id })" class="btn btn-sm btn-flat btn-primary pull-right"><i class="fa fa-arrow-left"></i> Back to Details</a>
+}
+
+@Html.Partial("_Kendo")
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Order Information</h3>
+            </div><!-- /.box-header -->
+            <div class="box-body">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.BookedBy)
+                    <div>
+                        @Model.BookedBy
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.PaymentMethod)
+                    <div>
+                        @Model.PaymentMethod
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Shipping)
+                    <div>
+                        @Model.Shipping
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.ShippingFee)
+                    <div>
+                        Rp. @(((int)Model.ShippingFee).ToString("N0"))
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Discount)
+                    <div>
+                        Rp. @(((int)Model.Discount).ToString("N0"))
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.AdditionalDiscount)
+                    <div>
+                        Rp. @(((int)Model.AdditionalDiscount).ToString("N0"))
+                    </div>
+                </div>
+            </div><!-- /.box-body -->
+        </div><!-- /.box -->
+    </div>
+
+    <div class="col-md-4">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Selected Product</h3>
+                @using (Html.BeginForm("AddProduct", "Order", FormMethod.Post, new { enctype = "multipart/form-data", @class = "pull-right" }))
+                {
+                    @Html.HiddenFor(m => m.Id)
+                    @Html.HiddenFor(m => m.AddedProductS)
+
+                    @Html.HiddenFor(m => m.BookedBy)
+                    @Html.HiddenFor(m => m.PaymentMethod)
+                    @Html.HiddenFor(m => m.Shipping)
+                    @Html.HiddenFor(m => m.ShippingFee)
+                    @Html.HiddenFor(m => m.Discount)
+                    @Html.HiddenFor(m => m.AdditionalDiscount)
+
+                    <input type="submit" class="btn btn-flat btn-primary" value="Submit" />
+                }
+            </div><!-- /.box-header -->
+            <div class="box-body">
+                <table id="tbl-chosen-product" class="table table-bordered table-striped table-responsive table-hover">
+                    <thead class="text-bold">
+                        <tr>
+                            <td>Name</td>
+                            <td>Price</td>
+                            <td>Weight</td>
+                            <td>Quantity</td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var v in Model.ProductList)
+                        {
+                            <tr>
+                                <td>@v.Name</td>
+                                <td class='text-right'>@v.Price</td>
+                                <td class='text-right'>@v.Weight</td>
+                                <td>@v.Quantity</td>
+                                <td></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div><!-- /.box-body -->
+        </div><!-- /.box -->
+    </div>
+
+    <div class="col-md-5">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Product List</h3>
+                <div><small>Remember the sale products here are still in "Normal Price".</small></div>
+                <div><small>The asterisk * beside Price means it's a Sale Product (the Price is already discounted)</small></div>
+            </div><!-- /.box-header -->
+            <div class="box-body">
+                @(Html.Kendo().Grid<ProductVM>()
+                        .Name("grid-product")
+                        .HtmlAttributes(new { @class = "tbl-grid tbl-grid-sm" })
+                        .DataSource(dataSource => dataSource //Configure the Grid data source.
+                            .Ajax() //Specify that Ajax binding is used.
+                            .Read(read => read.Action("ProductList_Read", "Product"))
+                            .Events(events => events.Error("error_handler"))
+                        )
+                        .Columns(columns =>
+                        {
+                            columns.Bound(v => v.Name).Width(120);
+                            columns.Bound("").Title("Price").Width(100).ClientTemplate("<div class='text-right'>#if(Sales == true){#*#}# #=kendo.toString(TotalPrice,'n0')#</div>").Filterable(false).Sortable(false);
+                            columns.Bound(v => v.Weight).ClientTemplate("<div class='text-right'>#=kendo.toString(Weight,'n0')#</div>");
+                            columns.Bound(v => v.Stock).Format("{0:n0}").HtmlAttributes(new { @class = "text-right" });
+                            columns.Bound(v => v.MainProductImage).Title("").ClientTemplate("#if(MainProductImage != null){# <a href='" + Constant.UploadPath + "#=MainProductImage#' class='fancybox' title='#=MainProductImage#'><i class='fa fa-camera'></i></a> #}#");
+                            columns.Bound("").Filterable(false).Sortable(false).Width(70).ClientTemplate(
+                                " <a class='btn btn-sm btn-primary btn-flat' onclick='add_product(\"#= Id #\", \"#= Name #\",#= TotalPrice #,#= Weight #)'><i class='fa fa-plus'></i></a>"
+                            ).HtmlAttributes(new { @class = "text-right" });
+                        })
+                        .Scrollable(scroll => scroll.Enabled(true).Height("auto"))
+                        .Resizable(resize => resize.Columns(true))
+                        .Pageable(pager => pager.Numeric(false)) // Enable paging
+                        .Sortable() // Enable sorting
+                        .Filterable(f => f.Extra(true)
+                            .Operators(o => o.ForString(s => s.Clear()
+                                .Contains("Contains")
+                                .DoesNotContain("Does not contain")
+                                .IsEqualTo("Is equal to")
+                                .IsNotEqualTo("Is not equal to")
+                                .StartsWith("Starts with")
+                                .EndsWith("Ends with ")
+                            ))
+                        )
+                )
+            </div><!-- /.box-body -->
+        </div><!-- /.box -->
+    </div>
+</div>
+
+
+<script>
+    //reset value on start
+    $(function () {
+        $('#AddedProducts').val("");
+    });
+
+    $('form').submit(function () {
+        var AddedProductString = "";
+
+        $.each(added_products, function (i, product) {
+            AddedProductString += product.id + "#" + product.quantity + "|";
+        });
+
+        $('#AddedProductS').val(AddedProductString);
+    });
+    
+    var added_products = [];
+    //added_product template {id: id, quantity: 1}
+
+    function add_product(id, name, price, weight) {
+        //get index in added_products array
+        var product_idx = $.map(added_products, function (obj, index) {
+            if (obj.id == id) {
+                return index;
+            }
+        });
+
+        //if length == 0 means not found, then have to add new
+        if (product_idx.length == 0) {
+            var added_product = { id: id, quantity: 1 };
+            added_products.push(added_product);
+
+            //populate table
+            $('#tbl-chosen-product tbody').append(tbl_product_row_html(id, name, price, weight));
+        }
+        else {
+            added_products[product_idx].quantity += 1;
+            $('#product-qty-' + id).html(added_products[product_idx].quantity);
+        }
+    }
+
+    function tbl_product_row_html(id, name, price, weight) {
+        return "<tr id='product-" + id + "'>"
+            + "<td>" + name + "</td>"
+            + "<td class='text-right'>" + price + "</td>"
+            + "<td class='text-right'>" + weight + "</td>"
+            + "<td id='product-qty-" + id + "'>1</td>"
+            + "<td><a class='btn btn-sm btn-danger btn-flat' onclick='decrease_product(" + id + ",\"" + name + "\"," + price + "," + weight + ")'><i class='fa fa-minus'></i></a></td>"
+            + "</tr>";
+    }
+
+    function decrease_product(id, name, price, weight) {
+        //get index in added_products array
+        var product_idx = $.map(added_products, function (obj, index) {
+            if (obj.id == id) {
+                return index;
+            }
+        });
+        
+        added_products[product_idx].quantity -= 1;
+        $('#product-qty-' + id).html(added_products[product_idx].quantity);
+
+        if (added_products[product_idx].quantity <= 0) {
+            //delete from table
+            $("#product-" + id).remove();
+
+            added_products.splice(product_idx, 1);
+        }
+    }
+</script>

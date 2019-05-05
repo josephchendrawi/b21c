@@ -1,0 +1,63 @@
+﻿@model B21C.Models.CheckOutSuccessVM
+@{
+    ViewBag.Title = "Checkout Berhasil";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="checkout-success">
+    <i class="fa fa-check-circle highlight"></i>
+    <h2>Checkout Berhasil</h2>
+    <h2>Terima kasih untuk orderannya!</h2>
+    <br/>
+    <div>Kode Order adalah <h3><b>@Model.OrderCode</b></h3></div>
+    @if (Model.PaymentAmount > 0)
+    { 
+        <br />
+        <div>Jumlah yang harus dibayar</div>
+        <h3><b>Rp. @Model.PaymentAmount.ToString("N0")</b></h3>
+        <br />
+        <div>Mohon Segera Selesaikan Pembayaran sebelum</div>
+        <h3 class="highlight"><b>@Model.ExpirationDate.ToString("dd MMMM yyyy HH:mm")</b></h3>
+        <br />
+        <div>Silahkan transfer ke Rekening</div>
+        <div style="padding: .8em;">
+            @switch (Model.PaymentMethod)
+            {
+                case "BCA":
+                    <img class="img-responsive" style="margin: auto;" src="~/Content/Store/images/bca.png" />
+                    <h3><b>3400056632</b></h3>
+                    <h4><b>a.n</b></h4>
+                    <h3><b>Nalvin</b></h3>
+                    break;
+
+                case "BRI":
+                    <img class="img-responsive" style="margin: auto;" src="~/Content/Store/images/bri.png" />
+                    <h3><b>551301014739532</b></h3>
+                    <h4><b>a.n</b></h4>
+                    <h3><b>Nalvin</b></h3>
+                    break;
+
+                case "BNI":
+                    <img class="img-responsive" style="margin: auto;" src="~/Content/Store/images/bni.png" />
+                    <h3><b>0204068060</b></h3>
+                    <h4><b>a.n</b></h4>
+                    <h3><b>Elvianti</b></h3>
+                    break;
+
+                case "Mandiri":
+                    <img class="img-responsive" style="margin: auto;" src="~/Content/Store/images/mandiri.png" />
+                    <h3><b>9000032554850</b></h3>
+                    <h4><b>a.n</b></h4>
+                    <h3><b>Nalvin</b></h3>
+                    break;
+            }
+        </div>
+        <div><small>dengan mencantumkan Kode Order di Keterangan Transfer akan mempercepat proses Verifikasi Pembayaran</small></div>
+        <br/>
+        <div>Mohon konfirmasikan ke Admin jika sudah transfer. Orderan Anda akan segera diproses.</div>
+    }
+    <br/><br />
+    <div>
+        <a href="@Url.Action("Index","Home")" class="button-black"><i class="fa fa-shopping-basket"></i> Belanja lagi</a>
+    </div>
+</div>

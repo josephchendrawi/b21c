@@ -1,0 +1,67 @@
+﻿@model B21C.Models.ProductStatusVM
+@{
+    ViewBag.Title = "Product Status";
+    Layout = "~/Views/Shared/_Admin_Layout_Empty.cshtml";
+}
+
+@Html.Partial("_Kendo")
+
+<div>
+    <div class="text-right">@if (!string.IsNullOrWhiteSpace(Model.LastReset_DT)) { <text> Last Reset : @Model.LastReset_DT </text>} <button class="btn btn-sm btn-flat btn-primary" onclick="reset('@Model.ProductId');" id="btn-reset"><i class="fa fa-refresh"></i> Refresh</button></div>
+    <table id="grid">
+        <thead>
+            <tr>
+                <th data-field="Status">Status</th>
+                <th data-field="Quantity">Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var v in Model.OrderStatusList)
+            {
+                <tr>
+                    <td>@v.Key</td>
+                    <td>
+                        @v.Value
+                        @if(v.Key == "Pending Payment")
+                        {
+                            <a href="@Url.Action("_OrderListByProductAndStatus",new { ProductId = Model.ProductId })" class="btn btn-primary btn-flat btn-sm">View Order List</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#grid").kendoGrid({
+            sortable: true
+        });
+    });
+</script>
+
+<script>
+    function reset(productid) {
+        if (confirm('Are you sure to reset Order Status?')) {
+            $('#btn-reset').html("Loading...");
+            $('#btn-reset').attr("disabled", "disabled");
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ResetOrderStatus")",
+                data: '{ProductId: "' + productid + '" }',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    location.reload();
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+    }
+</script>

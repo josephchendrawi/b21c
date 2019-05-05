@@ -1,0 +1,140 @@
+﻿@{
+    ViewBag.Title = "Monthly Report";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Monthly Report }
+
+@Html.Partial("_Kendo")
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-default">
+            <div class="box-header">
+            </div><!-- /.box-header -->
+            <div class="box-body">
+                <div class="text-left">
+                    <select id="select-month" class="btn btn-default btn-flat">
+                        @for (int i = 1; i <= 12; i++)
+                        {
+                            <option @if (ViewBag.inMonth == i) { <text> selected</text>}>@i</option>
+                        }
+                    </select>
+                    <select id="select-year" class="btn btn-default btn-flat">
+                        @for (int i = DateTime.Now.Year; i >= DateTime.Now.Year - 5; i--)
+                        {
+                            <option @if (ViewBag.inYear == i) { <text> selected</text>}>@i</option>
+                        }
+                    </select>
+                    <select id="select-user" class="btn btn-default btn-flat">
+                        <option>All</option>
+                        <option @if (ViewBag.ByRole == "Admin") { <text> selected</text>}>Admin</option>
+                        <option @if (ViewBag.ByRole == "Partner") { <text> selected</text>}>Partner</option>
+                    </select>
+                    <button class="btn btn-primary btn-flat" onclick="changeMonthYear();"><i class="fa fa-filter"></i> Filter</button>
+                    <script>
+                        function changeMonthYear() {
+                            var selected_month = $("#select-month option:selected").text();
+                            var selected_year = $("#select-year option:selected").text();
+                            var UserRole = $('#select-user option:selected').text();
+
+                            window.location.href = "@Url.Action("MonthlyReport", "Report")?Month=" + selected_month + "&Year=" + selected_year + "&ByRole=" + UserRole;
+                        }
+                    </script>
+                </div>
+                <br />
+                @(Html.Kendo().Grid<OrderVM>()
+                .Name("grid")
+                .HtmlAttributes(new { @class = "tbl-grid" })
+                .DataSource(dataSource => dataSource //Configure the Grid data source.
+                    .Ajax() //Specify that Ajax binding is used.
+                    .Read(read => read.Action("OrderReportList_Read", "Report", new { inMonth = ViewBag.inMonth, inYear = ViewBag.inYear, ByRole = ViewBag.ByRole }))
+                    .Events(events => events.Error("error_handler"))
+                    .PageSize(50)
+                    .Sort(sort => { sort.Add("CreatedAt").Ascending(); sort.Add("Id").Descending(); })
+                    .Aggregates(aggregates =>
+                    {
+                        aggregates.Add(p => p.TotalPriceWithAdditionalDiscount).Sum();
+                        aggregates.Add(p => p.ShippingFee).Sum();
+                        aggregates.Add(p => p.TotalPartnerDiscount).Sum();
+                    })
+                )
+                .Columns(columns =>
+                {
+                    columns.Bound(v => v.ShippingDate).Format("{0:dd/MM/yyyy}");
+                    columns.Bound(v => v.OrderCode);
+                    columns.Bound(v => v.BookedBy);
+                    columns.Bound(v => v.Sender);
+                    columns.Bound(v => v.Receiver);
+                    columns.Bound(v => v.TotalPriceWithAdditionalDiscount).Title("Total Price (Rp.)").ClientTemplate("<div class='text-right'>#=kendo.toString(TotalPriceWithAdditionalDiscount,'n0')#</div>")
+                        .ClientFooterTemplate("<div class='text-right'>#=kendo.toString(sum,'n0')#</div>");
+                    columns.Bound(v => v.ShippingFee).Title("Shipping Fee (Rp.)").ClientTemplate("<div class='text-right'>#=kendo.toString(ShippingFee,'n0')#</div>")
+                        .ClientFooterTemplate("<div class='text-right'>#=kendo.toString(sum,'n0')#</div>");
+                    columns.Bound(v => v.TotalPartnerDiscount).ClientTemplate("<div class='text-right'>#=kendo.toString(TotalPartnerDiscount,'n0')#</div>")
+                        .ClientFooterTemplate("<div class='text-right'>#=kendo.toString(sum,'n0')#</div>");
+                    columns.Bound(v => v.Shipping);
+                    columns.Bound(v => v.Status);
+                })
+                .Scrollable(scroll => scroll.Enabled(true).Height("auto"))
+                .Resizable(resize => resize.Columns(true))
+                .Pageable(pageable => pageable.ButtonCount(5)) // Enable paging
+                .Sortable() // Enable sorting
+                .Filterable(f => f.Extra(true)
+                    .Operators(o => o.ForString(s => s.Clear()
+                        .Contains("Contains")
+                        .DoesNotContain("Does not contain")
+                        .IsEqualTo("Is equal to")
+                        .IsNotEqualTo("Is not equal to")
+                        .StartsWith("Starts with")
+                        .EndsWith("Ends with ")
+                    ))
+                )
+                .Excel(excel => excel
+                    .FileName("Monthly_Sales_Report_" + DateTime.Now.ToString("dd-MM-yyyy") + ".xlsx")
+                    .Filterable(true)
+                    .AllPages(true)
+                    .ProxyURL(Url.Action("KendoExcelSave", "Admin"))
+                )
+                .ToolBar(tools => tools.Excel())
+                .Events(e => e.DataBound("onDataBound").ExcelExport("onExcelExport"))
+                )
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .k-grid-footer {
+        padding-right: 0 !important;
+    }
+</style>
+
+<script>
+    function onExcelExport(e) {
+        var rows = e.workbook.sheets[0].rows;
+
+        for (var ri = 0; ri < rows.length; ri++) {
+            var row = rows[ri];
+
+            if (row.type == "group-footer" || row.type == "footer") {
+                for (var ci = 0; ci < row.cells.length; ci++) {
+                    var cell = row.cells[ci];
+                    if (cell.value) {
+                        // Use jQuery.fn.text to remove the HTML and get only the text
+                        cell.value = $(cell.value).text();
+                        // Set the alignment
+                        cell.hAlign = "right";
+                    }
+                }
+            }
+        }
+    }
+    function onDataBound(e) {
+        var grid = $("#grid").data("kendoGrid");
+        if (is_touch_device()) {
+            for (var i = 0; i < grid.columns.length; i++) {
+                grid.autoFitColumn(i);
+            }
+        }
+    }
+</script>

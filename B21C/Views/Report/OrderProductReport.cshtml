@@ -1,0 +1,213 @@
+﻿@model B21C.Models.OverallProductReportVM
+@{
+    ViewBag.Title = "Monthly Order Product Report";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Monthly Order Product Report }
+
+@Html.Partial("_Kendo")
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="box box-default">
+            <div class="box-body">
+                @Html.LabelFor(m =>m.TotalCurrentStockPrice) : Rp. @Model.TotalCurrentStockPrice.ToString("N0")
+                <br/>
+                @Html.LabelFor(m =>m.TotalCurrentStock) : @Model.TotalCurrentStock
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="box box-default">
+            <div class="box-body">
+                <div class="text-left">
+                    @{ 
+                        var inMonth = Request.QueryString["inMonth"] ?? DateTime.Now.Month.ToString();
+                        var inYear = Request.QueryString["inYear"] ?? DateTime.Now.Year.ToString();
+                        var ByRole = Request["ByRole"];
+                    }
+                    <select id="select-month" class="btn btn-default btn-flat">
+                        @for (int i = 1; i <= 12; i++)
+                        {
+                            <option @if (inMonth == i.ToString()) { <text> selected</text>}>@i</option>
+                        }
+                    </select>
+                    <script>
+                        $('#select-month').on('change', function () {
+                            var inMonth = this.value;
+                            var inYear = $('#select-year option:selected').text();
+                            var UserRole = $('#select-user option:selected').text();
+
+                            window.location.href = "@Url.Action("OrderProductReport", "Report")?inMonth=" + inMonth + "&inYear=" + inYear + "&ByRole=" + UserRole;
+
+                        })
+                    </script>
+                    <select id="select-year" class="btn btn-default btn-flat">
+                        @for (int i = DateTime.Now.Year; i >= DateTime.Now.Year - 5; i--)
+                        {
+                            <option @if (inYear == i.ToString()) { <text> selected</text>}>@i</option>
+                        }
+                    </select>
+                    <script>
+                        $('#select-year').on('change', function () {
+                            var inMonth = $('#select-month option:selected').text();
+                            var inYear = this.value;
+                            var UserRole = $('#select-user option:selected').text();
+
+                            window.location.href = "@Url.Action("OrderProductReport", "Report")?inMonth=" + inMonth + "&inYear=" + inYear + "&ByRole=" + UserRole;
+                            
+                        })
+                    </script>
+                    <select id="select-user" class="btn btn-default btn-flat">
+                        <option>All</option>
+                        <option @if (ByRole == "Admin") { <text> selected</text>}>Admin</option>
+                        <option @if (ByRole == "Partner") { <text> selected</text>}>Partner</option>
+                    </select>
+                    <script>
+                        $('#select-user').on('change', function () {
+                            var inMonth = $('#select-month option:selected').text();
+                            var inYear = $('#select-year option:selected').text();
+                            var UserRole = this.value;
+
+                            window.location.href = "@Url.Action("OrderProductReport", "Report")?inMonth=" + inMonth + "&inYear=" + inYear + "&ByRole=" + UserRole;
+
+                        })
+                    </script>
+                </div>
+                <br/>
+                @(Html.Kendo().Grid<OrderProductReportItem>()
+                .Name("grid")
+                .HtmlAttributes(new { @class = "tbl-grid", @style = "height: 470px;" })
+                .DataSource(dataSource => dataSource //Configure the Grid data source.
+                    .Ajax() //Specify that Ajax binding is used.
+                    .Read(read => read.Action("OrderProductReportList_Read", "Report", new { inMonth = Request.QueryString["inMonth"], inYear = Request.QueryString["inYear"], ByRole = Request.QueryString["ByRole"] }))
+                    .Events(events => events.Error("error_handler"))
+                    .PageSize(50)
+                    .Sort(sort => { sort.Add("CreatedAt").Ascending(); sort.Add("Id").Descending(); })
+                    .Aggregates(aggregates =>
+                    {
+                        aggregates.Add(p => p.TotalModalPrice).Sum();
+                        aggregates.Add(p => p.TotalPrice).Sum();
+                        aggregates.Add(p => p.AdditionalDiscount).Sum();
+                        aggregates.Add(p => p.ProductCount).Sum();
+                        aggregates.Add(p => p.TotalPartnerDiscount).Sum();
+                    })
+                )
+                .Columns(columns =>
+                {
+                    columns.Bound(v => v.ShippingDate).Format("{0:dd/MM/yyyy}");
+                    columns.Bound(v => v.CreatedBy);
+                    columns.Bound(v => v.OrderCode);
+                    columns.Bound(v => v.Sender);
+                    columns.Bound(v => v.Receiver);
+                    columns.Bound(v => v.ProductCount).Title("Product Code").ClientTemplate("#=generateProductCodes(ProductList)#").Filterable(false).Sortable(false)
+                        .ClientFooterTemplate("<div class='text-left'>#=kendo.toString(sum,'n0')#</div>");
+                    columns.Bound(v => v.TotalModalPrice).Title("Modal Price").ClientTemplate("#=generateModalPrices(ProductList)#").Filterable(false).Sortable(false)
+                        .ClientFooterTemplate("<div class='text-right text-red' id='GrandTotal_ModalPrice'>#=kendo.toString(sum,'n0')#</div>");
+                    columns.Bound(v => v.TotalPrice).Title("Selling Price").HtmlAttributes(new { @class = "text-right" })
+                        .ClientFooterTemplate("<div class='text-right text-green' id='GrandTotal_SellingPrice'>#=kendo.toString(sum,'n0')#</div>");
+                    columns.Bound(v => v.AdditionalDiscount).HtmlAttributes(new { @class = "text-right" })
+                        .ClientFooterTemplate("<div class='text-right text-red' id='GrandTotal_AdditionalDiscount'>#=kendo.toString(sum,'n0')#</div>");
+                    columns.Bound(v => v.TotalPartnerDiscount).HtmlAttributes(new { @class = "text-right" })
+                        .ClientFooterTemplate("<div class='text-right text-red'>#=kendo.toString(sum,'n0')#</div>");
+                })
+                .Scrollable(scroll => scroll.Enabled(true).Height("auto"))
+                .Resizable(resize => resize.Columns(true))
+                .Pageable(pageable => pageable.ButtonCount(5)) // Enable paging
+                .Sortable() // Enable sorting
+                .Filterable(f => f.Extra(true)
+                    .Operators(o => o.ForString(s => s.Clear()
+                        .Contains("Contains")
+                        .DoesNotContain("Does not contain")
+                        .IsEqualTo("Is equal to")
+                        .IsNotEqualTo("Is not equal to")
+                        .StartsWith("Starts with")
+                        .EndsWith("Ends with ")
+                    ))
+                )
+                .Excel(excel => excel
+                    .FileName("Order_Product_Report_" + DateTime.Now.ToString("dd-MM-yyyy") + ".xlsx")
+                    .Filterable(true)
+                    .AllPages(true)
+                    .ProxyURL(Url.Action("KendoExcelSave", "Admin"))
+                )
+                .ToolBar(tools => tools.Excel())
+                .Events(e => e.DataBound("onDataBound").ExcelExport("onExcelExport"))
+                )
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function generateProductCodes(Products) {
+        var template = "<ul class='list-group'>";
+        for (var i = 0; i < Products.length; i++) {
+            template = template + "<li class='list-group-item'>" + Products[i].ProductCode + " x" + Products[i].Quantity + "</li>";
+        }
+        return template + "</ul>";
+    }
+    function generateModalPrices(Products) {
+        var template = "<ul class='list-group text-right'>";
+        for (var i = 0; i < Products.length; i++) {
+            template = template + "<li class='list-group-item'>" + Products[i].ModalPrice * Products[i].Quantity + "</li>";
+        }
+        return template + "</ul>";
+    }
+</script>
+
+<style>
+    .k-grid-footer
+    {
+        padding-right: 0 !important;
+    }
+    .k-grid-content .list-group
+    {
+        margin-bottom: 0;
+    }
+    .k-grid-content .list-group-item
+    {
+        background-color: transparent;
+        padding: 5px 0;
+        border: none;
+        border-bottom: 1px solid #ddd;
+    }
+    .k-grid-content .list-group .list-group-item:last-child
+    {
+        border: none;
+    }
+</style>
+
+<script>
+    function onExcelExport(e) {
+        //Show Hidden Column
+        e.sender.showColumn("ProductCodeList");
+
+        var rows = e.workbook.sheets[0].rows;
+
+        for (var ri = 0; ri < rows.length; ri++) {
+            var row = rows[ri];
+
+            if (row.type == "group-footer" || row.type == "footer") {
+                for (var ci = 0; ci < row.cells.length; ci++) {
+                    var cell = row.cells[ci];
+                    if (cell.value) {
+                        // Use jQuery.fn.text to remove the HTML and get only the text
+                        cell.value = $(cell.value).text();
+                        // Set the alignment
+                        cell.hAlign = "right";
+                    }
+                }
+            }
+        }
+    }
+    function onDataBound(e) {
+        var grid = $("#grid").data("kendoGrid");
+        if (is_touch_device()) {
+            for (var i = 0; i < grid.columns.length; i++) {
+                grid.autoFitColumn(i);
+            }
+        }
+    }
+</script>

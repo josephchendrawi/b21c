@@ -1,0 +1,112 @@
+﻿@model B21C.Models.AddressBookVM
+@{
+    ViewBag.Title = "Edit Alamat";
+    Layout = "~/Views/Shared/_Layout_Empty.cshtml";
+}
+
+@Html.Hidden("isSuccess", "false")
+@if (TempData["Message"] != null && TempData["Message"] == "Successfully done.")
+{
+    <script>
+        $(function () {
+            $('#isSuccess').val("true");
+
+            parent.$.fancybox.close();
+            //parent.location.reload(true);
+        });
+    </script>
+}
+else if (TempData["Message"] != null)
+{
+    <script>
+        $(function () {
+            alert("@TempData["Message"]");
+        });
+    </script>
+}
+
+<!-- single -->
+<div class="single">
+    <div class="container">
+        <div class="text-center"><h3>EDIT ALAMAT</h3></div>
+        <br/>
+        <div class="facts">
+            <div class="register">
+                @using (Html.BeginForm("_EditAddress", "Home", FormMethod.Post, new { enctype = "multipart/form-data", @class = "signup row" }))
+                {
+                    @Html.HiddenFor(m => m.Id)
+                    @Html.HiddenFor(m => m.City)
+                    @Html.HiddenFor(m => m.Subdistrict)
+                    <div class="form-group col-sm-12">
+                        @Html.TextBoxFor(m => m.AddressName, new { @placeholder = "Nama Alamat", required = "" })
+                    </div>
+                    <div class="form-group col-sm-12">
+                        @Html.TextBoxFor(m => m.Receiver, new { @placeholder = "Penerima", required = "" })
+                    </div>
+                    <div class="form-group col-sm-12">
+                        @Html.TextAreaFor(m => m.Address, new { @placeholder = "Alamat Lengkap", required = "" })
+                    </div>
+                    <div class="form-group col-sm-12">
+                        @Html.TextBoxFor(m => m.Postcode, new { @placeholder = "Kode Pos", required = "" })
+                    </div>
+                    <div class="form-group col-sm-6">
+                        <select id="ddl-city" disabled style="width: 100%" class="unselected">
+                            <option value="" disabled selected>@Model.City</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-sm-6">
+                        <select id="ddl-subdistrict" name="SubdistrictId" style="width: 100%;">
+                            <option value="@Model.SubdistrictId" selected>@Model.Subdistrict</option>
+                        </select>
+                    </div>
+                    <link href="@Url.Content("~/Content/select2/select2.css")" rel="stylesheet" type="text/css" />
+                    <script src="@Url.Content("~/Content/select2/select2.full.js")"></script>
+                    <script>
+                        $(function () {
+                            $("#ddl-city").select2();
+                            $("#ddl-subdistrict").select2();
+
+                            $.get("@Url.Action("GetCityList", "Home")", function (data) {
+                                $.each(data, function (key, value) {
+                                    $('#ddl-city').append($("<option></option>")
+                                                    .attr("value", value['city_id'])
+                                                    .text(value['city_name']));
+                                });
+                                $('#ddl-city').prop("disabled", false);
+                            });
+                            $('#ddl-city').change(function () {
+                                $('#select2-ddl-city-container').attr('style', 'color: #212121 !important');
+                                $('#ddl-subdistrict').prop("disabled", true);
+                                $('#ddl-subdistrict').html('<option value="" disabled selected>Kecamatan</option>');
+                                $('#select2-ddl-subdistrict-container').attr('style', 'color: grey !important');
+                                $.get("@Url.Action("GetSubdistrictList", "Home")?city_id=" + $(this).val(), function (data) {
+                                    $.each(data, function (key, value) {
+                                        $('#ddl-subdistrict').append($("<option></option>")
+                                                                .attr("value", value['subdistrict_id'])
+                                                                .text(value['subdistrict_name']));
+                                    });
+
+                                    $('#ddl-subdistrict').prop("disabled", false);
+                                });
+                            });
+                            $('#ddl-subdistrict').change(function () {
+                                $('#select2-ddl-subdistrict-container').attr('style', 'color: #212121 !important');
+
+                                $('#City').val($('#ddl-city :selected').text());
+                                $('#Subdistrict').val($('#ddl-subdistrict :selected').text());
+                            });
+                        });
+                    </script>
+                    <div class="form-group col-sm-12">
+                        @Html.TextBoxFor(m => m.Phone, new { @placeholder = "No. Handphone", required = "" })
+                    </div>
+                    <div class="sign-up form-group col-sm-12">
+                        <input type="submit" value="EDIT ALAMAT">
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="clearfix"> </div>
+    </div>
+</div>
+<!-- //single -->

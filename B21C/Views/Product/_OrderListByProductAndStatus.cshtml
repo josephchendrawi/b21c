@@ -1,0 +1,42 @@
+﻿@model List<OrderProductVM>
+@{
+    ViewBag.Title = "Product Status";
+    Layout = "~/Views/Shared/_Admin_Layout_Empty.cshtml";
+}
+
+@Html.Partial("_Kendo")
+
+<div>
+    <div class="text-left"><button onclick="window.history.back();" class="btn btn-sm btn-flat btn-primary">Back</button></div>
+    <table id="grid">
+        <thead>
+            <tr>
+                <th data-field="Name">Name</th>
+                <th data-field="Quantity">Quantity</th>
+                <th data-field="OrderCode">Order Code</th>
+                <th data-field="OrderId"> </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var v in Model)
+            {
+                <tr>
+                    <td>@v.Name</td>
+                    <td>@v.Quantity</td>
+                    <td>@v.OrderCode</td>
+                    <td>
+                        <a href="@Url.Action("View","Order")/@v.OrderId" target="_blank" class="btn btn-sm btn-flat btn-primary">View Order</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#grid").kendoGrid({
+            sortable: true
+        });
+    });
+</script>

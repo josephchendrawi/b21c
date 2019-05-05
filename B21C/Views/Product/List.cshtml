@@ -1,0 +1,128 @@
+﻿@{
+    ViewBag.Title = "Product List";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Product List }
+
+@Html.Partial("_Kendo")
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-default">
+            <div class="box-body">
+                @(Html.Kendo().Grid<ProductVM>()
+                .Name("grid")
+                .HtmlAttributes( new { @class = "tbl-grid"})
+                .DataSource(dataSource => dataSource //Configure the Grid data source.
+                    .Ajax() //Specify that Ajax binding is used.
+                    .PageSize(50)
+                    .Read(read => read.Action("ProductList_Read", "Product"))
+                    .Events(events => events.Error("error_handler"))
+                    .Sort(sort => { sort.Add("Id").Descending(); })
+                )
+                .Columns(columns =>
+                {
+                    columns.Bound(v => v.Name);
+                    columns.Bound(v => v.CategoryName).Title("Category");
+                    //columns.Bound(v => v.ModalPrice).Title("Modal (Rp.)").ClientTemplate("<div class='text-right'>#=kendo.toString(ModalPrice,'n0')#</div>");
+                    columns.Bound(v => v.Price).Title("Price (Rp.)").ClientTemplate("<div class='text-right'>#=kendo.toString(Price,'n0')#</div>");
+                    columns.Bound(v => v.Sales).Title("Sales (Rp.)").ClientTemplate("#if(Sales == true){# #=kendo.toString(SalesDiscount,'n0')# #}#").HtmlAttributes(new { @class = "text-right" });
+                    columns.Bound(v => v.Point).HtmlAttributes(new { @class = "text-right" });
+                    columns.Bound(v => v.Weight).Title("Weight (gram)").ClientTemplate("<div class='text-right'>#=kendo.toString(Weight,'n0')#</div>");
+                    columns.Bound(v => v.Stock).Format("{0:n0}");
+                    columns.Bound(v => v.OldStock).Format("{0:n0}");
+                    columns.Bound(v => v.MainProductImage).Title("Image").ClientTemplate("#if(MainProductImage != null){# <a href='" + Constant.UploadPath + "#=MainProductImage#' class='fancybox' title='#=MainProductImage#'>View</a> #}#");
+                    //columns.Bound(v => v.LastUpdAt).Title("Last Updated").Format("{0:dd/MM/yyyy HH:mm}");
+                    columns.Bound(v => v.isNew).Title("New").ClientTemplate(
+                        "#if(isNew == true){# <i class='fa fa-check'></i> #}#"
+                    );
+                    columns.Bound("").Filterable(false).Sortable(false).Width(255).ClientTemplate(
+                        "#if(isNew == true){#"
+                        + " <a id='btn-p-#=Id#' class='btn btn-sm btn-default btn-flat' onclick=\"unset('#=Id#')\">Unset New</a>"
+                        + "#}else{#"
+                        + " <a id='btn-p-#=Id#' class='btn btn-sm btn-warning btn-flat' onclick=\"set('#=Id#')\">Set New</a>"
+                        + "#}#"
+                        + " <a class='btn btn-sm btn-danger btn-flat' href='" + @Url.Action("Delete", "Product") + "/#= Id #' onclick=\"return confirm('Are you sure to delete this product?')\"><i class='fa fa-minus'></i></a>"
+                        + " <a class='btn btn-sm btn-primary btn-flat' href='" + @Url.Action("Edit", "Product") + "/#= Id #'><i class='fa fa-pencil'></i></a>"
+                        + " <button class='btn btn-sm btn-success btn-flat' onclick=\"open_status('#= Id #')\"><i class='fa fa-th-list'></i> Order Status</button>"
+                        + " <button class='btn btn-sm btn-primary btn-flat' onclick=\"open_stock_activity('#= Id #')\"><i class='fa fa-th-list'></i> Stock Activity</button>"
+                    ).HtmlAttributes(new { @class = "text-right" });
+                })
+                .Scrollable(scroll => scroll.Enabled(true).Height("auto"))
+                .Resizable(resize => resize.Columns(true))
+                .ToolBar(toolBar => toolBar.Template("<a class='btn btn-sm btn-primary btn-flat' href='" + @Url.Action("Add", "Product") + "'><i class='fa fa-plus'></i> Add Product</a>"))
+                .Pageable() // Enable paging
+                .Sortable() // Enable sorting
+                .Filterable(f => f.Extra(true)
+                    .Operators(o => o.ForString(s => s.Clear()
+                        .Contains("Contains")
+                        .DoesNotContain("Does not contain")
+                        .IsEqualTo("Is equal to")
+                        .IsNotEqualTo("Is not equal to")
+                        .StartsWith("Starts with")
+                        .EndsWith("Ends with ")
+                    ))
+                )          
+                )
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function open_status(product_id) {
+        $.fancybox.open({
+            padding: 10,
+            href: '@Url.Action("_Status")/' + product_id,
+            type: 'iframe',
+            openSpeed: "fast",
+        });
+    }
+</script>
+
+<script type="text/javascript">
+    function open_stock_activity(product_id) {
+        $.fancybox.open({
+            padding: 10,
+            href: '@Url.Action("_StockActivity")?ProductId=' + product_id,
+            type: 'iframe',
+            openSpeed: "fast",
+        });
+    }
+</script>
+
+<script>
+    function set(productid) {
+        $.fancybox.open({
+            padding: 10,
+            href: '@Url.Action("SetNew")?Id=' + productid,
+            type: 'iframe',
+            openSpeed: "fast",
+        });
+    }
+
+    function unset(productid) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("UnsetNew")",
+            data: '{ProductId: "' + productid + '" }',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (response.toLowerCase().indexOf("success") >= 0) {
+                    $('#btn-p-' + productid).addClass('disabled');
+                }
+                else {
+                    alert(response);
+                }
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    }
+</script>

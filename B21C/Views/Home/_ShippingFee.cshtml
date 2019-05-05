@@ -1,0 +1,64 @@
+﻿@model List<B21C.Helper.CourierCost>
+@{
+    ViewBag.Title = "Shipping Fee";
+    Layout = null;
+}
+
+<link href='http://fonts.googleapis.com/css?family=Glegoo:400,700' rel='stylesheet' type='text/css'>
+
+<table>
+    <thead>
+        <tr>
+            <th>Courier</th>
+            <th>Service</th>
+            <th>Cost</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var v in Model)
+        {  
+            foreach(var w in v.costs)
+            { 
+                <tr>
+                    <td>
+                        <h3><b>@v.code.ToUpper()</b></h3>
+                        <div>@v.name</div>
+                    </td>
+                    <td>
+                        <div><h3>@w.service</h3></div>
+                        <div>@w.description</div>
+                    </td>
+                    <td>
+                        <div><h3><b style="color: #f77373;">Rp. @w.cost.FirstOrDefault().value.ToString("N0")</b></h3></div>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<style>    
+    body{
+        font-family: 'Glegoo', serif;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        border: 1px solid #dbdbdb;
+    }
+
+    th, td {
+        text-align: left;
+        padding: 7px;
+        font-size: 14px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    th {
+        background-color: #f77373;
+        color: white;
+    }
+</style>

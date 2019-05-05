@@ -1,0 +1,93 @@
+﻿@model B21C.Models.BuyerEditVM
+@{
+    ViewBag.Title = "Edit Customer & Reseller";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Edit Customer & Reseller }
+
+@Html.Partial("_Kendo")
+
+<div class="row">
+    @using (Html.BeginForm("Edit", "User", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.Username)
+        
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Email Information</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Username)
+                        <div>@Model.Username</div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Name)
+                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Phone)
+                        @Html.TextBoxFor(m => m.Phone, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Gender)
+                        @{
+                            var GenderList = new List<SelectListItem>();
+                            GenderList.Add(new SelectListItem() { Text = "Male", Value = "Male" });
+                            GenderList.Add(new SelectListItem() { Text = "Female", Value = "Female" });
+                        }
+                        @Html.DropDownListFor(m => m.Gender, GenderList, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.BirthDate)
+                        @(Html.Kendo().DatePickerFor(m => m.BirthDate)
+                          .HtmlAttributes(new { style = "width: 100%", title = "datepicker" })
+                        )
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Point)
+                        @Html.TextBoxFor(m => m.Point, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        <div><small>Note : Change Status will also change Point.</small></div>
+                        @Html.LabelFor(m => m.UserStatusId)
+                        <span>Change?</span>
+                        @Html.CheckBoxFor(m => m.isUserStatusChange, new { @class = "minimal" })
+                        <script>
+                            $('#isUserStatusChange').on('ifChecked', function (event) {
+                                $('#UserStatusId').removeAttr("disabled");
+                                $('#Point').attr("readonly", "readonly");
+                            });
+                            $('#isUserStatusChange').on('ifUnchecked', function (event) {
+                                $('#UserStatusId').attr("disabled", "disabled");
+                                $('#Point').removeAttr("readonly");
+                            });
+                        </script>
+                        @Html.DropDownListFor(m => m.UserStatusId, ViewBag.UserStatusList as List<SelectListItem>, new { @class = "form-control", @disabled = true })
+                    </div>
+                </div><!-- /.box-body -->
+
+                <div class="box-footer text-right">
+                    <input type="submit" class="btn btn-flat btn-primary" value="Submit" />
+                </div>
+            </div><!-- /.box -->
+        </div>
+    }
+</div>
+
+<!-- Globalization dd/MM/yyyy -->
+<script type="text/javascript" src="@Url.Content("~/Scripts/globalize.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/cultures/globalize.culture.en-AU.js")"></script>
+<script>
+    $(function () {
+        $.validator.methods.date = function (value, element) {
+            Globalize.culture("en-AU");
+            // you can alternatively pass the culture to parseDate instead of
+            // setting the culture above, like so:
+            // parseDate(value, null, "en-AU")
+            return this.optional(element) || Globalize.parseDate(value) !== null;
+        }
+    })
+</script>

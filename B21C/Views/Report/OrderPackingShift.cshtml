@@ -1,0 +1,149 @@
+﻿@model B21C.Models.PackingShiftReportVM
+@{
+    ViewBag.Title = "Order Packing Shift";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Order Packing Report }
+
+@Html.Partial("_Kendo")
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-default">
+            <div class="box-body">
+                <div class="text-left">
+                    @(Html.Kendo().DatePicker()
+                    .Name("Date")
+                    .Value(Model.Date)
+                    .Format("dd-MM-yyyy")                    
+                    .Events(e =>
+                    {
+                        e.Change("date_change");
+                    })
+                    )
+                    <script>
+                        var date = "@Model.Date.ToString("dd-MM-yyyy")";
+
+                        function date_change() {
+                            date = kendo.toString(this.value(), 'dd-MM-yyyy');
+                        }
+                    </script>
+                    <script>                        
+                        function changeDateShift() {
+                            var shift = $("#Shift option:selected").val();
+                            window.location.href = "@Url.Action("OrderPackingShift")?Date=" + date + "&Shift=" + shift;
+                        }
+                    </script>
+                    @Html.EnumDropDownListFor(m => m.Shift, "Select shift", new { @class = "form-control inline", @style="height: 40px; padding-top: 2px;" })
+                    <button class="btn btn-flat btn-primary" onclick="changeDateShift();">Change</button>
+                </div>
+                <br/>
+                @(Html.Kendo().Grid<OrderProductVM_forPackingShiftReport>()
+                .Name("grid")
+                .HtmlAttributes(new { @class = "tbl-grid" })
+                .DataSource(dataSource => dataSource //Configure the Grid data source.
+                    .Ajax() //Specify that Ajax binding is used.					
+					.PageSize(50)
+                    .Read(read => read.Action("OrderPackingShiftList_Read", "Report", new { Date = Model.Date.ToString("dd-MM-yyyy"), Shift = (int)Model.Shift }))
+                    .Events(events => events.Error("error_handler"))
+                )
+                .Columns(columns =>
+                {
+                    columns.Bound(v => v.OrderCode);
+                    columns.Bound(v => v.PrepareShipmentDate).Title("Prep. Shipment Date").Format("{0:dd/MM/yyyy}");
+                    columns.Bound(v => v.Sender);
+                    columns.Bound(v => v.Receiver);
+                    columns.Bound(v => v.ProductCode);
+                    columns.Bound(v => v.Quantity);
+                })
+                .Scrollable(scroll => scroll.Enabled(true).Height("auto"))
+                .Resizable(resize => resize.Columns(true))
+                .Pageable() // Enable paging
+                .Sortable() // Enable sorting
+                .Filterable(f => f.Extra(true)
+                    .Operators(o => o.ForString(s => s.Clear()
+                        .Contains("Contains")
+                        .DoesNotContain("Does not contain")
+                        .IsEqualTo("Is equal to")
+                        .IsNotEqualTo("Is not equal to")
+                        .StartsWith("Starts with")
+                        .EndsWith("Ends with ")
+                    ))
+                )
+                .Events(e => e.DataBound("onDataBound").ExcelExport("onExcelExport"))
+                .Excel(excel => excel
+                    .FileName("Packing_Report_" + DateTime.Now.ToString("dd-MM-yyyy") + ".xlsx")
+                    .Filterable(true)
+                    .AllPages(true)
+                    .ProxyURL(Url.Action("KendoExcelSave", "Admin"))
+                )
+                .ToolBar(toolBar => { toolBar.Template("<a class='k-button k-button-icontext k-grid-excel pull-right' href='#'><span class='k-icon k-i-excel'></span>Export to Excel</a>"); })
+                )
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function generateProductCodes(Products) {
+        var template = "<ul class='list-group'>";
+        for (var i = 0; i < Products.length; i++) {
+            template = template + "<li class='list-group-item'>" + Products[i].ProductCode + " x" + Products[i].Quantity + "</li>";
+        }
+        return template + "</ul>";
+    }
+</script>
+
+<style>
+    .k-grid-footer
+    {
+        padding-right: 0 !important;
+    }
+    .k-grid-content .list-group
+    {
+        margin-bottom: 0;
+    }
+    .k-grid-content .list-group-item
+    {
+        background-color: transparent;
+        padding: 5px 0;
+        border: none;
+        border-bottom: 1px solid #ddd;
+    }
+    .k-grid-content .list-group .list-group-item:last-child
+    {
+        border: none;
+    }
+</style>
+
+<script>
+    function onExcelExport(e) {
+        var rows = e.workbook.sheets[0].rows;
+
+        for (var ri = 0; ri < rows.length; ri++) {
+            var row = rows[ri];
+
+            if (row.type == "group-footer" || row.type == "footer") {
+                for (var ci = 0; ci < row.cells.length; ci++) {
+                    var cell = row.cells[ci];
+                    if (cell.value) {
+                        // Use jQuery.fn.text to remove the HTML and get only the text
+                        cell.value = $(cell.value).text();
+                        // Set the alignment
+                        cell.hAlign = "right";
+                    }
+                }
+            }
+        }
+    }
+
+    function onDataBound(e) {
+        var grid = $("#grid").data("kendoGrid");
+        if (is_touch_device()) {
+            for (var i = 0; i < grid.columns.length; i++) {
+                grid.autoFitColumn(i);
+            }
+        }
+    }
+</script>

@@ -1,0 +1,45 @@
+﻿@model B21C.Models.LookupVM
+@{
+    ViewBag.Title = "Add Lookup";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Add Lookup }
+
+<div class="row">
+    @using (Html.BeginForm("Add", "Lookup", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Lookup Information</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Name)
+                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Type)
+                        @Html.TextBoxFor(m => m.Type, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Value)
+                        @Html.TextAreaFor(m => m.Value, new { @class = "form-control" })
+                    </div>
+                </div><!-- /.box-body -->
+
+                <div class="box-footer text-right">
+                    <input type="submit" class="btn btn-flat btn-primary" value="Submit" />
+                </div>
+            </div><!-- /.box -->
+        </div>
+    }
+</div>
+
+<!-- CK Editor -->
+<script src="~/Content/ckeditor/ckeditor.js"></script>
+<script type="text/javascript">
+    $(function () {
+        CKEDITOR.replace('Value');
+    });
+</script>

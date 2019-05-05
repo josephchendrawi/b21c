@@ -1,0 +1,129 @@
+﻿@model B21C.Models.MemberStatusVM
+@{
+    ViewBag.Title = "Status Member";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- mail -->
+<div class="mail">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 member-info text-center">
+                Saldo :
+                <span class="text-pink">Rp. @(Model.Balance.ToString("N0"))</span>
+                <a href="#" onclick="open_top_up();" class="button-black">TOP UP SALDO</a>
+                <div class="line-light"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1"></div>
+            @foreach (var v in Model.StatusList)
+            {
+                <div class="col-md-2 col-sm-4 col-xs-6"
+                     style="padding: 15px; @if(v.Name == Model.MemberStatus) { <text>background-color: #dadada;</text> }">
+                    <div class="text-center">
+                        <div class="account-img" style="background-color: white;">
+                            @if (string.IsNullOrWhiteSpace(v.IconImage))
+                            {
+                                <img src="~/Content/Store/images/no-image.jpg" alt=" " class="img-responsive" />
+                            }
+                            else
+                            {
+                                <img src="@Constant.UploadPath@v.IconImage" alt=" " class="img-responsive" />
+                            }
+                        </div>
+                        <div class="account-status">                            
+                            @if (v.Name == Model.MemberStatus)
+                            {
+                                <p class="button-black" style="pointer-events : none;">
+                                    <small>Status Sekarang</small>
+                                    <span style="display:block">@v.Name</span>
+                                </p>
+                            }
+                            else
+                            {
+                                if (v.PointNeeded > Model.Point)
+                                {
+                                    <a href="#">
+                                        <p class="button-black" onclick="change_status(@v.Id, @v.RegistrationFee, '@v.Name')">
+                                            <small>Ubah menjadi</small>
+                                            <span style="display:block">@v.Name</span>
+                                        </p>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <p class="button-black" style="pointer-events : none; background-color: #909090;">
+                                        <small>Status Sebelumnya</small>
+                                        <span style="display:block">@v.Name</span>
+                                    </p>
+                                }
+                            }
+                            <div class="col-md-12">
+                                <p class="title">Biaya</p>
+                                <p class="text-pink">Rp. @(v.RegistrationFee.ToString("N0"))</p>
+                            </div>
+                            <div class="col-md-12">
+                                <p class="title">Diskon per Barang</p>
+                                <p class="text-bold">Rp. @((v.Discount ?? 0).ToString("N0"))</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<!-- //mail -->
+
+<!-- FancyBox -->
+<link rel="stylesheet" href="@Url.Content("~/Content/plugins/fancybox/jquery.fancybox.css")">
+<script src='@Url.Content("~/Content/plugins/fancybox/jquery.fancybox.js")'></script>
+<script src='@Url.Content("~/Content/plugins/fancybox/jquery.mousewheel-3.0.6.pack.js")'></script>
+<script>
+    function open_top_up() {
+        $.fancybox.open({
+            padding: 5,
+            href: '@Url.Action("_TopUp")',
+            type: 'iframe',
+            openSpeed: "fast",
+        });
+    }
+    function change_status(status_id, registration_fee, status_name) {
+        if(@Model.Balance < registration_fee){
+            alert("Maaf, saldo Anda tidak mencukupi. Isi saldo Anda dulu dengan tombol \"TOP UP SALDO\" berikut.");
+        }
+        else{
+            var r = confirm("Apakah Anda pasti ingin mengubah Status Anda menjadi \"" + status_name + "\" dengan dikenakan biaya Rp. " + registration_fee + "?\nSaldo Anda akan otomatis berkurang setelah proses pengubahan status.");
+            if (r == true) {
+                //ajax
+                var data = {
+                    "StatusId": status_id
+                };
+                $('#loading-overlay').show();
+                $.ajax({
+                    url: "@Url.Action("ChangeMemberStatus", "Home")",
+                    type: "POST",
+                    data: JSON.stringify(data),
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: function (result) {
+                        $('#loading-overlay').hide();
+                        if (result.Success)
+                        {
+                            window.location.href = "@Url.Action("MyAccount")";
+                        }
+                        else
+                        {
+                            alert(result.Message);
+                        }
+                    },
+                    error: function () {  
+                        $('#loading-overlay').hide();
+                        alert("Kesalahan terjadi. Silahkan ulangi lagi.");
+                    }
+                });
+            }
+        }
+    }
+</script>

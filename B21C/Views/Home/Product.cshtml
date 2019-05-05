@@ -1,0 +1,184 @@
+﻿@model B21C.Models.ProductDetailsPageVM
+@{
+    ViewBag.Title = Model.Name;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<!-- single -->
+<div class="single">
+    <div class="container">
+        <div class="col-md-6 single-left">
+            <div class="flexslider">
+                <ul class="slides">
+                    @if (Model.ProductImageList.Count() > 0)
+                    {
+                        foreach (var v in Model.ProductImageList)
+                        {
+                            <li data-thumb="@Constant.UploadPath@v.URL">
+                                <img src="@Constant.UploadPath@v.URL" />
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li data-thumb="../../Content/Store/images/no-image.jpg">
+                            <img src="~/Content/Store/images/no-image.jpg" />
+                        </li>
+                    }
+                </ul>
+            </div>
+            <!-- flixslider -->
+            <script defer src="~/Content/Store/js/jquery.flexslider.js"></script>
+            <link rel="stylesheet" href="~/Content/Store/css/flexslider.css" type="text/css" media="screen" />
+            <script>
+					// Can also be used with $(document).ready()
+					$(window).load(function() {
+					  $('.flexslider').flexslider({
+						animation: "slide",
+						controlNav: "thumbnails"
+					  });
+					});
+            </script>
+            <!-- flixslider -->
+            <!-- zooming-effect -->
+            <script src="~/Content/Store/js/imagezoom.js"></script>
+            <!-- //zooming-effect -->
+        </div>
+        <div class="col-md-6 single-right">
+            <h3>@Model.Name</h3>
+            <div class="simpleCart_shelfItem">
+                <p>@if (Model.Sales) { <span>Rp. @((Model.Price ?? 0).ToString("N0"))</span> }else if(Model.MemberDiscount > 0){ <span>Rp. @((Model.TotalPrice + Model.MemberDiscount).ToString("N0"))</span> } <i class="item_price">Rp. @((Model.TotalPrice).ToString("N0"))</i></p>
+            </div>
+            <div>
+                @if (Model.Stock <= 0)
+                {
+                    <p>
+                        <big style="color: #ff3939;"><b>STOK HABIS</b></big>
+                    </p>
+                }
+            </div>
+            <div class="description">
+                <h5>DESKRIPSI</h5>
+                <p>
+                    @Model.Description
+                </p>
+            </div>
+            <div class="color-quality">
+                <div class="color-quality-left">
+                    <div>
+                        <h5>Ukuran : </h5>
+                        <p>@Model.Size</p>
+                    </div>
+                    <br/>
+                    <div>
+                        <h5>Berat : </h5>
+                        <p>@Model.Weight</p>
+                    </div>
+                </div>
+                <div class="color-quality-right">
+                    <div>
+                        <h5>Point : </h5>
+                        <p>@Model.Point</p>
+                    </div>
+                </div>
+                <div class="clearfix"> </div>
+            </div>
+            
+            @if (Model.Stock > 0)
+            {
+                <div class="occasional">
+                    <h5>Kuantitas :</h5>
+                    <div class="quantity">
+                        <div class="quantity-select">
+                            <div class="entry value-minus1">&nbsp;</div>
+                            <div class="entry value1" id="item_quantity">1</div>
+                            <div class="entry value-plus1 active">&nbsp;</div>
+                        </div>
+                    </div>
+                    <!--quantity-->
+                    <script>
+                        $('.value-plus1').on('click', function () {
+                            var divUpd = $(this).parent().find('.value1'), newVal = parseInt(divUpd.text(), 10) + 1;
+                            if (newVal <= @Model.Stock) divUpd.text(newVal);
+                        });
+
+                        $('.value-minus1').on('click', function () {
+                            var divUpd = $(this).parent().find('.value1'), newVal = parseInt(divUpd.text(), 10) - 1;
+                            if (newVal >= 1) divUpd.text(newVal);
+                        });
+                    </script>
+                    <!--quantity-->
+                </div>
+                <div class="simpleCart_shelfItem">
+                    <p><a id="item_add" href="#"><i class="fa fa-plus-circle"></i> Beli</a></p>
+                </div>
+            }
+        </div>
+        <div class="clearfix"> </div>
+    </div>
+</div>
+<!-- //single -->
+
+<script>
+    $("#item_add").click(function () {
+        var item_quantity = $('#item_quantity').html();
+        var item_product_id = '@Model.Id';
+    
+        $(this).addClass('disabled');
+
+        //ajax
+        var data = { 
+            "ProductId": item_product_id, 
+            "Quantity": item_quantity
+        };
+        $.ajax({
+            url: "@Url.Action("AddToCart", "Home")",
+            type: "POST",
+            data: JSON.stringify(data),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                $("#item_add").removeClass('disabled');
+
+                if (result.Success)
+                {
+                    reload_CartSum();
+                    $('#CartModal').modal('show');
+                }
+                else
+                {                                                                   
+                    alert(result.Message);
+                }
+            },
+            error: function () {
+                alert("Error!");
+                //location.reload();
+            }
+        });
+    });
+</script>
+
+
+<div class="modal fade" id="CartModal" tabindex="-1" role="dialog" aria-labelledby="CartModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    Produk berhasil dimasukkan ke Keranjang Belanja.
+                </h4>
+            </div>
+            <div class="modal-body modal-body-sub">
+                <div class="row">
+                    <div class="col-md-12 modal_body_left modal_body_left1">
+                        <button data-dismiss="modal" class="button">Lanjut Berbelanja</button>
+                        <a href="@Url.Action("ShoppingCart","Home")" class="pull-right button">Bayar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

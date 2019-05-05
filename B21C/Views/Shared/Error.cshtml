@@ -1,0 +1,16 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+
+@{
+    ViewBag.Title = "Error";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="checkout">
+    <div class="container">
+        <div class="empty-cart"><i class="fa fa-exclamation-circle "></i><br />Terjadi kesalahan pada halaman ini.<br /><a href="#">Error</a></div>
+    </div>
+</div>
+
+<script>
+    console.log('@Model.Exception.ToString().Replace(System.Environment.NewLine, "replacement text")');
+</script>

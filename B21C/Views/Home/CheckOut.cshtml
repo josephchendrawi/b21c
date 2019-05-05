@@ -1,0 +1,443 @@
+﻿@model B21C.Models.CheckOutVM
+@{
+    ViewBag.Title = "Check Out";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- checkout -->
+<div class="container">
+    @using (Html.BeginForm("CheckOut", "Home", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return validate_checkout_form();" }))
+    {
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="single" style="padding: 25px 0;">
+                    <div class="box-header">Alamat<div class="pull-right"></div></div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="facts">
+                                    @if (Session["User_ID"] != null)
+                                    { 
+                                    <div class="register">
+                                        <div class="signup row">
+                                            <script>
+                                                function reload_addresslist()
+                                                {
+                                                    //reset selection
+                                                    $('#ddl-address-book option.address').remove();
+                                                    $('#ddl-address-book option').attr("selected", true);
+
+                                                    $.ajax({
+                                                        url: "@Url.Action("GetAddressBook", "Home")",
+                                                        type: "GET",
+                                                        dataType: "json",
+                                                        contentType: "application/json",
+                                                        success: function (result) {
+                                                            if (result.Success)
+                                                            {
+                                                                var html_addressbook = "";
+
+                                                                jQuery.each(result.Result, function(index, item) {
+                                                                    html_addressbook += '<option value="'+item.Id+'" class="address" data-receiver="'+item.Receiver+'" data-address="'+item.Address+'" data-postcode="'+item.Postcode+'" data-city="'+item.City+'" data-subdistrict="'+item.Subdistrict+'" data-subdistrictid="'+item.SubdistrictId+'" data-phone="'+item.Phone+'">'+item.AddressName+'</option>';
+                                                                });
+
+                                                                $('#ddl-address-book').append(html_addressbook);
+                                                            }
+                                                            else
+                                                            {                                                                   
+                                                                alert(result.Message);
+                                                            }
+                                                        },
+                                                        error: function () {
+                                                            alert("Error!");
+                                                            //location.reload();
+                                                        }
+                                                    });
+                                                }
+
+                                                $(function(){
+                                                    reload_addresslist();
+                                                });
+                                            </script>
+                                            @*@Html.HiddenFor(m => m.AddressBookId)*@
+                                            <div class="form-group col-sm-12">
+                                                <div style="width: 60%; display:inline-block;">
+                                                    <select id="ddl-address-book">
+                                                        <option value="" disabled selected>Pilih Alamat</option>
+                                                    </select>
+
+                                                    <script>
+                                                        $('#ddl-address-book').on('change', function() {
+                                                            var AddressBook = $(this).find(":selected");
+                                                            $('#SubdistrictId').val(AddressBook.attr("data-subdistrictid"));
+                                                            $('#Receiver').val(AddressBook.attr("data-receiver"));
+                                                            $('#Address').val(AddressBook.attr("data-address"));
+                                                            $('#Postcode').val(AddressBook.attr("data-postcode"));
+                                                            $('#City').val(AddressBook.attr("data-city"));
+                                                            $('#Subdistrict').val(AddressBook.attr("data-subdistrict"));
+                                                            $('#ContactNo').val(AddressBook.attr("data-phone"));
+
+                                                            //$('#AddressBookId').val(AddressBook.val());
+                                                        });
+                                                    </script>
+                                                </div>
+                                                <button class="button-black pull-right" style="width: 40%;" onclick="open_add_address(); return false;">Tambah Alamat</button>
+                                                <script>                                                    
+                                                    function open_add_address() {
+                                                        $.fancybox.open({
+                                                            padding: 5,
+                                                            href: '@Url.Action("_AddAddress")',
+                                                            type: 'iframe',
+                                                            openSpeed: "fast",
+                                                            beforeClose: function () {
+                                                                var Result = $(".fancybox-iframe").contents().find("#isSuccess").val();
+                                                                if (Result == "true") {
+                                                                    reload_addresslist();
+                                                                }
+                                                            }
+                                                        });
+                                                    }
+                                                </script>
+                                                <div class="line-light" style="margin-bottom: 0;"></div>
+                                            </div>
+
+                                            @Html.HiddenFor(m => m.SubdistrictId)
+                                            <div class="form-group col-sm-12">
+                                                @Html.TextBoxFor(m => m.Sender, new { @placeholder = "Pengirim (optional untuk Dropship)" })
+                                            </div>
+                                            <div class="form-group col-sm-12">
+                                                @Html.TextBoxFor(m => m.Receiver, new { @placeholder = "Penerima", required = "", @readonly = "" })
+                                            </div>
+                                            <div class="form-group col-sm-12">
+                                                @Html.TextAreaFor(m => m.Address, new { @placeholder = "Alamat Lengkap", required = "", @readonly = "" })
+                                            </div>
+                                            <div class="form-group col-sm-12">
+                                                @Html.TextBoxFor(m => m.Postcode, new { @placeholder = "Kode Pos", required = "", @readonly = "" })
+                                            </div>
+                                            <div class="form-group col-sm-6">
+                                                @Html.TextBoxFor(m => m.City, new { @placeholder = "Kota / Kabupaten", required = "", @readonly = "" })
+                                            </div>
+                                            <div class="form-group col-sm-6">
+                                                @Html.TextBoxFor(m => m.Subdistrict, new { @placeholder = "Kecamatan", required = "", @readonly = "" })
+                                            </div>
+                                            <div class="form-group col-sm-12">
+                                                @Html.TextBoxFor(m => m.ContactNo, new { @placeholder = "No. Handphone", required = "", @readonly = "" })
+                                            </div>
+
+                                            <div class="form-group col-sm-12">
+                                                @Html.TextAreaFor(m => m.Note, new { @placeholder = "Keterangan (optional)", @rows = 3, @style = "resize:vertical;" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    }
+                                    else
+                                    {
+                                    <div class="register">
+                                        <div class="signup row">
+                                            @Html.HiddenFor(m => m.City)
+                                            @Html.HiddenFor(m => m.Subdistrict)
+                                            @Html.HiddenFor(m => m.SubdistrictId)
+                                            <div class="form-group col-sm-12">
+                                                @Html.TextBoxFor(m => m.Sender, new { @placeholder = "Pengirim (optional untuk Dropship)" })
+                                            </div>
+                                            <div class="form-group col-sm-12">
+                                                @Html.TextBoxFor(m => m.Receiver, new { @placeholder = "Penerima", required = "" })
+                                            </div>
+                                            <div class="form-group col-sm-12">
+                                                @Html.TextAreaFor(m => m.Address, new { @placeholder = "Alamat Lengkap", required = "" })
+                                            </div>
+                                            <div class="form-group col-sm-12">
+                                                @Html.TextBoxFor(m => m.Postcode, new { @placeholder = "Kode Pos", required = "" })
+                                            </div>
+                                            <div class="form-group col-sm-6">
+                                                <select id="ddl-city" disabled style="width: 100%" class="unselected">
+                                                    <option value="" disabled selected>Kota / Kabupaten</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-sm-6">
+                                                <select id="ddl-subdistrict" disabled style="width: 100%;">
+                                                    <option value="" disabled selected>Kecamatan</option>
+                                                </select>
+                                            </div>
+                                            <link href="@Url.Content("~/Content/select2/select2.css")" rel="stylesheet" type="text/css" />
+                                            <script src="@Url.Content("~/Content/select2/select2.full.js")"></script>
+                                            <script>
+                                                $(function () {
+                                                    $("#ddl-city").select2();
+                                                    $("#ddl-subdistrict").select2();
+
+                                                    $.get("@Url.Action("GetCityList", "Home")", function (data) {
+                                                        $.each(data, function (key, value) {
+                                                            $('#ddl-city').append($("<option></option>")
+                                                                            .attr("value", value['city_id'])
+                                                                            .text(value['city_name']));
+                                                        });
+                                                        $('#ddl-city').prop("disabled", false);
+                                                    });
+
+                                                    $('#ddl-city').change(function () {
+                                                        $('#select2-ddl-city-container').attr('style', 'color: #212121 !important');
+                                                        $('#ddl-subdistrict').prop("disabled", true);
+                                                        $('#ddl-subdistrict').html('<option value="" disabled selected>Kecamatan</option>');
+                                                        $('#select2-ddl-subdistrict-container').attr('style', 'color: grey !important');
+                                                        $.get("@Url.Action("GetSubdistrictList", "Home")?city_id=" + $(this).val(), function (data) {
+                                                            $.each(data, function (key, value) {
+                                                                $('#ddl-subdistrict').append($("<option></option>")
+                                                                                        .attr("value", value['subdistrict_id'])
+                                                                                        .text(value['subdistrict_name']));
+                                                            });
+
+                                                            $('#ddl-subdistrict').prop("disabled", false);
+                                                            
+                                                            //reset #SubdistrictId
+                                                            $('#SubdistrictId').val("");
+                                                        });
+
+                                                        reset_shipping();
+                                                    });
+                                                    $('#ddl-subdistrict').change(function () {
+                                                        $('#select2-ddl-subdistrict-container').attr('style', 'color: #212121 !important');
+
+                                                        $('#City').val($('#ddl-city :selected').text());
+                                                        $('#Subdistrict').val($('#ddl-subdistrict :selected').text());
+
+                                                        //insert value to #SubdistrictId
+                                                        $('#SubdistrictId').val($('#ddl-subdistrict :selected').val());
+                                                        
+                                                        reset_shipping();
+                                                    });
+                                                });
+                                            </script>
+                                            <div class="form-group col-sm-12">
+                                                @Html.TextBoxFor(m => m.ContactNo, new { @placeholder = "No. Handphone", required = "" })
+                                            </div>
+
+                                            <div class="form-group col-sm-12">
+                                                @Html.TextAreaFor(m => m.Note, new { @placeholder = "Keterangan (optional)", @rows = 3, @style = "resize:vertical;" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"> </div>
+                    </div>
+                </div>
+                <div class="special-deals" style="padding-top: 0;">
+                    <div class="box-header">Ekspedisi Pengiriman</div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="shipping-method">
+                                    @Html.HiddenFor(m => m.Shipping)
+                                    @Html.HiddenFor(m => m.ShippingServiceCode)
+                                    <div class="row">
+                                        <div class="col-xs-6 shipping-item">
+                                            <div class="text-center" id="pm-jne">
+                                                <img class="img-responsive" src="~/Content/Store/images/jne.png" />
+                                                <span class="hidden">JNE</span>
+                                                <select class="form-control" disabled></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-6 shipping-item">
+                                            <div class="text-center" id="pm-tiki">
+                                                <img class="img-responsive" src="~/Content/Store/images/tiki.png" />
+                                                <span class="hidden">Tiki</span>
+                                                <select class="form-control" disabled></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-6 shipping-item">
+                                            <div class="text-center" id="pm-pos">
+                                                <img class="img-responsive" src="~/Content/Store/images/pos.png" />
+                                                <span class="hidden">Pos</span>
+                                                <select class="form-control" disabled></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-6 shipping-item">
+                                            <div class="text-center" id="pm-jnt">
+                                                <img class="img-responsive" src="~/Content/Store/images/jnt.png" />
+                                                <span class="hidden">JNT</span>
+                                                <select class="form-control" disabled></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-6 shipping-item">
+                                            <div class="text-center" id="pm-lion">
+                                                <img class="img-responsive" src="~/Content/Store/images/lion.png" />
+                                                <span class="hidden" data-no-shipping="true">Lion Parcel</span>
+                                                <input type="number" class="form-control" name="Lion Parcel fare" readonly />
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-6 shipping-item">
+                                            <div class="text-center" id="pm-jnt-shopee">
+                                                <img class="img-responsive" src="~/Content/Store/images/jnt-shopee.png" />
+                                                <span class="hidden" data-no-shipping="true">JNT Shopee</span>
+                                                <input type="number" class="form-control" name="JNT Shopee fare" readonly />
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-6 shipping-item">
+                                            <div class="text-center" id="pm-manual">
+                                                <h3 style="padding: 0.5em;">COD</h3>
+                                                <span class="hidden" data-no-shipping="true">COD</span>
+                                                <input type="number" class="form-control" name="COD fare" readonly />
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-6 shipping-item">
+                                            <div class="text-center" id="pm-manual">
+                                                <h3 style="padding: 0.5em;">Manual</h3>
+                                                <span class="hidden" data-no-shipping="true">Others</span>
+                                                <input type="number" class="form-control" name="Others fare" readonly />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <script>
+                                        $('.shipping-item div').click(function (event) {
+                                            if (!$(this).hasClass("selected")) {
+                                                if ($('#SubdistrictId').val() != "") {
+                                                    reset_shipping();
+
+                                                    var selected_courier = $("#" + $(this).attr('id') + " span").html();
+                                                    
+                                                    $('#Shipping').val(selected_courier);
+                                                    
+                                                    $("#" + $(this).attr('id')).addClass("selected");
+                                                    
+                                                    if($("#" + $(this).attr('id') + " span").attr('data-no-shipping') != 'true') {
+
+                                                        //generate shipping dropdown
+                                                        $("#" + $(this).attr('id') + " select").removeAttr("disabled");
+                                                        $("#" + $(this).attr('id') + " select").html("<option disabled selected>Loading..</option>");
+                                                        var courier_ddl = $("#" + $(this).attr('id') + " select");
+                                                        $.get("@Url.Action("GetShippingFeeByCourier", "Home")?courier=" + selected_courier + "&dest_subdistrict_id=" + $('#SubdistrictId').val(), function (data) {
+                                                            if (data[0].costs.length > 0) {
+                                                                courier_ddl.html("");
+                                                                $.each(data[0].costs, function (key, value) {
+                                                                    courier_ddl.append($("<option></option>")
+                                                                                            .attr("value", value['service'])
+                                                                                            .attr("cost", value.cost[0]['value'])
+                                                                                            .text(value['service'] + " - Rp. " + value.cost[0]['value']));
+                                                                });
+
+                                                                //initial shipping by first item
+                                                                $('#ShippingServiceCode').val(data[0].costs[0].service);
+                                                                calculate_total(data[0].costs[0].cost[0]['value']);
+
+                                                                courier_ddl.on('change', function (e) {
+                                                                    $('#ShippingServiceCode').val(this.value);
+
+                                                                    var shippingcost = $("option:selected", this).attr("cost");
+                                                                    calculate_total(shippingcost);
+                                                                });
+                                                            }
+                                                            else {
+                                                                alert("Pengiriman '" + selected_courier + "' tidak tersedia untuk Alamat di atas. Silahkan pilih kurir yang lain.");
+                                                                reset_shipping();
+                                                            }
+                                                        });
+                                                    }
+                                                    else{            
+                                                        $('#ShippingServiceCode').val('manual');
+                                                        
+                                                        $("#" + $(this).attr('id') + " input").removeAttr("readonly");
+                                                        
+                                                        $("#" + $(this).attr('id') + " input").on('change', function (e) {
+                                                            calculate_total($(this).val());
+                                                        });
+                                                    }
+                                                }
+                                                else {
+                                                    alert("Silahkan isi lengkap dulu Alamat di atas.");
+                                                }
+                                            }
+                                        });
+
+                                        function reset_shipping() {
+                                            $('.shipping-item div').removeClass("selected");
+                                            $("#Shipping").val("");
+                                            $("#ShippingServiceCode").val("");
+
+                                            $('.shipping-item div select').attr("disabled", "");
+                                            $('.shipping-item div select').html("");
+
+                                            $('.shipping-item div input').attr("readonly", "");
+                                            $('.shipping-item div input').val("");
+                                        }
+
+                                        function calculate_total(shipping_cost) {
+                                            @{
+                                                var ShippingWeight = (Model.Cart.TotalWeight - Constant.ShippingWeightTolerance) <= 0 ? Constant.ShippingWeightTolerance : (Model.Cart.TotalWeight - Constant.ShippingWeightTolerance);
+                                            }
+                                            var total_shippingcost = shipping_cost * @(Math.Ceiling((double)ShippingWeight / 1000));
+                                            $("#shipping-fee span").html("Rp. " + total_shippingcost.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
+
+                                            var grand_total = total_shippingcost + @(Model.Cart.TotalPrice - Model.Cart.QuantityDiscount);
+                                            $("#grand-total span").html("Rp. " + grand_total.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
+                                        }
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="checkout-left-basket" style="padding: 25px 0; width: 100%;">
+                    <div class="box-header">Ringkasan Tagihan</div>
+                    <div class="box-body">
+                        <ul>
+                            @foreach (var v in Model.Cart.ItemList)
+                            {
+                                <li>@v.ProductDetails.Name <i>-</i> <span>Rp. @(((v.ProductDetails.TotalPrice) * v.Quantity).ToString("N0")) </span></li>
+                            }
+                            @if (Model.Cart.QuantityDiscount > 0)
+                            {
+                                <li>
+                                    Diskon Kuantitas <span>- Rp. @Model.Cart.QuantityDiscount.ToString("N0")</span>
+                                </li>
+                            }
+                            <li>Total <i>-</i> <span>Rp. @Model.Cart.TotalPrice.ToString("N0")</span></li>
+                            <li>Berat <i>-</i> @Model.Cart.TotalWeight.ToString("N0") g</li>
+                            <li id="shipping-fee">Biaya Pengiriman <i>-</i> <span>Rp. -</span></li>
+                            <li id="grand-total">Grand Total <i>-</i> <span>Rp. @((Model.Cart.TotalPrice - Model.Cart.QuantityDiscount).ToString("N0"))</span></li>
+                        </ul>
+                        @if (Session["User_ID"] != null && ViewBag.Balance != null && ViewBag.Balance > 0)
+                        {
+                            <div class="balance">
+                                <div>Saldo<span class="pull-right">Rp. @ViewBag.Balance.ToString("N0")</span></div>
+                                <div>&nbsp;<span class="pull-right"><span style="float: left; padding: 2px;">Gunakan Saldo Anda?</span> @Html.CheckBoxFor(m => m.isPayWithBalance)</span></div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div>
+                    <button type="submit" class="button-black @if(Model.Cart.ItemList.Where(m => m.isStockInsufficient == true).Count() > 0){ <text>disabled</text> }" style="padding: 10px 20px !important; float: right; margin-bottom: 25px;">LANJUT <span class="fa fa-angle-right"></span></button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<!-- //checkout -->
+<!-- FancyBox -->
+<link rel="stylesheet" href="@Url.Content("~/Content/plugins/fancybox/jquery.fancybox.css")">
+<script src='@Url.Content("~/Content/plugins/fancybox/jquery.fancybox.js")'></script>
+<script src='@Url.Content("~/Content/plugins/fancybox/jquery.mousewheel-3.0.6.pack.js")'></script>
+
+<style>
+    .row {
+		margin-right: -15px !important;
+        margin-left: -15px !important;
+	}
+
+    input[readonly], textarea[readonly], select[disabled] {
+        background-color: #eee !important;
+    }
+</style>
+
+<script>
+    function validate_checkout_form() {
+        if ($('#Shipping').val() == "" || $('#ShippingServiceCode').val() == "") {
+            alert("Silahkan pilih Ekspedisi Pengiriman.");
+            return false;
+        }
+    }
+</script>

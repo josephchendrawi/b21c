@@ -1,0 +1,221 @@
+﻿<!DOCTYPE html>
+<!--
+This is a starter template page. Use this page to start your new project from
+scratch. This page gets rid of all links and provides the needed markup only.
+-->
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>@ViewBag.Title</title>
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="@Url.Content("~/Content/main.css")">
+    <link rel="stylesheet" href="@Url.Content("~/Content/default.css")">
+
+    <!-- jQuery -->
+    <script src="@Url.Content("~/Content/jquery/jQuery-2.1.3.min.js")"></script>
+    <!-- Bootstrap -->
+    <script src="@Url.Content("~/Content/bootstrap/js/bootstrap.min.js")" type="text/javascript"></script>
+    <link href="@Url.Content("~/Content/bootstrap/css/bootstrap.min.css")" rel="stylesheet" type="text/css" />
+    <!-- jQuery UI -->
+    <script src="@Url.Content("~/Content/jqueryUI/jquery-ui.1.11.2.min.js")"></script>
+    <!-- Font Awesome Icons -->
+    <link href="@Url.Content("~/Content/font-awesome/css/font-awesome.min.css")" rel="stylesheet" type="text/css" />
+    <!-- Ionicons -->
+    <link href="@Url.Content("~/Content/ionicons/css/ionicons.min.css")" rel="stylesheet" type="text/css" />
+    <!-- AdminLTE -->
+    <script src="@Url.Content("~/Content/AdminLTE/js/app.js")" type="text/javascript"></script>
+    <link href="@Url.Content("~/Content/AdminLTE/css/AdminLTE.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/AdminLTE/css/skins/_all-skins.min.css")" rel="stylesheet" type="text/css" />
+    <!-- iCheck 1.0.1 -->
+    <script src="@Url.Content("~/Content/plugins/iCheck/icheck.min.js")" type="text/javascript"></script>
+    <link href="@Url.Content("~/Content/plugins/iCheck/all.css")" rel="stylesheet" type="text/css" />
+    <script type="text/javascript">
+        //iCheck for checkbox and radio inputs
+        $(function () {
+            $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
+                checkboxClass: 'icheckbox_minimal-blue',
+                radioClass: 'iradio_minimal-blue'
+            });
+        });
+    </script>
+    <!-- SlimScroll -->
+    <script src="@Url.Content("~/Content/plugins/slimScroll/jquery.slimscroll.min.js")" type="text/javascript"></script>
+    <!-- FastClick -->
+    <script src='@Url.Content("~/Content/plugins/fastclick/fastclick.min.js")'></script>
+    <!-- Toastr -->
+    <script src="@Url.Content("~/Content/plugins/toastr/toastr.js")"></script>
+    <link rel="stylesheet" href="@Url.Content("~/Content/plugins/toastr/toastr.css")">
+    <script type="text/javascript">
+        //alert override
+        window.alert = function (msg, type) {
+            if (type == "success") {
+                toastr.success(msg, "Success");
+            }
+            else if (type == "warning") {
+                toastr.warning(msg, "Warning");
+            }
+            else if (type == "error") {
+                toastr.error(msg, "Error");
+            }
+            else {
+                toastr.info(msg, "Info");
+            }
+        }
+    </script>
+
+    <!-- Jquery Validation -->
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        //tooltip for validation
+        $(function () {
+            $(document).tooltip({
+                items: ".input-validation-error",
+                content: function () {
+                    var validationtxt = "";
+                    if ($(this).val() == "") {
+                        validationtxt = $(this).attr('data-val-required');
+                    }
+                    else {
+                        if ($(this).attr('data-val-length') != undefined) {
+                            validationtxt = $(this).attr('data-val-length')
+                        }
+                        else if ($(this).attr('data-val-equalto') != undefined) {
+                            validationtxt = $(this).attr('data-val-equalto')
+                        }
+                        else if ($(this).attr('data-val-regex') != undefined) {
+                            validationtxt = $(this).attr('data-val-regex')
+                        }
+                    }
+                    return validationtxt;
+                },
+                position: {
+                    my: "center bottom-8",
+                    at: "center top",
+                    using: function (position, feedback) {
+                        $(this).css(position);
+                        $("<div>")
+                            .addClass("arrow")
+                            .addClass(feedback.vertical)
+                            .addClass(feedback.horizontal)
+                            .appendTo(this);
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+
+@{
+    string ControllerName = HttpContext.Current.Request.RequestContext.RouteData.Values["controller"].ToString();
+    string ActionName = ViewContext.RouteData.Values["action"].ToString();
+}
+<body class="skin-blue sidebar-collapse">
+    @if (TempData["Message"] != null)
+    {
+        <script type="text/javascript">
+            alert("@Html.Raw(TempData["Message"])");
+        </script>
+    }
+    <div class="wrapper">
+        <!-- Main Header -->
+        <header class="main-header">
+            <!-- Logo -->
+            <a href="#" class="logo">Bags<b>21</b>Century<span class="font10"> ADMIN</span></a>
+            <!-- Header Navbar -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+                <!-- Navbar Right Menu -->
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <!-- User Account Menu -->
+                        <li class="dropdown user user-menu">
+                            <!-- Menu Toggle Button -->
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <!-- The user image in the navbar-->
+                                <img src="@Url.Content("~/Content/AdminLTE/img/user.png")" class="user-image" alt="User Image" />
+                                <!-- hidden-xs hides the username on small devices so only the image appears. -->
+                                <span class="hidden-xs">@(Session["Name"] ?? "...")</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <!-- The user image in the menu -->
+                                <li class="user-header" style="height: auto;">
+                                    <img src="@Url.Content("~/Content/AdminLTE/img/user.png")" class="img-circle" alt="User Image" />
+                                    <p>
+                                        @(Session["Name"] ?? "...")
+                                        <small>@(Session["Email"] ?? "...")</small>
+                                    </p>
+                                </li>
+                                <!-- Menu Footer-->
+                                <li class="user-footer">
+                                    <div class="pull-right">
+                                        <a href="@Url.Action("LogOut", "Admin")" class="btn btn-default btn-flat">Sign out</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!-- Left side column. contains the logo and sidebar -->
+        <aside class="main-sidebar">
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+                <!-- sidebar menu: : style can be found in sidebar.less -->
+                <ul class="sidebar-menu">
+                </ul>
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+            </section>
+            <!-- Main content -->
+            <section class="content container-custom">
+                @RenderBody()
+            </section><!-- /.content -->
+        </div><!-- /.content-wrapper -->
+        <!-- Main Footer -->
+        <footer class="main-footer">
+            <!-- To the right -->
+            <div class="pull-right hidden-xs">
+                <!-- Anything you want -->
+            </div>
+            <!-- Default to the left -->
+            <strong>Copyright &copy; 2016 <!-- <a href="#">Company</a>. --></strong> All rights reserved.
+        </footer>
+    </div><!-- ./wrapper -->
+    <!-- Image Orientation -->
+    <script type="text/javascript">
+        $('.img-responsive-flex').each(function (i, obj) {
+            if ($(obj).height() < $(obj).width()) {
+                $(obj).addClass("img-responsive-flex-landscape");
+            }
+            else {
+                $(obj).addClass("img-responsive-flex-portrait");
+            }
+        });
+    </script>
+
+    <!-- LabelFor Asterisk for Required field -->
+    <script type="text/javascript">
+        $('input').each(function () {
+            var req = $(this).attr('data-val-required');
+            if (undefined != req) {
+                var label = $('label[for="' + $(this).attr('id') + '"]');
+                var text = label.text();
+                if (text.length > 0) {
+                    label.append('<span style="color:red"> *</span>');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

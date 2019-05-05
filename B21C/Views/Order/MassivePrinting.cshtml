@@ -1,0 +1,75 @@
+﻿@model List<B21C.Models.PrintOrderVM>
+@{
+    ViewBag.Title = "MassivePrinting";
+}
+@{
+    ViewBag.Title = "Massive Order Printing";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Massive Order Printing }
+
+<div class="row">
+    <div class="col-md-12">
+        <button class="btn btn-flat btn-primary" onclick="printShipment();"><i class="fa fa-print"></i> Print Again</button>
+    </div>
+</div>
+
+<script src="~/Content/printThis/printThis.js"></script>
+<div style="display: none;">
+    <div id="reseller-print">
+        @{var idx = 1;}
+        @foreach (var v in Model)
+        {
+            int copynumber = string.IsNullOrEmpty(v.PackingCode) ? 0 : (int)v.PackingCode.First() % 32;
+
+            for (int i = 0; i < copynumber; i++)
+            {
+                <div style="padding: 10px; font-size: large; border: 1px solid #000;">
+                    <div class="pull-right"><b>@v.PackingCode-@v.ShippingCode</b></div>
+                    <div><b>Order Code </b> : @v.OrderCode.Split(' ')[0]  </div>
+                    <div><b>From </b> : @v.Sender </div>
+                    <div><b>To </b> : @v.Receiver </div>
+                    <div><b>No hp </b> : @v.ContactNo </div>
+                    <div><b>Alamat </b> : @v.Address </div>
+                    <div>
+                        <b>Kode tas </b> :
+                        @foreach (var x in v.ProductList)
+                        {
+                            if (x.Quantity > 0)
+                            {
+                                @x.ProductCode
+                                if (x.Quantity > 1)
+                                {
+                                <span style="color: red !important; font-weight: bold;">x @x.Quantity</span>
+                                }
+                                <span> | </span>
+                            }
+                        }
+                    </div>
+                    <div>
+                        <b>Note </b> :
+                        <div style="border: 1px solid #e2e2e2; padding: 10px;">@Html.Raw(v.Note) </div>
+                    </div>
+                </div>
+                <div style="height:8px;"></div>
+
+                if (idx % 3 == 0)
+                {
+                <div style='page-break-after:always'></div>
+                }
+                idx++;
+            }
+        }
+    </div>
+</div>
+
+<script>
+    $(function () {
+        printShipment();
+    });
+
+    function printShipment() {
+        $("#reseller-print").printThis();
+    }
+</script>
+

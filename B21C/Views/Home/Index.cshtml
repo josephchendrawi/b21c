@@ -1,0 +1,383 @@
+﻿@model B21C.Models.HomepageVM
+@{
+    ViewBag.Title = "Bags21Century";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- banner -->
+@if (Model.BannerList.Count() > 0)
+{
+    <div class="banner">
+        <div class="flexslider">
+            <ul class="slides">
+                @foreach (var v in Model.BannerList)
+                {
+                    <li data-thumb="@Constant.UploadPath@v.ImageURL">
+                        <a href="@v.URL">
+                            <img src="@Constant.UploadPath@v.ImageURL" />
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+        <!-- FlexSlider -->
+        <script defer src="~/Content/Store/js/jquery.flexslider.js"></script>
+        <link rel="stylesheet" href="~/Content/Store/css/flexslider.css" type="text/css" media="screen" />
+
+        <script>
+            // Can also be used with $(document).ready()
+            $(window).load(function () {
+                $('.flexslider').flexslider({
+                    animation: "slide",
+                    controlNav: false,
+                    slideshowSpeed: 3000,
+                    direction : 'vertical'
+                });
+            });
+        </script>
+        <style>
+            .flexslider, .flex-viewport {
+                border: none;
+                overflow: hidden;
+            }
+        </style>
+    </div>
+}
+<!-- //banner -->
+<!-- FancyBox -->
+<link rel="stylesheet" href="@Url.Content("~/Content/plugins/fancybox/jquery.fancybox.css")">
+<script src='@Url.Content("~/Content/plugins/fancybox/jquery.fancybox.js")'></script>
+<script src='@Url.Content("~/Content/plugins/fancybox/jquery.mousewheel-3.0.6.pack.js")'></script>
+<!-- special-deals -->
+<div class="special-deals">
+    <div class="container">
+        <div class="w3agile_special_deals_grids">
+            <div class="col-md-6 w3agile_special_deals_grid_left">
+                <div class="w3agile_special_deals_grid_left_grid">
+                    <img src="~/Content/Store/images/bb2.jpg" alt=" " class="img-responsive" />
+                    <div class="w3agile_special_deals_grid_left_grid_pos" style="width: 85%;">
+                        <div>
+                            <h4>CEK NO. RESI</h4>
+                            <div class="w3agile_newsletter_right">
+                                @using (Html.BeginForm("GetTrackingNo", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                {
+                                    <input type="text" name="OrderCode" onfocus="this.value = '';" required="" placeholder="KODE ORDER" />
+                                    <input type="submit" value="" />
+                                }
+                            </div>
+                            @if (TempData["TrackingNo"] != null)
+                            {
+                                <div style="display:none">
+                                    <div id="div-trackingno" class="text-center" style="overflow: hidden;">
+                                        <h3>No. Resi</h3>
+                                        <br /><br />
+                                        <h4>@TempData["TrackingNo"]</h4>
+                                    </div>
+                                </div>
+
+                                <script type="text/javascript">
+                                    $(document).ready(function () {
+                                        $.fancybox({
+                                            'href': '#div-trackingno',
+                                            'titleShow': false,
+                                            'transitionIn': 'elastic',
+                                            'transitionOut': 'elastic'
+                                        });
+                                    });
+                                </script>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 w3agile_special_deals_grid_left">
+                <div class="w3agile_special_deals_grid_left_grid shippingfee-wrapper">
+                    <img src="~/Content/Store/images/bb1.jpg" alt=" " class="img-responsive" />
+                    <div class="w3agile_special_deals_grid_left_grid_pos" style="width: 85%;">
+                        <div>
+                            <h4>CEK ONGKIR</h4>
+                            <div class="w3agile_newsletter_right">
+                                <form action="#" method="post">
+                                    <select id="ddl-city" disabled style="width: 40%">
+                                        <option value="" disabled selected>KOTA/KABUPATEN</option>
+                                    </select>
+                                    <select id="ddl-subdistrict" disabled style="width: 30%;">
+                                        <option value="" disabled selected>KECAMATAN</option>
+                                    </select>
+
+                                    <button id="btn-cekongkir"></button>
+
+                                    <link href="@Url.Content("~/Content/select2/select2.css")" rel="stylesheet" type="text/css" />
+                                    <script src="@Url.Content("~/Content/select2/select2.full.js")"></script>
+                                    <script>
+                                        $(function () {
+                                            $("#ddl-city").select2();
+                                            $("#ddl-subdistrict").select2();
+
+                                            $.get("@Url.Action("GetCityList", "Home")", function (data) {
+                                                $.each(data, function (key, value) {
+                                                    $('#ddl-city').append($("<option></option>")
+                                                                   .attr("value", value['city_id'])
+                                                                   .text(value['city_name']));
+                                                });
+                                                $('#ddl-city').prop("disabled", false);
+                                            });
+                                            $('#ddl-city').change(function () {
+                                                $('#ddl-subdistrict').prop("disabled", true);
+                                                $('#ddl-subdistrict').html('<option value="" disabled selected>KECAMATAN</option>');
+                                                $.get("@Url.Action("GetSubdistrictList", "Home")?city_id=" + $(this).val(), function (data) {
+                                                    $.each(data, function (key, value) {
+                                                        $('#ddl-subdistrict').append($("<option></option>")
+                                                                                .attr("value", value['subdistrict_id'])
+                                                                                .text(value['subdistrict_name']));
+                                                    });
+
+                                                    $('#ddl-subdistrict').prop("disabled", false);
+                                                });
+                                            });
+                                        });
+                                        $("#btn-cekongkir").click(function () {
+                                            var subdistrict_id = $("#ddl-subdistrict option:selected").val();
+                                            if (subdistrict_id != "") {
+                                                $.fancybox.open({
+                                                    padding: 10,
+                                                    href: '@Url.Action("_ShippingFee","Home")?subdistrict_id=' + subdistrict_id,
+                                                    type: 'iframe',
+                                                    openSpeed: "fast",
+                                                });
+                                                return false;
+                                            }
+                                            else {
+                                                alert("Please choose the Subdistrict.")
+                                            }
+                                        });
+                                    </script>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"> </div>
+        </div>
+    </div>
+</div>
+<!-- //special-deals -->
+<!-- banner -->
+<div class="banner8" id="home1">
+	<div class="container">
+		<h2 style="color: #333;"><b>DOWNLOAD<span style="margin: .5em 0;">KATALOG</span></b> MINGGUAN KAMI <span style="margin: .5em 0;"><a class="btn btn-flat btn-black" href="#" id="fancybox-link">Download</a></span></h2>
+	</div>
+
+    <!-- Wrap it inside a hidden div so it won't show on load -->
+    <div style="display:none">
+        <div id="div-catalogs" class="text-center">
+            <h3>Catalog List</h3>
+            <br />
+            <table class="table table-bordered table-hover table-striped table-responsive">
+                <tbody>
+                    @foreach (var v in Model.CatalogList)
+                    {
+                        <tr>
+                            <td>@v.Name</td>
+                            <td><a href="@v.URL">Download</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $("a#fancybox-link").fancybox({
+            'href': '#div-catalogs',
+            'titleShow': false,
+            'transitionIn': 'elastic',
+            'transitionOut': 'elastic'
+        });
+    </script>
+</div>
+<!-- //banner -->
+<!-- special-promo-products -->
+@if (Model.SpecialPromoProductList.Count() > 0)
+{
+    <div class="new-products" style="background-color: #faeded;">
+        <div class="container">
+            <h3><a href="@Url.Action("SpecialPromo", "Home")">Special Promo</a></h3>
+            <div class="agileinfo_new_products_grids">
+                @foreach (var v in Model.SpecialPromoProductList)
+                {
+                    <div class="col-md-3 agileinfo_new_products_grid">
+                        <div class="agile_ecommerce_tab_left agileinfo_new_products_grid1">
+                            <div class="hs-wrapper hs-wrapper1 @if(v.Stock <= 0){ <text>soldout</text> }">
+                                @for (int i = 0; i < 6; i++)
+                                {
+                                    if (!string.IsNullOrWhiteSpace(v.MainProductImage))
+                                    {
+                                        <img src="@(Constant.UploadPath)thumb_@v.MainProductImage" alt=" " class="img-responsive" />
+                                    }
+                                    else
+                                    {
+                                        <img src="~/Content/Store/images/no-image.jpg" alt=" " class="img-responsive" />
+                                    }
+                                }
+                                <div class="w3_hs_bottom w3_hs_bottom_sub">
+                                    <ul>
+                                        <li>
+                                            <a href="@Url.Action("Product","Home")/@v.Id" data-toggle="modal" data-target=""><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="hs-download hs-download1">
+                                <a download="@v.MainProductImage" href="@(Constant.UploadPath)@v.MainProductImage"><p class="button-black">SIMPAN FOTO</p></a>
+                            </div>
+                            <h5><a href="@Url.Action("Product", "Home")/@v.Id">@v.Name</a></h5>
+                            <div class="stock-status">                                
+                                @if (v.Stock > 0)
+                                {
+                                    <span>Tersedia</span>
+                                }
+                                else
+                                {
+                                    <span class="soldout">STOK HABIS</span>
+                                }
+                            </div>
+                            <div class="simpleCart_shelfItem">
+                                <p>@if (v.Sales) { <span>Rp. @((v.Price ?? 0).ToString("N0"))</span> } <i class="item_price">Rp. @((v.TotalPrice).ToString("N0"))</i></p>
+                                <p><a class="@if(v.Stock <= 0){ <text>disabled</text> }" href="@Url.Action("Product", "Home")/@v.Id"><i class="fa fa-plus-circle"></i> Beli</a></p>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="clearfix"> </div>
+            </div>
+            <div class="text-right"><a href="@Url.Action("SpecialPromo", "Home")" class="text-bold">more..</a></div>
+        </div>
+    </div>
+}
+<!-- //special-promo-products -->
+<!-- sales-products -->
+@if (Model.SalesProductList.Count() > 0)
+{
+    <div class="new-products" @*style="background-color: #faeded;"*@>
+        <div class="container">
+            <h3><a href="@Url.Action("Sales", "Home")">Sales</a></h3>
+            <div class="agileinfo_new_products_grids">
+                @foreach (var v in Model.SalesProductList)
+                {
+                    <div class="col-md-3 agileinfo_new_products_grid">
+                        <div class="agile_ecommerce_tab_left agileinfo_new_products_grid1">
+                            <div class="hs-wrapper hs-wrapper1 @if(v.Stock <= 0){ <text>soldout</text> }">
+                                @for (int i = 0; i < 6; i++)
+                                {
+                                    if (!string.IsNullOrWhiteSpace(v.MainProductImage))
+                                    {
+                                        <img src="@(Constant.UploadPath)thumb_@v.MainProductImage" alt=" " class="img-responsive" />
+                                    }
+                                    else
+                                    {
+                                        <img src="~/Content/Store/images/no-image.jpg" alt=" " class="img-responsive" />
+                                    }
+                                }
+                                <div class="w3_hs_bottom w3_hs_bottom_sub">
+                                    <ul>
+                                        <li>
+                                            <a href="@Url.Action("Product","Home")/@v.Id" data-toggle="modal" data-target=""><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="hs-download hs-download1">
+                                <a download="@v.MainProductImage" href="@(Constant.UploadPath)@v.MainProductImage"><p class="button-black">SIMPAN FOTO</p></a>
+                            </div>
+                            <h5><a href="@Url.Action("Product", "Home")/@v.Id">@v.Name</a></h5>
+                            <div class="stock-status">                                
+                                @if (v.Stock > 0)
+                                {
+                                    <span>Tersedia</span>
+                                }
+                                else
+                                {
+                                    <span class="soldout">STOK HABIS</span>
+                                }
+                            </div>
+                            <div class="simpleCart_shelfItem">
+                                <p>@if (v.Sales) { <span>Rp. @((v.Price ?? 0).ToString("N0"))</span> } <i class="item_price">Rp. @((v.TotalPrice).ToString("N0"))</i></p>
+                                <p><a class="@if(v.Stock <= 0){ <text>disabled</text> }" href="@Url.Action("Product", "Home")/@v.Id"><i class="fa fa-plus-circle"></i> Beli</a></p>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="clearfix"> </div>
+            </div>
+            <div class="text-right"><a href="@Url.Action("Sales", "Home")" class="text-bold">more..</a></div>
+        </div>
+    </div>
+}
+<!-- //sales-products -->
+<!-- new-products -->
+@if (Model.NewProductList.Count() > 0)
+{
+    <div class="new-products">
+        <div class="container">
+            <h3><a href="@Url.Action("NewProducts", "Home")">Produk Baru</a></h3>
+            <div class="agileinfo_new_products_grids">
+                @foreach (var v in Model.NewProductList)
+                {
+                    <div class="col-md-3 agileinfo_new_products_grid">
+                        <div class="agile_ecommerce_tab_left agileinfo_new_products_grid1">
+                            <div class="hs-wrapper hs-wrapper1 @if(v.Stock <= 0){ <text>soldout</text> }">
+                                @for (int i = 0; i < 6; i++)
+                                {
+                                    if (!string.IsNullOrWhiteSpace(v.MainProductImage))
+                                    {
+                                        <img src="@(Constant.UploadPath)thumb_@v.MainProductImage" alt=" " class="img-responsive" />
+                                    }
+                                    else
+                                    {
+                                        <img src="~/Content/Store/images/no-image.jpg" alt=" " class="img-responsive" />
+                                    }
+                                }
+                                <div class="w3_hs_bottom w3_hs_bottom_sub">
+                                    <ul>
+                                        <li>
+                                            <a href="@Url.Action("Product", "Home")/@v.Id" data-toggle="modal" data-target=""><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="hs-download hs-download1">
+                                <a download="@v.MainProductImage" href="@(Constant.UploadPath)@v.MainProductImage"><p class="button-black">SIMPAN FOTO</p></a>
+                            </div>
+                            <h5><a href="@Url.Action("Product", "Home")/@v.Id">@v.Name</a></h5>
+                            <div class="stock-status">                                     
+                                @if (v.Stock > 0)
+                                {
+                                    <span>Tersedia</span>
+                                }
+                                else
+                                {
+                                    <span class="soldout">STOK HABIS</span>
+                                }
+                            </div>
+                            <div class="simpleCart_shelfItem">
+                                <p>@if (v.Sales) { <span>Rp. @((v.Price ?? 0).ToString("N0"))</span> } <i class="item_price">Rp. @((v.TotalPrice).ToString("N0"))</i></p>
+                                <p><a class="@if(v.Stock <= 0){ <text>disabled</text> }" href="@Url.Action("Product", "Home")/@v.Id"><i class="fa fa-plus-circle"></i> Beli</a></p>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="clearfix"> </div>
+            </div>
+            <div class="text-right"><a href="@Url.Action("NewProducts", "Home")" class="text-bold">more..</a></div>
+        </div>
+    </div>
+}
+<!-- //new-products -->
+
+@if (Session["User_Username"] == null || Session["User_ID"] == null)
+{
+    <script>
+        $('#myModal88').modal('show');
+    </script>
+}

@@ -1,0 +1,115 @@
+﻿@model B21C.Models.BannerVM
+@{
+    ViewBag.Title = "Edit Banner";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Edit Banner }
+
+<div class="row">
+    @using (Html.BeginForm("Edit", "Banner", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.HiddenFor(m => m.Id)
+        
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Banner Information</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Name)
+                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.URL)
+                        @Html.TextBoxFor(m => m.URL, new { @class = "form-control" })
+                    </div>
+                </div><!-- /.box-body -->
+
+                <div class="box-footer text-right">
+                    <input type="submit" class="btn btn-flat btn-primary" value="Submit" />
+                </div>
+            </div><!-- /.box -->
+        </div>
+
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Image</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="files-info" class="tabs-infobox">
+                                <div class="img-wrapper">
+                                    <a href="@Constant.UploadPath@Model.ImageURL" class="fancybox" title="@Model.ImageURL">
+                                        <div class="img-box-round">
+                                            <img src="@Constant.UploadPath@Model.ImageURL" class="img-responsive-flex img-center" />
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <input type="file" name="file" id="file" @*multiple="multiple"*@ style="display: none;" accept="image/*" />
+                            <span class="btn btn-success btn-flat" id="btn-browse">Add File</span>
+                        </div>
+                        <div class="col-md-12">
+                            <small class="text-darkgrey">
+                                *Ratio of image must be 72 : 31 and ideal size is 1440px*620px. <br />
+                                The image that not in correct ratio will be cropped.
+                            </small>
+                        </div>
+                    </div>
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div>
+    }
+</div>
+
+<script type="text/javascript">
+    $("#btn-browse").click(function () {
+        $("#file").click();
+    });
+
+    $('#file').change(function () {
+        $('#files-info').html("");
+        var files = $("#file")[0].files;
+        for (var i = 0; i < files.length; i++) {
+            var size;
+            if (files[i].size > 1048576) {
+                size = (files[i].size / 1048576).toFixed(1);
+                size += " MB";
+            }
+            else if (files[i].size > 1024) {
+                size = (files[i].size / 1024).toFixed(1);
+                size += " KB";
+            }
+            else {
+                size = files[i].size;
+                size += " B";
+            }
+
+            var reader = new FileReader();
+            reader.fileName = files[i].name;
+            reader.Size = size;
+            reader.fileType = files[i].name.substring(files[i].name.lastIndexOf('.') + 1);
+            reader.onload = function (e) {
+                var img = "<div class='img-center fa fa-file-text'></div>";
+                var type = e.target.fileType;
+                if (type == "jpg" || type == "jpeg" || type == "png" || type == "gif") {
+                    img = "<img src='" + e.target.result + "' class='img-responsive-flex-landscape img-center' />";
+                }
+                var imghtml = "<div class=\"img-wrapper\">"
+                        + "<a href='" + e.target.result + "' class='fancybox' title='" + e.target.fileName + " - " + e.target.Size + "'>"
+                        + "<div class='img-box-round'>"
+                        + img
+                        + "</div>"
+                        + "</a>"
+                        + "</div>";
+                $('#files-info').append(imghtml);
+            }
+            reader.readAsDataURL(files[i]);
+        }
+    });
+</script>

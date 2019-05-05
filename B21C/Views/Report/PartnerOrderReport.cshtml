@@ -1,0 +1,107 @@
+﻿@{
+    ViewBag.Title = "Partner Order Report";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Partner Order Report }
+
+@Html.Partial("_Kendo")
+
+<div class="row">
+    <div class="col-sm-12">
+        <div id="tabs">
+            <a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'Bagance')" id="defaultOpen">Bagance</a>
+        </div>
+
+        <div id="Bagance" class="tabcontent">
+            @(Html.Kendo().Grid<Partner_OrderReportVM>()
+                .Name("grid")
+                .HtmlAttributes(new { @class = "tbl-grid" })
+                .DataSource(dataSource => dataSource //Configure the Grid data source.
+                    .Ajax() //Specify that Ajax binding is used.
+                    .PageSize(50)
+                    .Read(read => read.Action("Partner_OrderReportList_Read", "Report", new { ByWebsite = "bagance" }))
+                    .Events(events => events.Error("error_handler"))
+                    .Sort(sort => { sort.Add("CreatedAt").Ascending(); sort.Add("Id").Descending(); })
+                    .Aggregates(aggregates =>
+                    {
+                        aggregates.Add(p => p.GrandTotal).Sum();
+                        aggregates.Add(p => p.TotalPartnerDiscount).Sum();
+                    })
+                )
+                .Columns(columns =>
+                {
+                    columns.Bound(v => v.PrepareShipmentDate).Title("Prep. Shipment Date").Format("{0:dd/MM/yyyy}");
+                    columns.Bound(v => v.OrderCode);
+                    columns.Bound(v => v.CreatedAt).Title("Transaction Date").Format("{0:dd/MM/yyyy HH:mm}");
+                    columns.Bound(v => v.BookedBy);
+                    columns.Bound(v => v.Sender);
+                    columns.Bound(v => v.Receiver);
+                    columns.Bound(v => v.PaymentMethod);
+                    columns.Bound(v => v.GrandTotal).Title("Grand Total (Rp.)").ClientTemplate("<div class='text-right'>#=kendo.toString(GrandTotal,'n0')#</div>")
+                        .ClientFooterTemplate("<div class='text-right'>#=kendo.toString(sum,'n0')#</div>");
+                    columns.Bound(v => v.TotalPartnerDiscount).ClientTemplate("<div class='text-right'>#=kendo.toString(TotalPartnerDiscount,'n0')#</div>")
+                        .ClientFooterTemplate("<div class='text-right'>#=kendo.toString(sum,'n0')#</div>");
+                    columns.Bound(v => v.Status);
+                })
+                .Scrollable(scroll => scroll.Enabled(true).Height("auto"))
+                .Resizable(resize => resize.Columns(true))
+                .Pageable(pageable => pageable.ButtonCount(5)) // Enable paging
+                .Sortable() // Enable sorting
+                .Filterable(f => f.Extra(true)
+                    .Operators(o => o.ForString(s => s.Clear()
+                        .Contains("Contains")
+                        .DoesNotContain("Does not contain")
+                        .IsEqualTo("Is equal to")
+                        .IsNotEqualTo("Is not equal to")
+                        .StartsWith("Starts with")
+                        .EndsWith("Ends with ")
+                    ))
+                )
+                .Excel(excel => excel
+                    .FileName("Partner_Order_Report_" + DateTime.Now.ToString("dd-MM-yyyy") + ".xlsx")
+                    .Filterable(true)
+                    .AllPages(true)
+                    .ProxyURL(Url.Action("KendoExcelSave", "Admin"))
+                )
+                .Events(e => e.DataBound("onDataBound"))
+                .ToolBar(toolBar => { toolBar.Template("<a class='k-button k-button-icontext k-grid-excel pull-right' href='#'><span class='k-icon k-i-excel'></span>Export to Excel</a>"); })
+            )
+        </div>
+    </div>
+</div>
+
+<script>
+    // Get the element with id="defaultOpen" and click on it
+    document.getElementById("defaultOpen").click();
+
+    function openTab(evt, tabId) {
+        // Declare all variables
+        var i, tabcontent, tablinks;
+
+        // Get all elements with class="tabcontent" and hide them
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+
+        // Get all elements with class="tablinks" and remove the class "active"
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" tab-active", "");
+        }
+
+        // Show the current tab, and add an "active" class to the link that opened the tab
+        document.getElementById(tabId).style.display = "block";
+        evt.currentTarget.className += " tab-active";
+    }
+</script>
+<script>
+    function onDataBound(e) {
+        var grid = $("#grid").data("kendoGrid");
+        if (is_touch_device()) {
+            for (var i = 0; i < grid.columns.length; i++) {
+                grid.autoFitColumn(i);
+            }
+        }
+    }
+</script>

@@ -1,0 +1,142 @@
+﻿@model B21C.Models.ProductVM
+@{
+    ViewBag.Title = "Arrange Product Image";
+    Layout = "~/Views/Shared/_Admin_Layout.cshtml";
+}
+@section Title { Arrange Product Image }
+
+@section ContentHeader {
+    <div class="pull-right"><a href="@Url.Action("Edit", "Product", new { Id = Model.Id })" class="btn btn-sm btn-flat btn-primary"><i class="fa fa-pencil"></i> Edit Product</a></div>
+}
+
+@Html.Partial("_Kendo")
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Product Information</h3>
+            </div><!-- /.box-header -->
+            <div class="box-body">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Name)
+                    <div>
+                        @Model.Name
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.ProductCode)
+                    <div>
+                        @Model.ProductCode
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Price)
+                    <div>
+                        Rp. @((Model.Price ?? 0).ToString("N0"))
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Weight)
+                    <div>
+                        @((Model.Weight ?? 0).ToString("N0")) gram(s)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Stock)
+                    <div>
+                        @((Model.Stock ?? 0).ToString("N0"))
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Size)
+                    <div>
+                        @Model.Size
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Description)
+                    <div>
+                        @Model.Description
+                    </div>
+                </div>
+            </div><!-- /.box-body -->
+        </div><!-- /.box -->
+    </div>
+
+    <div class="col-md-6">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Image</h3>
+            </div><!-- /.box-header -->
+            <div class="box-body">
+                <div>
+                    <small class="text-darkgrey">
+                        *The TOP image is the "Main Image" of the product.
+                    </small>
+                </div>
+
+                @(Html.Kendo().Grid<ProductImageVM>()
+                .Name("grid")
+                .HtmlAttributes(new { @class = "tbl-grid tbl-grid-sm" })
+                .DataSource(dataSource => dataSource //Configure the Grid data source.
+                    .Ajax() //Specify that Ajax binding is used.
+                    .Read(read => read.Action("ProductImageList_Read", "Product", new { ProductId = Model.Id }))
+                    .Sort(sort => sort.Add(m => m.DisplayOrder).Ascending())
+                    .Events(events => events.Error("error_handler"))
+                )
+                .Columns(columns =>
+                {
+                    columns.Bound(v => v.URL).Title("Image").ClientTemplate(
+                        "<a href='" + Constant.UploadPath + "#= URL #' class='fancybox' title='#= URL #'>"
+                        + "    <div class='img-box-square'>"
+                        + "        <img src='" + Constant.UploadPath + "#= URL #' class='img-responsive img-responsive-flex img-center' />"
+                        + "    </div>"
+                        + "</a>"
+                    );
+                    columns.Bound(v => v.DisplayOrder).ClientTemplate(
+                      "<input type='text' class='btn btn-sm btn-flat btn-default w50' value='#= DisplayOrder #' id='DisplayOrder_#=Id#' onclick='this.select();' />"
+                      + " <button class='btn btn-sm btn-primary btn-flat' onclick='update_displayorder(#=Id#)'><i class='fa fa-pencil'></i> Set</button>"
+                    );
+                })
+                .Scrollable(scroll => scroll.Enabled(true).Height("auto"))
+                .Resizable(resize => resize.Columns(true))
+                .Pageable(tbl => tbl.Enabled(false))
+                .Sortable(tbl => tbl.Enabled(false))
+                .Filterable(tbl => tbl.Enabled(false))
+                )
+            </div><!-- /.box-body -->
+        </div><!-- /.box -->
+    </div>
+</div>
+
+<script>
+    function update_displayorder(image_id) {
+        displayorder_value = $('#DisplayOrder_' + image_id).val();
+
+        var requestData = {
+            ProductImageId: image_id,
+            DisplayOrder: displayorder_value
+        };
+
+        //ajax to update
+        $.ajax({
+            url: '@Url.Action("ArrangeImage_EditOrder", "Product")',
+            type: 'POST',
+            data: JSON.stringify(requestData),
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            error: function (xhr) {
+                alert('Error: ' + xhr.statusText);
+            },
+            success: function (result) {
+                alert(result);
+            },
+            async: false,
+            processData: false
+        });
+
+        //refresh table
+        $("#grid").data("kendoGrid").dataSource.read();
+    }
+</script>
